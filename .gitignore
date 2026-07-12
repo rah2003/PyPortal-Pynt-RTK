@@ -1,0 +1,13 @@
+# PlatformIO
+.pio/
+.vscode/
+
+# Credentials — never committed (copy secrets.example.h -> secrets.h)
+**/secrets.h
+
+# Local tool settings
+.claude/settings.local.json
+
+# OS noise
+Thumbs.db
+.DS_Store
