@@ -10,10 +10,12 @@
 //     the same state deadlines that replaced the blocking reads.
 //
 // KNOWN BOUNDED STALL: WiFiNINA's WiFi.begin() blocks inside the NINA
-// co-processor for up to a few seconds per attempt. During that window
-// SerialGNSS is unserviced; SERIAL_BUFFER_SIZE is raised to 4096 in
-// platformio.ini to ride it out, and a WiFi (re)join costs at most a few
-// RAWX epochs — bounded, rare (hotspot drop), accepted for v1.
+// co-processor — up to ~10 s on a failed association (library-internal
+// timeout). During that window SerialGNSS is unserviced; the 4096-byte
+// SERIAL_BUFFER_SIZE (platformio.ini) holds ~1.6 s of the real ~2.5 kB/s
+// stream, so a worst-case join drops a handful of RAWX epochs — bounded
+// loss, only during (re)joins, accepted for v1 and logged as a gap in
+// the .ubx timeline.
 //
 // Kept verbatim from the ancestors: rev1 "ICY 200 OK" + rev2 "HTTP/1.x
 // 200" acceptance, SOURCETABLE = wrong mountpoint, exponential backoff

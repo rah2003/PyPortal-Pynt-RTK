@@ -156,6 +156,20 @@ bool gnssInit() {
 }
 
 void gnssPoll() {
+  // The Feather build retried the F9P connect forever; keep that field
+  // behavior — a late-powered or reseated Lite must not require a reboot.
+  if (!g_gnss.f9pDetected) {
+    static uint32_t lastRetryMs = 0;
+    if (millis() - lastRetryMs < 5000) return;
+    lastRetryMs = millis();
+    if (!connectGnss()) return;
+    g_gnss.f9pDetected = true;
+    Serial.println(F("[gnss] ZED-F9P connected (late)"));
+    if (!gnssApplyProjectConfig(gnss))
+      Serial.println(F("[gnss] WARNING: some VALSET writes not ACKed"));
+    setupLogging();
+  }
+
   if (modeApplyRequested) {
     modeApplyRequested = false;
     g_base = BaseStatus();  // stale survey-in numbers must not survive a switch

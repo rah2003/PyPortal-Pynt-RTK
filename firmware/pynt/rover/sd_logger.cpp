@@ -93,7 +93,15 @@ void drainOneChunk() {
   size_t n = gnssLogExtract(chunk, sizeof(chunk));
   if (n == 0) return;
   if (g_log.fileOpen) {
-    logFile.write(chunk, n);
+    if (logFile.write(chunk, n) != n) {
+      // Card yanked or dying — fail loudly (UI shows SD FAIL) instead of
+      // silently counting bytes that never landed.
+      Serial.println(F("[sd] write FAILED — card removed/dying? logging stopped"));
+      logFile.close();
+      g_log.fileOpen = false;
+      g_log.sdOk = false;
+      return;
+    }
     g_log.bytesWritten += n;
     totalBytesWritten += n;
   }

@@ -5,6 +5,8 @@
 // that consumes them.
 #include <Arduino.h>
 
+#include "pins.h"
+
 #include "features.h"
 #include "gnss.h"
 #include "ntrip.h"
@@ -28,6 +30,13 @@ void setup() {
   Serial.println();
   Serial.println(F("=== PyPortal-Pynt-RTK Rover ==="));
   Serial.println(F("build: " __DATE__ " " __TIME__));
+
+  // The AirLift shares the SPI bus with the SD card, and its chip-select
+  // is a floating input until WiFi.setPins() runs (inside ntripInit,
+  // AFTER the SD comes up because settings live on the card). Deselect
+  // it explicitly so the NINA can't drive MISO during SD init.
+  pinMode(SPIWIFI_SS, OUTPUT);
+  digitalWrite(SPIWIFI_SS, HIGH);
 
   uiInit();          // screen up first: boot progress is visible in the field
   sdLoggerInit();    // before settingsLoad — /config.txt lives on the card
