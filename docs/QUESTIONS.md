@@ -16,18 +16,19 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
    `acorn-gnss.net:2101` (mounts `VRS_SouthCentral_RTCM3`/`MS_RTCM3`),
    iPhone hotspot, 12° mask, GPS+GLO+GAL+BDS.
 
+7. ✅ **Same Lite or second Lite?** — Answered 2026-07-11: the Lite +
+   antenna **move over** from the RTK-Feather rig. F9P config largely
+   carries over (UART1 @115200, constellations); re-verify with u-center
+   before first bring-up rather than assuming flash contents.
+
 ## Open
 
-7. ❓ **Same Lite or second Lite?** Is the simpleRTK2B Lite + antenna moving
-   over from the RTK-Feather rig (cannibalizing it), or is this a separate
-   unit needing its own u-center pre-config pass? Docs are written to work
-   either way until answered.
 8. ❓→📄 **Power shape** — decide in `docs/hardware/power.md` (Phase 0):
    single bank port → Pynt USB with the Lite's 5 V tapped from the Pynt's
-   5 V rail (needs verification the rail can source ~210 mA extra), vs.
+   5 V rail (needs verification the rail can source ~160 mA extra), vs.
    two-feed (bank port 2 → Lite 5V_IN directly, common ground). Total
-   system ≈ 550–650 mA peak (SAMD51 + TFT backlight + AirLift WiFi bursts
-   + F9P ~130 mA + active antenna ≤75 mA).
+   system ≈ 500–600 mA peak (SAMD51 + TFT backlight + AirLift WiFi bursts
+   + F9P ~130 mA + HC977 antenna ~21 mA).
 9. 📄 **Pynt D3/D4 label swap** — forum reports say the Pynt's D3/D4
    sockets are silkscreened swapped vs. the classic PyPortal. Verify by
    loopback/scope during Phase 1 bring-up before wiring the Lite.
@@ -44,16 +45,24 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
     (RAWX writes) share the SPI bus. Port the Feather's two-stage-buffering
     stall analysis; measure worst-case SD write latency with WiFi active in
     Phase 1.
-13. ❓ **Cable stock** — JST-GH 6-pin (Pixhawk) pigtail on hand for the
-    Lite? And 3-pin JST PH pigtails for the Pynt's D3/D4 sockets, or
-    solder to pads?
-14. ❓ **microSD card** — brand/size/speed class (drives SD latency
-    assumptions, same as Feather Q-B).
-15. ❓ **GNSS antenna** — which active antenna, ground plane available?
-    (Feather Q-C; inherited unanswered.)
-16. ❓ **Enclosure / assembly** — the Pynt is a display-first board; any
-    mounting/enclosure plan affects connector strain relief and the
-    touch-UI layout (portrait vs landscape).
-17. ❓ **Does the RTK-Feather rig stay in service?** If yes (e.g. as a
-    dedicated base), this build's Base mode could pair with it — worth a
-    docs note on the RTCM3 hand-off path once the radio question matures.
+13. ✅ **Cable stock** — Answered 2026-07-11: cabling will be on hand
+    (JST-GH pigtail for the Lite, D3/D4-side leads). Exact connector
+    inventory gets confirmed against the Phase 0 wiring diagram.
+14. ✅ **microSD card** — Answered 2026-07-11 (photo): PNY Elite 32 GB
+    microSDHC, UHS-I **U1** (≥10 MB/s sustained). Plenty of throughput for
+    RAWX, but U1 cards can throw long single-write latency spikes — the
+    Phase 1 slow-card burst test and the two-stage buffer sizing (Q12) are
+    the guard.
+15. ✅ **GNSS antenna** — Answered 2026-07-11 (photo): Calian/Tallysman
+    **HC977 triple-band + L-band helical**, part 33-HC977-35 (35 dB LNA
+    variant), s/n 20200624. Bias 2.2–16 VDC → fine on the F9P's 3.3 V
+    antenna feed; ~21 mA typ; IP67; SMA. Helical → **no ground plane
+    needed**.
+16. ✅ **Enclosure / assembly** — Answered 2026-07-11: enclosure gets
+    built **after** the electronics work, and **portrait** is the optimal
+    orientation → all touch-UI layout is designed for 240×320 portrait
+    (`tft.setRotation()` — which of the two portrait rotations depends on
+    cable exit, decided with the wiring diagram).
+17. ✅ **RTK-Feather rig post-move** — Mooted by Q7: with the Lite and
+    antenna moving over, the Feather rig loses its GNSS and is effectively
+    retired as a complete rover (boards remain available as spares).

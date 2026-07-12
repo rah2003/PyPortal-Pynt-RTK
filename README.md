@@ -14,7 +14,9 @@ for a future plug-in radio**.
 |---|---|
 | MCU + display | Adafruit PyPortal Pynt (#4465) — ATSAMD51J20 @ 120 MHz, 2.4" 320×240 ILI9341 TFT (8-bit parallel), resistive touch, microSD, 8 MB QSPI flash |
 | WiFi | ESP32 AirLift co-processor (NINA-W102) on the Pynt, driven over SPI (WiFiNINA) |
-| GNSS | ArduSimple simpleRTK2B Lite (u-blox ZED-F9P), UART1 via Pixhawk JST-GH |
+| GNSS | ArduSimple simpleRTK2B Lite (u-blox ZED-F9P), UART1 via Pixhawk JST-GH — **moved over from the RTK-Feather rig** |
+| Antenna | Calian/Tallysman HC977 helical (33-HC977-35, 35 dB LNA), triple-band + L-band, 3.3 V bias ~21 mA, no ground plane needed |
+| Storage | PNY Elite 32 GB microSDHC UHS-I U1 (in the Pynt's slot) |
 | Phone | iPhone + SW Maps over **WiFi TCP** (NMEA server on the hotspot network) |
 
 ## Hard constraints (inherited + new)
@@ -66,7 +68,8 @@ for NTRIP, TCP NMEA server, SD logger on shared SPI.
 - **Touch UI:** status pages (fix quality, correction age, NTRIP state,
   logging, sats/SNR) + touch controls (log start/stop, rover/base switch,
   safe shutdown). Credentials/config via USB serial menu — no on-screen
-  keyboard in v1.
+  keyboard in v1. **Portrait orientation (240×320)** — enclosure comes
+  after the electronics and will be built around portrait mounting.
 - **Repo:** public GitHub, `PyPortal-Pynt-RTK`. Secrets via gitignored
   `secrets.h` (`secrets.example.h` committed), same as Feather.
 - **Inherited defaults (from Metro via Feather):** caster
