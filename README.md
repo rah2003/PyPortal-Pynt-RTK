@@ -90,7 +90,9 @@ docs/
     checklists.md           Per-board bring-up + integration gates
 firmware/
   pynt/bringup/             Phase 1 serial-menu test suite
-platformio.ini              env: pynt-bringup (pynt-rover comes with Phase 2)
+  pynt/rover/               Phase 2 Rover firmware (superloop: gnss, ntrip,
+                            tcp_nmea, sd_logger, ui, serial_menu, settings)
+platformio.ini              envs: pynt-bringup, pynt-rover
 ```
 
 ## Phases
@@ -109,10 +111,19 @@ platformio.ini              env: pynt-bringup (pynt-rover comes with Phase 2)
       label-swap tests), live NMEA echo, free-RAM report. **Not yet run on
       real hardware** — that's the bench pass in
       `docs/hardware/checklists.md`.
-- [ ] **Phase 2 — Rover firmware**: NTRIP → RTCM3 → F9P UART1, GNSS config
-      (UART1-only @115200), NMEA parse → status snapshot, touch UI pages +
-      controls, RAWX tap → time-named `.ubx` on SD, SW Maps TCP server,
-      serial config menu.
+- [~] **Phase 2 — Rover firmware**: written and **compiling clean**
+      (2026-07-11: RAM 9.7 % / flash 10.3 %, `pynt-rover` env). NTRIP
+      state machine (ported Metro→Feather→here, polled instead of tasked)
+      → RTCM3 → F9P UART1; GNSS config via SparkFun v3 VALSET; RAWX/SFRBX
+      → SparkFun file buffer → time-named `.ubx` on SD (one bounded
+      512 B write per loop pass, pre-allocated contiguous files, 8 s
+      sync); portrait touch UI (fix-state header, POS/SYS pages, LOG /
+      PAGE / PWR buttons with two-tap shutdown confirm); SW Maps TCP NMEA
+      server on :10110; SD `/config.txt` settings + serial menu.
+      **Not yet run on real hardware.** Known bench items are flagged in
+      code comments: touch calibration constants (from the 'p' test),
+      WiFiNINA `server.available()` client-accept semantics, and the
+      bounded WiFi.begin() stall (SERIAL_BUFFER_SIZE=4096 rides it out).
 - [ ] **Phase 3 — Base mode**: survey-in / fixed position, RTCM3-on-UART2
       config (config only — no wiring), base status page.
 - [ ] **Phase 4 — Polish**: on-screen config keyboard, logging analytics,
