@@ -77,6 +77,22 @@ for NTRIP, TCP NMEA server, SD logger on shared SPI.
   via iPhone personal hotspot, elevation mask 12°, constellations
   GPS+GLO+GAL+BDS (SBAS/QZSS off), F9P UART1 @ 115200.
 
+## Repository layout
+
+```
+docs/
+  QUESTIONS.md              Open/answered clarifying questions
+  hardware/
+    wiring.md               4-wire interconnect, label-swap check, SERCOM recipe
+    power.md                Power tree decision (shape A/B) + checks P1-P4
+    platform.md             Bus map, SPI contention math, TFT/touch notes
+    ucenter-config.md       F9P re-verification (unit moved from Feather rig)
+    checklists.md           Per-board bring-up + integration gates
+firmware/
+  pynt/bringup/             Phase 1 serial-menu test suite
+platformio.ini              env: pynt-bringup (pynt-rover comes with Phase 2)
+```
+
 ## Phases
 
 - [x] **Phase 0 — Hardware verification pack** (`docs/hardware/`): wiring
@@ -85,9 +101,14 @@ for NTRIP, TCP NMEA server, SD logger on shared SPI.
       P1–P4), u-center re-verification checklist, bring-up checklists,
       platform/SPI-contention analysis — **verify wiring against these
       documents and current vendor docs before powering anything**.
-- [ ] **Phase 1 — Bring-up sketches**: TFT + touch smoke test, AirLift WiFi
-      join + firmware version, SD write test, D3/D4 UART loopback + live
-      NMEA echo, QSPI/heap headroom survey.
+- [~] **Phase 1 — Bring-up sketches**: written and **compiling clean**
+      (PlatformIO 6.1.19, 2026-07-11: RAM 2.3 % / flash 4.6 %) — serial
+      test menu covering TFT + portrait rotations, touch raw dump, AirLift
+      version/scan/join + TCP echo (the SW Maps path), SD 4 MB write with
+      latency histogram, D3/D4 UART loopback + TX-socket identify (the
+      label-swap tests), live NMEA echo, free-RAM report. **Not yet run on
+      real hardware** — that's the bench pass in
+      `docs/hardware/checklists.md`.
 - [ ] **Phase 2 — Rover firmware**: NTRIP → RTCM3 → F9P UART1, GNSS config
       (UART1-only @115200), NMEA parse → status snapshot, touch UI pages +
       controls, RAWX tap → time-named `.ubx` on SD, SW Maps TCP server,

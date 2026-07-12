@@ -40,8 +40,9 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
 11. ✅ **TFT driver in 8-bit parallel mode** — Resolved on paper
     (2026-07-11): data PA16–23 (pins 34–41) + control pins per variant;
     `Adafruit_ILI9341` `tft8bitbus` constructor (Adafruit's own PyPortal
-    Arduino demos use it), `Adafruit_Arcada` as fallback. Verify at first
-    compile (Phase 1).
+    Arduino demos use it), `Adafruit_Arcada` as fallback. **Compiled clean
+    2026-07-11** (Adafruit_ILI9341 1.6.3) — remaining tail is pixels on
+    glass at bring-up.
 12. 📄 **SPI contention budget** — Analysis written
     (`docs/hardware/platform.md`): 32 KB UART ring + 32 KB SD staging on
     the SAMD51's 256 KB makes the Feather's tight-margin problem roomy;
