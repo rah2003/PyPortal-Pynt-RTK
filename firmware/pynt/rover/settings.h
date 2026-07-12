@@ -24,8 +24,16 @@ struct Settings {
   char casterPass[49] = {0};
   uint16_t ggaPeriodS = 10;
 
-  // --- Mode --- Rover in Phase 2; Base arrives with Phase 3.
+  // --- Mode ---
   DeviceMode mode = DeviceMode::Rover;
+
+  // --- Base mode (Phase 3) --- survey-in by default; a nonzero
+  // fixedLat/fixedLon switches to fixed-position TMODE.
+  uint16_t svinMinDurS = 300;        // CFG-TMODE-SVIN_MIN_DUR
+  uint32_t svinAccLimit01mm = 50000; // CFG-TMODE-SVIN_ACC_LIMIT, 0.1 mm units (50000 = 5 m)
+  double fixedLatDeg = 0;            // 0 = use survey-in
+  double fixedLonDeg = 0;
+  double fixedAltM = 0;              // ellipsoidal height for CFG-TMODE-HEIGHT
 
   // --- GNSS ---
   uint8_t elevMaskDeg = 12;  // inherited Metro answer

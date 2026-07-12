@@ -59,6 +59,13 @@ struct Btn {
 
 void fixState(const char*& txt, uint16_t& color) {
   if (!g_gnss.f9pDetected) { txt = "NO GNSS"; color = C_RED; return; }
+  if (g_settings.mode == DeviceMode::Base) {
+    if (g_base.svinValid) { txt = "BASE OK"; color = C_GREEN; return; }
+    if (g_base.svinActive) { txt = "SVIN..."; color = C_BLUE; return; }
+    txt = "BASE";
+    color = C_ORANGE;
+    return;
+  }
   if (g_gnss.carrSoln == 2) { txt = "RTK FIX"; color = C_GREEN; return; }
   if (g_gnss.carrSoln == 1) { txt = "FLOAT"; color = C_BLUE; return; }
   if (g_gnss.fixType >= 3) { txt = "3D"; color = C_ORANGE; return; }
@@ -135,11 +142,25 @@ void drawPagePos() {
   snprintf(v, sizeof(v), "%.1f", g_gnss.pdop);
   line(y, "PDOP", v); y += 22;
 
-  uint32_t age = correctionAgeMs();
-  bool stale = age != UINT32_MAX && age > 10000;
-  if (age == UINT32_MAX) snprintf(v, sizeof(v), "--");
-  else snprintf(v, sizeof(v), "%lu s", (unsigned long)(age / 1000));
-  line(y, "CORR", v, stale && staleFlash); y += 22;
+  if (g_settings.mode == DeviceMode::Base) {
+    // Survey-in progress replaces the correction-age line — a base
+    // produces corrections, it doesn't consume them.
+    if (g_base.svinActive || g_base.svinValid)
+      snprintf(v, sizeof(v), "%lus %lu.%02lum%s",
+               (unsigned long)g_base.svinDurS,
+               (unsigned long)(g_base.svinMeanAcc01mm / 10000),
+               (unsigned long)(g_base.svinMeanAcc01mm % 10000) / 100,
+               g_base.svinValid ? " OK" : "");
+    else
+      snprintf(v, sizeof(v), "waiting");
+    line(y, "SVIN", v); y += 22;
+  } else {
+    uint32_t age = correctionAgeMs();
+    bool stale = age != UINT32_MAX && age > 10000;
+    if (age == UINT32_MAX) snprintf(v, sizeof(v), "--");
+    else snprintf(v, sizeof(v), "%lu s", (unsigned long)(age / 1000));
+    line(y, "CORR", v, stale && staleFlash); y += 22;
+  }
 
   line(y, "NTRP", ntripStateName()); y += 22;
   if (g_link.wifiUp) snprintf(v, sizeof(v), "up %d dBm", g_link.wifiRssi);

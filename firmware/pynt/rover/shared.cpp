@@ -3,6 +3,7 @@
 GnssStatus g_gnss;
 LinkStatus g_link;
 LogStatus g_log;
+BaseStatus g_base;
 
 uint32_t correctionAgeMs() {
   if (g_link.lastRtcmMs == 0) return UINT32_MAX;

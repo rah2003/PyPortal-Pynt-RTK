@@ -6,4 +6,4 @@
 #define FEATURE_NTRIP 1     // WiFi + caster corrections (AirLift)
 #define FEATURE_TCP_NMEA 1  // SW Maps NMEA server on :10110
 #define FEATURE_SD_LOG 1    // RAWX/SFRBX .ubx logging to the Pynt's microSD
-#define FEATURE_BASE 0      // Phase 3 — survey-in/fixed + RTCM3-on-UART2 (config only)
+#define FEATURE_BASE 1      // survey-in/fixed + RTCM3-on-UART2 (config only — socket stays empty)

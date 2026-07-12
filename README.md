@@ -124,8 +124,14 @@ platformio.ini              envs: pynt-bringup, pynt-rover
       code comments: touch calibration constants (from the 'p' test),
       WiFiNINA `server.available()` client-accept semantics, and the
       bounded WiFi.begin() stall (SERIAL_BUFFER_SIZE=4096 rides it out).
-- [ ] **Phase 3 — Base mode**: survey-in / fixed position, RTCM3-on-UART2
-      config (config only — no wiring), base status page.
+- [~] **Phase 3 — Base mode**: written and **compiling clean** (2026-07-11:
+      RAM 9.7 % / flash 11.1 %). Survey-in (dur/acc from settings) or
+      fixed-LLH TMODE; RTCM3 out **configured on UART2 only** (MSM4 set
+      1005/1074/1084/1094/1124/1230 — config only, the XBee socket stays
+      empty and UART2 baud is left for the future radio to decide);
+      NAV-SVIN progress in the header + SVIN line; `b_` log prefix; live
+      rover/base switch via serial menu (`mode=base`). **Not yet run on
+      real hardware.**
 - [ ] **Phase 4 — Polish**: on-screen config keyboard, logging analytics,
       light-sensor auto-dim, speaker fix/loss chime.
 

@@ -61,12 +61,61 @@ bool applyNav(SFE_UBLOX_GNSS_SERIAL& g) {
 }
 
 bool applyRoverTmode(SFE_UBLOX_GNSS_SERIAL& g) {
-  // A previous Base session (Phase 3) must not leave TMODE latched on.
+  // A previous Base session must not leave TMODE latched on. Also turn
+  // the base-mode outputs back off (RTCM on UART2, NAV-SVIN on UART1).
   bool ok = g.newCfgValset(kLayers);
   ok &= g.addCfgValset(UBLOX_CFG_TMODE_MODE, 0);
+  ok &= g.addCfgValset(UBLOX_CFG_UART2OUTPROT_RTCM3X, 0);
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_UBX_NAV_SVIN_UART1, 0);
   ok &= g.sendCfgValset();
   return ok;
 }
+
+#if FEATURE_BASE
+bool applyBaseTmode(SFE_UBLOX_GNSS_SERIAL& g) {
+  // Base mode — HARD CONSTRAINT reminder (README §constraints): this is
+  // CONFIG ONLY. RTCM3 goes out on UART2 for the future plug-in radio;
+  // the XBee socket stays physically empty and UART2's baud is left at
+  // the F9P default (the radio choice sets it later).
+  bool ok = g.newCfgValset(kLayers);
+
+  const bool fixed =
+      g_settings.fixedLatDeg != 0 || g_settings.fixedLonDeg != 0;
+  if (fixed) {
+    // Fixed position, LLH. CFG-TMODE-LAT/LON are 1e-7 deg (~1.1 cm
+    // granularity); the _HP 1e-9 refinements are deliberately skipped in
+    // v1 — survey-in is the precision path, fixed is the convenience path.
+    ok &= g.addCfgValset(UBLOX_CFG_TMODE_MODE, 2);      // 2 = FIXED
+    ok &= g.addCfgValset(UBLOX_CFG_TMODE_POS_TYPE, 1);  // 1 = LLH
+    ok &= g.addCfgValset(UBLOX_CFG_TMODE_LAT,
+                         (int32_t)(g_settings.fixedLatDeg * 1e7));
+    ok &= g.addCfgValset(UBLOX_CFG_TMODE_LON,
+                         (int32_t)(g_settings.fixedLonDeg * 1e7));
+    ok &= g.addCfgValset(UBLOX_CFG_TMODE_HEIGHT,
+                         (int32_t)(g_settings.fixedAltM * 100));  // cm
+  } else {
+    ok &= g.addCfgValset(UBLOX_CFG_TMODE_MODE, 1);  // 1 = SURVEY_IN
+    ok &= g.addCfgValset(UBLOX_CFG_TMODE_SVIN_MIN_DUR, g_settings.svinMinDurS);
+    ok &= g.addCfgValset(UBLOX_CFG_TMODE_SVIN_ACC_LIMIT,
+                         g_settings.svinAccLimit01mm);
+  }
+
+  // RTCM3 out on UART2 (config only). Standard MSM4 base set + antenna
+  // reference point + GLONASS biases (SparkFun RTK / u-blox app-note set).
+  ok &= g.addCfgValset(UBLOX_CFG_UART2OUTPROT_RTCM3X, 1);
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_RTCM_3X_TYPE1005_UART2, 1);
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_RTCM_3X_TYPE1074_UART2, 1);
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_RTCM_3X_TYPE1084_UART2, 1);
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_RTCM_3X_TYPE1094_UART2, 1);
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_RTCM_3X_TYPE1124_UART2, 1);
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_RTCM_3X_TYPE1230_UART2, 5);
+
+  // Survey-in progress for the UI (NAV-SVIN on UART1, 1 Hz).
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_UBX_NAV_SVIN_UART1, 1);
+  ok &= g.sendCfgValset();
+  return ok;
+}
+#endif
 
 }  // namespace
 
@@ -74,7 +123,10 @@ bool gnssApplyProjectConfig(SFE_UBLOX_GNSS_SERIAL& gnss) {
   bool ok = applyPorts(gnss);
   ok &= applyMessages(gnss);
   ok &= applyNav(gnss);
-#if !FEATURE_BASE
+#if FEATURE_BASE
+  if (g_settings.mode == DeviceMode::Base) ok &= applyBaseTmode(gnss);
+  else ok &= applyRoverTmode(gnss);
+#else
   ok &= applyRoverTmode(gnss);
 #endif
   return ok;

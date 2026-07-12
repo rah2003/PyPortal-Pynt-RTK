@@ -12,6 +12,7 @@ size_t gnssLogAvailable();
 size_t gnssLogExtract(uint8_t* out, size_t maxLen);
 uint16_t gnssLogBufHighWater();
 void gnssRequestFactoryRecover();  // executed on the next poll
+void gnssRequestModeApply();       // re-apply config after a rover/base switch
 
 // Complete NMEA sentences for the TCP server: returns length (0 = none),
 // copies one sentence (with CRLF) into out. Drained by tcp_nmea.cpp.

@@ -20,6 +20,8 @@ void printHelp() {
   Serial.println(F("key=value      set + save: wifi1/pass1..wifi4/pass4, caster,"));
   Serial.println(F("               port, mount, user, password, ggaperiod,"));
   Serial.println(F("               elevmask, logubx, tcpport"));
+  Serial.println(F("               mode=rover|base, svindur (s), svinacc (0.1mm),"));
+  Serial.println(F("               fixedlat/fixedlon (deg), fixedalt (m)"));
   Serial.println(F("status         settings + live status"));
   Serial.println(F("log on|off     start/stop SD logging"));
   Serial.println(F("save           persist settings to SD /config.txt"));
@@ -41,6 +43,20 @@ void printStatus() {
   Serial.print(g_gnss.latDeg, 7);
   Serial.print(F(" lon="));
   Serial.println(g_gnss.lonDeg, 7);
+  Serial.print(F("mode="));
+  Serial.print(g_settings.mode == DeviceMode::Base ? "base" : "rover");
+  if (g_settings.mode == DeviceMode::Base) {
+    Serial.print(F(" svin: active="));
+    Serial.print(g_base.svinActive);
+    Serial.print(F(" valid="));
+    Serial.print(g_base.svinValid);
+    Serial.print(F(" dur="));
+    Serial.print(g_base.svinDurS);
+    Serial.print(F("s meanAcc="));
+    Serial.print(g_base.svinMeanAcc01mm / 10000.0f, 2);
+    Serial.print(F("m"));
+  }
+  Serial.println();
   Serial.print(F("ntrip="));
   Serial.print(ntripStateName());
   Serial.print(F(" wifi="));
@@ -82,6 +98,12 @@ void handleLine(char* line) {
   *eq = '\0';
   if (settingsApplyKeyValue(line, eq + 1)) {
     Serial.println(settingsSave() ? F("ok, saved") : F("ok (NOT persisted — no SD)"));
+    // Mode and base-position keys change the F9P's TMODE config —
+    // re-apply live rather than requiring a reboot.
+    if (!strcmp(line, "mode") || !strncmp(line, "svin", 4) ||
+        !strncmp(line, "fixed", 5)) {
+      gnssRequestModeApply();
+    }
   } else {
     Serial.println(F("unknown key — 'help' for the list"));
   }

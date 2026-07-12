@@ -42,9 +42,17 @@ struct LogStatus {
   uint32_t bufHighWater = 0;  // GNSS file-buffer high-water (platform.md math check)
 };
 
+struct BaseStatus {  // NAV-SVIN, only meaningful in Base mode
+  bool svinActive = false;
+  bool svinValid = false;
+  uint32_t svinDurS = 0;
+  uint32_t svinMeanAcc01mm = 0;  // 0.1 mm units, as reported
+};
+
 extern GnssStatus g_gnss;  // written by gnss.cpp only
 extern LinkStatus g_link;  // written by ntrip.cpp / tcp_nmea.cpp only
 extern LogStatus g_log;    // written by sd_logger.cpp only
+extern BaseStatus g_base;  // written by gnss.cpp only
 
 // Correction age in ms (UINT32_MAX if never received).
 uint32_t correctionAgeMs();

@@ -33,7 +33,9 @@ bool makeName(char* out, size_t outLen) {
   snprintf(dir, sizeof(dir), "/%04u%02u%02u", g_gnss.year, g_gnss.month,
            g_gnss.day);
   if (!sd.exists(dir)) sd.mkdir(dir);
-  snprintf(out, outLen, "%s/r_%02u%02u%02u.ubx", dir, g_gnss.hour,
+  // r_/b_ prefix per the field-guide convention inherited from Feather.
+  snprintf(out, outLen, "%s/%c_%02u%02u%02u.ubx", dir,
+           g_settings.mode == DeviceMode::Base ? 'b' : 'r', g_gnss.hour,
            g_gnss.minute, g_gnss.second);
   return true;
 }

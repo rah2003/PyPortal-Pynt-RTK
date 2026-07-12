@@ -75,6 +75,13 @@ namespace {
 bool factoryRecoverRequested = false;
 uint32_t lastStatusPushMs = 0;
 
+void onSvin(UBX_NAV_SVIN_data_t* svin) {
+  g_base.svinActive = svin->active;
+  g_base.svinValid = svin->valid;
+  g_base.svinDurS = svin->dur;
+  g_base.svinMeanAcc01mm = svin->meanAcc;
+}
+
 void onPvt(UBX_NAV_PVT_data_t* pvt) {
   g_gnss.fixType = pvt->fixType;
   g_gnss.carrSoln = pvt->flags.bits.carrSoln;
@@ -122,12 +129,15 @@ bool connectGnss() {
 
 void setupLogging() {
   gnss.setAutoPVTcallbackPtr(&onPvt);  // NAV-PVT at nav rate, no polling
+  gnss.setAutoNAVSVINcallbackPtr(&onSvin);  // survey-in progress (Base mode)
   // RAWX/SFRBX land in the library's file buffer; sd_logger.cpp drains it.
   gnss.setAutoRXMRAWX(true);
   gnss.logRXMRAWX(true);
   gnss.setAutoRXMSFRBX(true);
   gnss.logRXMSFRBX(true);
 }
+
+bool modeApplyRequested = false;
 
 }  // namespace
 
@@ -146,6 +156,15 @@ bool gnssInit() {
 }
 
 void gnssPoll() {
+  if (modeApplyRequested) {
+    modeApplyRequested = false;
+    g_base = BaseStatus();  // stale survey-in numbers must not survive a switch
+    Serial.print(F("[gnss] applying mode: "));
+    Serial.println(g_settings.mode == DeviceMode::Base ? F("base") : F("rover"));
+    if (!gnssApplyProjectConfig(gnss))
+      Serial.println(F("[gnss] WARNING: mode VALSET not fully ACKed"));
+  }
+
   if (factoryRecoverRequested) {
     factoryRecoverRequested = false;
     gnssFactoryRecover(gnss);
@@ -201,6 +220,7 @@ size_t gnssLogExtract(uint8_t* out, size_t maxLen) {
 uint16_t gnssLogBufHighWater() { return gnss.getMaxFileBufferAvail(); }
 
 void gnssRequestFactoryRecover() { factoryRecoverRequested = true; }
+void gnssRequestModeApply() { modeApplyRequested = true; }
 
 size_t gnssNextNmeaLine(char* out, size_t maxLen) {
   if (nmeaQCount == 0) return 0;

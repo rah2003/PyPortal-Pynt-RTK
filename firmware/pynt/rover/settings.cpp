@@ -98,6 +98,14 @@ bool settingsSave() {
   f.print(F("elevmask="));  f.println(g_settings.elevMaskDeg);
   f.print(F("logubx="));    f.println(g_settings.logUbx ? 1 : 0);
   f.print(F("tcpport="));   f.println(g_settings.tcpPort);
+  f.print(F("mode="));      f.println(g_settings.mode == DeviceMode::Base ? "base" : "rover");
+  f.print(F("svindur="));   f.println(g_settings.svinMinDurS);
+  f.print(F("svinacc="));   f.println(g_settings.svinAccLimit01mm);
+  if (g_settings.fixedLatDeg != 0 || g_settings.fixedLonDeg != 0) {
+    f.print(F("fixedlat=")); f.println(g_settings.fixedLatDeg, 9);
+    f.print(F("fixedlon=")); f.println(g_settings.fixedLonDeg, 9);
+    f.print(F("fixedalt=")); f.println(g_settings.fixedAltM, 3);
+  }
   f.close();
   return true;
 }
@@ -140,5 +148,15 @@ bool settingsApplyKeyValue(const char* key, const char* value) {
   if (!strcmp(key, "elevmask"))  { g_settings.elevMaskDeg = (uint8_t)atoi(value); return true; }
   if (!strcmp(key, "logubx"))    { g_settings.logUbx = atoi(value) != 0; return true; }
   if (!strcmp(key, "tcpport"))   { g_settings.tcpPort = (uint16_t)atoi(value); return true; }
+  if (!strcmp(key, "mode")) {
+    if (!strcmp(value, "base")) { g_settings.mode = DeviceMode::Base; return true; }
+    if (!strcmp(value, "rover")) { g_settings.mode = DeviceMode::Rover; return true; }
+    return false;
+  }
+  if (!strcmp(key, "svindur"))  { g_settings.svinMinDurS = (uint16_t)atoi(value); return true; }
+  if (!strcmp(key, "svinacc"))  { g_settings.svinAccLimit01mm = (uint32_t)atol(value); return true; }
+  if (!strcmp(key, "fixedlat")) { g_settings.fixedLatDeg = atof(value); return true; }
+  if (!strcmp(key, "fixedlon")) { g_settings.fixedLonDeg = atof(value); return true; }
+  if (!strcmp(key, "fixedalt")) { g_settings.fixedAltM = atof(value); return true; }
   return false;
 }
