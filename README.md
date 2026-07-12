@@ -79,10 +79,12 @@ for NTRIP, TCP NMEA server, SD logger on shared SPI.
 
 ## Phases
 
-- [ ] **Phase 0 — Hardware verification pack** (`docs/hardware/`): wiring
+- [x] **Phase 0 — Hardware verification pack** (`docs/hardware/`): wiring
       diagram (Pixhawk JST pinout → D3/D4, incl. the label-swap check),
-      power tree (single-bank vs two-feed decision lives here), u-center
-      pre-config checklist, bring-up checklists, SPI-contention analysis.
+      power tree (single-bank vs two-feed; decision pending measurements
+      P1–P4), u-center re-verification checklist, bring-up checklists,
+      platform/SPI-contention analysis — **verify wiring against these
+      documents and current vendor docs before powering anything**.
 - [ ] **Phase 1 — Bring-up sketches**: TFT + touch smoke test, AirLift WiFi
       join + firmware version, SD write test, D3/D4 UART loopback + live
       NMEA echo, QSPI/heap headroom survey.

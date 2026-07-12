@@ -23,28 +23,30 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
 
 ## Open
 
-8. ❓→📄 **Power shape** — decide in `docs/hardware/power.md` (Phase 0):
-   single bank port → Pynt USB with the Lite's 5 V tapped from the Pynt's
-   5 V rail (needs verification the rail can source ~160 mA extra), vs.
-   two-feed (bank port 2 → Lite 5V_IN directly, common ground). Total
-   system ≈ 500–600 mA peak (SAMD51 + TFT backlight + AirLift WiFi bursts
-   + F9P ~130 mA + HC977 antenna ~21 mA).
+8. 📄 **Power shape** — decision framework written
+   (`docs/hardware/power.md`): shape A (single bank port, Lite fed 5 V
+   from the Pynt's I2C STEMMA port) is preferred **pending bench
+   measurements P1–P4**; shape B (two-feed) is the fallback. Closes when
+   the measurements are recorded at bring-up.
 9. 📄 **Pynt D3/D4 label swap** — forum reports say the Pynt's D3/D4
    sockets are silkscreened swapped vs. the classic PyPortal. Verify by
    loopback/scope during Phase 1 bring-up before wiring the Lite.
-10. 📄 **D3/D4 SERCOM mapping in Arduino** — `busio.UART(board.D3, board.D4)`
-    works in CircuitPython, so the pads are UART-capable; confirm which
-    SERCOM/pads the Adafruit SAMD core variant assigns and whether a custom
-    `Uart` instance + `pinPeripheral()` is needed. Max reliable baud at
-    115200 to be verified in Phase 1.
-11. 📄 **TFT driver in 8-bit parallel mode** — PyPortal's ILI9341 is on an
-    8-bit parallel bus (SPI only via solder-jumper surgery, not planned).
-    Confirm Adafruit_ILI9341's `tft8bitbus` constructor path + pin list for
-    the Pynt variant, or fall back to Adafruit_Arcada.
-12. 📄 **SPI contention budget** — AirLift (NTRIP + TCP server) and microSD
-    (RAWX writes) share the SPI bus. Port the Feather's two-stage-buffering
-    stall analysis; measure worst-case SD write latency with WiFi active in
-    Phase 1.
+10. ✅ **D3/D4 SERCOM mapping in Arduino** — Resolved from
+    [variant.cpp](https://github.com/adafruit/ArduinoCore-samd/blob/master/variants/pyportal_m4/variant.cpp)
+    (2026-07-11): D3=PA04/D4=PA05, `PIO_SERCOM_ALT` → **SERCOM0 pads
+    0/1**, which is free (`Serial1` = SERCOM4 → ESP32, SPI = SERCOM2,
+    Wire = SERCOM5). Custom `Uart` recipe in `docs/hardware/wiring.md`;
+    Phase 1 loopback is the ground-truth check.
+11. ✅ **TFT driver in 8-bit parallel mode** — Resolved on paper
+    (2026-07-11): data PA16–23 (pins 34–41) + control pins per variant;
+    `Adafruit_ILI9341` `tft8bitbus` constructor (Adafruit's own PyPortal
+    Arduino demos use it), `Adafruit_Arcada` as fallback. Verify at first
+    compile (Phase 1).
+12. 📄 **SPI contention budget** — Analysis written
+    (`docs/hardware/platform.md`): 32 KB UART ring + 32 KB SD staging on
+    the SAMD51's 256 KB makes the Feather's tight-margin problem roomy;
+    closes when Phase 1 measures the real card's worst-case write latency
+    with WiFi active.
 13. ✅ **Cable stock** — Answered 2026-07-11: cabling will be on hand
     (JST-GH pigtail for the Lite, D3/D4-side leads). Exact connector
     inventory gets confirmed against the Phase 0 wiring diagram.
