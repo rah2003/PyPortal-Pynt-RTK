@@ -69,3 +69,18 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
 17. ✅ **RTK-Feather rig post-move** — Mooted by Q7: with the Lite and
     antenna moving over, the Feather rig loses its GNSS and is effectively
     retired as a complete rover (boards remain available as spares).
+18. 📄 **Simultaneous WiFi + BLE on the AirLift** (owner question,
+    2026-07-12). Arduino solved WiFi/BLE coexistence on NINA-W102 boards
+    by moving BLE HCI onto the SPI link
+    ([nina-fw 3.0.0 PR #111](https://github.com/arduino/nina-fw/pull/111);
+    needs nina-fw 3.0.1 + WiFiNINA 2.0.0 + ArduinoBLE 2.0.0 —
+    [CNX article](https://www.cnx-software.com/2026/03/06/wifi-and-bluetooth-le-can-now-be-used-simultaneously-on-arduino-boards-with-nina-w102-esp32-module/)).
+    **Verified 2026-07-12: Adafruit's nina-fw fork (v3.3.0) has NOT
+    adopted it** — its BLE HCI is still UART-only and mode-exclusive, and
+    our host stack (Adafruit WiFiNINA fork for `setPins`) has no matching
+    protocol. Decision: BLE stays out; the kickoff constraint stands.
+    **Re-evaluate if** adafruit/nina-fw merges the HCI-over-SPI transport
+    — the payoff scenario is the future UART2 radio (corrections by
+    radio, phone by BLE, no hotspot). Note: the Pynt is not pin-blocked
+    for a hybrid (ESP32 HCI UART is wired to SERCOM4 pins 0/1, separate
+    from SPI) — the blocker is firmware, not wiring.
