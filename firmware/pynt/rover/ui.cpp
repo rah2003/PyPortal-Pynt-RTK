@@ -245,6 +245,14 @@ void uiPoll() {
     drawButtons();
   }
 
+  // The log file opens asynchronously (waits for valid GNSS time) —
+  // refresh the LOG button label when that state flips underneath us.
+  static bool prevFileOpen = false;
+  if (prevFileOpen != g_log.fileOpen) {
+    prevFileOpen = g_log.fileOpen;
+    drawButtons();
+  }
+
   drawHeader();
   if (page == 0) drawPagePos();
   else drawPageSys();

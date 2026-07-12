@@ -33,6 +33,7 @@ void setup() {
   sdLoggerInit();    // before settingsLoad — /config.txt lives on the card
   settingsLoad();
   settingsPrint(Serial);
+  sdLoggerSetEnabled(g_settings.logUbx);  // now that the config is read
 
   if (!gnssInit())
     Serial.println(F(

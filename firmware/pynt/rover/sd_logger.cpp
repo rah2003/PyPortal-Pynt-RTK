@@ -116,7 +116,8 @@ bool sdLoggerInit() {
     Serial.print(cachedFreeKB);
     Serial.println(F(" KB free"));
   }
-  g_log.loggingEnabled = g_settings.logUbx;
+  // NOTE: g_settings isn't loaded yet at this point (settings live on
+  // this very card) — main.cpp applies logUbx after settingsLoad().
   return true;
 }
 

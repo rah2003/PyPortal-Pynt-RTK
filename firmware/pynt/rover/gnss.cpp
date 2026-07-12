@@ -188,7 +188,13 @@ void gnssInjectRtcm(const uint8_t* data, size_t len) {
 size_t gnssLogAvailable() { return gnss.fileBufferAvailable(); }
 
 size_t gnssLogExtract(uint8_t* out, size_t maxLen) {
-  uint16_t n = gnss.extractFileBufferData(out, (uint16_t)maxLen);
+  // extractFileBufferData returns BOOL and fails outright if asked for
+  // more than fileBufferAvailable() — request exactly what exists,
+  // capped to the caller's chunk (PaulZC RAWX_Logger pattern).
+  uint16_t avail = gnss.fileBufferAvailable();
+  uint16_t n = (uint16_t)min((size_t)avail, maxLen);
+  if (n == 0) return 0;
+  if (!gnss.extractFileBufferData(out, n)) return 0;
   return n;
 }
 
