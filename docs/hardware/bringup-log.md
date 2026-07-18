@@ -50,12 +50,17 @@ Notes / anomalies:
 - [x] rotation 2 "UP^" points to: `JST connectors side`
 - [x] **Chosen rotation for the build:** `2` (JST connectors up — matches planned cable exit)
 
-**`p` — Touch**
-- [x] Corner top-right: x=169 y=0 z=148
-- [x] Corner top-left: x=175 y=0 z=108
-- [x] Corner bottom-right: x=855 y=0 z=125
-- [x] Corner bottom-left: x=820 y=0 z=980
-- [ ] **ANOMALY (reproduced on retest, not noise)**: all four readings show y=0 — see note below; do not use as calibration constants until resolved
+**`p` — Touch (re-captured 2026-07-17 after the pin fix, rotation 2)**
+- [x] Corner top-left (TL): x=825 y=835 z=250
+- [x] Corner top-right (TR): x=157 y=849 z=500
+- [x] Corner bottom-left (BL): x=837 y=130 z=1700
+- [x] Corner bottom-right (BR): x=202 y=126 z=585
+- [x] **Valid calibration constants — touch pin fix confirmed on hardware.**
+      Note for Phase 2 `ui.cpp`: both axes read **inverted** vs. typical
+      screen convention at rotation 2 — X is high-on-left/low-on-right
+      (TL≈825→TR≈157), Y is high-on-top/low-on-bottom (TL≈835→BL≈130).
+      Map/invert accordingly when converting raw touch to screen
+      coordinates, don't assume a direct 0-at-top-left mapping.
 
 **`w` / `W` — AirLift**
 - [x] NINA firmware version: `_______________` (not recorded)
@@ -171,6 +176,8 @@ Notes / anomalies:
   plausible-looking numbers by coincidence.
   **Fix applied 2026-07-17:** both `firmware/pynt/bringup/pins.h` and
   `firmware/pynt/rover/pins.h` corrected to 18/19/20/21. Both environments
-  rebuild clean. **Status: fix applied, not yet re-verified on hardware —
-  re-flash `pynt-bringup` and re-run `p`/`y` to confirm real 4-corner
-  values before closing this out.**
+  rebuild clean.
+  **CONFIRMED FIXED ON HARDWARE 2026-07-17.** Re-flashed `pynt-bringup`,
+  re-ran `p`: y now varies across the full range with touch position
+  (observed x=298-829, y=123-878, z=209-1998 across several presses) —
+  no longer pinned. **Closed.**
