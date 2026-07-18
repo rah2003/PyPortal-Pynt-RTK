@@ -131,23 +131,46 @@ Notes / anomalies:
 
 (anything discovered during bring-up that needs a QUESTIONS.md entry or a doc update)
 
-- **Touch Y-axis stuck at 0** (see note in section 2). Root-caused to the
-  library reading Y via `analogRead(TOUCH_XR)` (PB08, a genuine ADC pin —
-  confirmed against `variant.cpp`), with X varying correctly and Y pinned —
-  classic floating-input signature. Correction: there's no exposed "pin 20"
-  test point on this board to probe by number — that was a firmware-side
-  label, not a physical one.
-  **Update:** per Adafruit's own PyPortal pinout docs
-  (https://learn.adafruit.com/adafruit-pyportal/pinouts), touch signals are
-  *not* on a separate FPC — they ride the same single main display
-  connector on the back of the board that also carries the 8-bit TFT data
-  bus. Since the TFT test passed cleanly, that connector is making contact
-  overall, which narrows this down to either (a) one marginal pin/pad
-  within that shared connector, or (b) a fault in the touch overlay's own
-  resistive film on that specific electrode (component-level, not
-  connector-level). Ruled out: framework/toolchain issue — `pynt-bringup`
-  rebuilds clean (RAM 2.3%, Flash 4.6%), library versions resolve fine
-  (Adafruit ILI9341 1.6.3, GFX 1.12.6, TouchScreen 1.1.6). **Left open —
-  no physical fix attempted yet; next step is visual inspection of that
-  shared connector's seating, then consider the panel itself suspect if
-  reseating doesn't help.**
+- **Touch Y-axis stuck at 0** (see note in section 2). Initial suspicion
+  (library senses Y via `analogRead(TOUCH_XR)`, pin 20/PB08) was corrected
+  by the new `y` raw-pin diagnostic test (`main_bringup.cpp`,
+  `testTouchRawDump()`), which drives each axis and reads both
+  opposite-axis electrodes at once instead of trusting the library's
+  single-sense-pin math.
+  **Result (two live captures, unpressed vs pressed):**
+  unpressed `YU≈717 YD≈7 | XL≈459 XR≈450`; pressed
+  `YU≈140 YD≈2-8 | XL≈1023 XR≈1017-1023`. YU tracks touch correctly
+  (matches the already-good X readings). **YD stays flat near 0 in both
+  states, and — the key signal — both XL *and* XR jump to ~1023 together
+  the instant of touch instead of settling at a graded value.** Both sense
+  pins pinning high together under touch (not just one) means the fault is
+  on the **drive/ground side, not a sense pin**: Y-phase drives YU=HIGH,
+  YD=LOW to form the gradient, and if YD isn't making a good low-reference
+  connection, any touch just pulls toward the healthy HIGH (YU) side
+  instead of a real graded voltage — exactly this signature.
+  **ROOT CAUSE FOUND — not a hardware fault at all.** Pulled Adafruit's
+  official "Adafruit PyPortal Pynt Pinout.pdf"
+  (github.com/adafruit/Adafruit-PyPortal-PCB) and cross-checked against
+  `pins.h`. The chip ports were right (PB00/PB01/PA06/PB08) but every
+  touch pin's **Arduino number was off by exactly one**:
+
+  | Signal | Official pin | `pins.h` had |
+  |---|---|---|
+  | TOUCH_YD (PB00) | 18 | 17 |
+  | TOUCH_XL (PB01) | 19 | 18 |
+  | TOUCH_YU (PA06) | 20 | 19 |
+  | TOUCH_XR (PB08) | 21 | 20 |
+
+  So `TOUCH_YD` was actually driving whatever's really on pin 17 (not the
+  touch panel), which explains everything: driving "YD" LOW never
+  established a real ground reference for the Y-axis gradient, so any
+  touch just pulled the sense pins toward the healthy HIGH side — exactly
+  the both-pins-jump-to-1023 signature the `y` test caught. "X" looked
+  fine because pins.h's `TOUCH_YU` (19) is really the panel's XL
+  electrode — still a genuine touch electrode, so it happened to produce
+  plausible-looking numbers by coincidence.
+  **Fix applied 2026-07-17:** both `firmware/pynt/bringup/pins.h` and
+  `firmware/pynt/rover/pins.h` corrected to 18/19/20/21. Both environments
+  rebuild clean. **Status: fix applied, not yet re-verified on hardware —
+  re-flash `pynt-bringup` and re-run `p`/`y` to confirm real 4-corner
+  values before closing this out.**

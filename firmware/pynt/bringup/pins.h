@@ -16,13 +16,19 @@
 #define TFT_BACKLIGHT 25
 
 // ---- Resistive touch (4-wire, raw ADC) ----
-// Pin numbers from pyportal_m4 variant.cpp. Electrode polarity (XP vs XM
-// etc.) is a convention guess — the 'p' raw-dump test validates; if axes
-// mirror, swap the pair and record it in checklists.md.
-#define TOUCH_YD 17  // PB00
-#define TOUCH_XL 18  // PB01
-#define TOUCH_YU 19  // PA06 (also SERCOM0/PAD2 — unused by our UART)
-#define TOUCH_XR 20  // PB08
+// Pin numbers from Adafruit's official "Adafruit PyPortal Pynt Pinout.pdf"
+// (github.com/adafruit/Adafruit-PyPortal-PCB) — the pyportal_m4
+// variant.cpp comments alone are misleading here; this repo previously had
+// all four off by one (16/17/18/19-style shift), confirmed against the
+// official diagram and the bring-up 'y' raw-pin test (2026-07-17: Y-axis
+// gradient never formed because the "YD" pin wasn't actually the YD
+// electrode). Electrode polarity (XP vs XM etc.) is still a convention
+// guess — the 'p'/'y' raw-dump tests validate; if axes mirror, swap the
+// pair and record it in checklists.md.
+#define TOUCH_YD 18  // PB00
+#define TOUCH_XL 19  // PB01
+#define TOUCH_YU 20  // PA06 (also SERCOM0/PAD2 — unused by our UART)
+#define TOUCH_XR 21  // PB08
 
 // ---- microSD (shared SPI with the AirLift; SERCOM2) ----
 #define SD_CS 32

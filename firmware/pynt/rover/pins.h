@@ -16,10 +16,14 @@
 #define TFT_BACKLIGHT 25
 
 // ---- Resistive touch (raw ADC; calibration in ui.cpp) ----
-#define TOUCH_YD 17
-#define TOUCH_XL 18
-#define TOUCH_YU 19
-#define TOUCH_XR 20
+// Pin numbers per Adafruit's official "Adafruit PyPortal Pynt Pinout.pdf"
+// (github.com/adafruit/Adafruit-PyPortal-PCB) — previously off by one
+// across all four pins, found via the bring-up sketch's 'y' raw-pin test
+// (2026-07-17). Keep in sync with ../bringup/pins.h.
+#define TOUCH_YD 18
+#define TOUCH_XL 19
+#define TOUCH_YU 20
+#define TOUCH_XR 21
 
 // ---- microSD (shared SPI with the AirLift) ----
 #define SD_CS 32
