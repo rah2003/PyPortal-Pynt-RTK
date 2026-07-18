@@ -103,6 +103,49 @@ static void testTouchDump() {
   Serial.println(F("  Record 4-corner raw values in checklists.md."));
 }
 
+// Bypasses the TouchScreen library's math entirely. The library computes Y
+// by driving YU/YD and sensing only through XR (pins.h TOUCH_XR) — if that
+// single sense pin is bad, Y reads stuck regardless of the drive pins'
+// health. This test drives each axis and reads BOTH opposite-axis
+// electrodes at once, so a dead sense pin shows up next to a live one
+// under the *same* drive condition — isolating sense-pin vs drive-pin
+// faults instead of just reporting the library's already-broken output.
+static void testTouchRawDump() {
+  Serial.println(F("[y] touch raw pin diagnostic — press/drag around the panel; any serial key exits"));
+  Serial.println(F("  Xdrive senses YU+YD (both should move together as you slide X)"));
+  Serial.println(F("  Ydrive senses XL+XR (both should move together as you slide Y)"));
+  Serial.println(F("  A pin stuck near 0 or 1023 while its neighbor moves = that pin/node is dead"));
+  while (!keyPressed()) {
+    // --- X-drive phase: drive XL/XR, sense YU and YD together ---
+    pinMode(TOUCH_YU, INPUT);
+    pinMode(TOUCH_YD, INPUT);
+    pinMode(TOUCH_XL, OUTPUT);
+    pinMode(TOUCH_XR, OUTPUT);
+    digitalWrite(TOUCH_XL, HIGH);
+    digitalWrite(TOUCH_XR, LOW);
+    delayMicroseconds(20);
+    int yu = analogRead(TOUCH_YU);
+    int yd = analogRead(TOUCH_YD);
+
+    // --- Y-drive phase: drive YU/YD, sense XL and XR together ---
+    pinMode(TOUCH_XL, INPUT);
+    pinMode(TOUCH_XR, INPUT);
+    pinMode(TOUCH_YU, OUTPUT);
+    pinMode(TOUCH_YD, OUTPUT);
+    digitalWrite(TOUCH_YU, HIGH);
+    digitalWrite(TOUCH_YD, LOW);
+    delayMicroseconds(20);
+    int xl = analogRead(TOUCH_XL);
+    int xr = analogRead(TOUCH_XR);
+
+    Serial.print(F("  Xdrive: YU=")); Serial.print(yu);
+    Serial.print(F(" YD=")); Serial.print(yd);
+    Serial.print(F("   |   Ydrive: XL=")); Serial.print(xl);
+    Serial.print(F(" XR=")); Serial.println(xr);
+    delay(200);
+  }
+}
+
 static bool wifiPinsSet = false;
 static void wifiEnsurePins() {
   if (!wifiPinsSet) {
@@ -267,6 +310,7 @@ static void menu() {
   Serial.println(F("== PyPortal-Pynt-RTK bring-up (docs/hardware/checklists.md) =="));
   Serial.println(F(" t  TFT fills + portrait rotations"));
   Serial.println(F(" p  touch raw dump"));
+  Serial.println(F(" y  touch raw PIN diagnostic (isolates dead pin)"));
   Serial.println(F(" w  AirLift version + scan"));
   Serial.println(F(" W  WiFi join + TCP echo :10110 (needs secrets.h)"));
   Serial.println(F(" s  SD 4MB write + latency histogram"));
@@ -291,6 +335,7 @@ void loop() {
   switch (c) {
     case 't': testTft(); break;
     case 'p': testTouchDump(); break;
+    case 'y': testTouchRawDump(); break;
     case 'w': testWifiVersionScan(); break;
     case 'W': testWifiJoinEcho(); break;
     case 's': testSdLatency(); break;
