@@ -153,14 +153,34 @@ Notes / anomalies:
 
 ## 3. Integration gates (stop at any failure)
 
-1. [ ] Section 1 + Section 2 both fully healthy
-2. [ ] **Power-only union** (wires 1 + 4): Lite power LED on, Pynt unaffected
-   - [ ] P3 — voltage at Lite JST pin 1 under load (WiFi active, backlight full): `_______` V (must stay ≥ 4.5 V)
-   - [ ] P4 — 30-min soak, no brownout resets on either board
-3. [ ] **Data union** (wires 2 + 3 added): `n` test shows live NMEA in the Pynt console at 115200
-4. [ ] **1-hour full-stack soak**: NTRIP + logging + backlight running together, no resets, SD file confirmed growing
+1. [x] Section 1 + Section 2 both fully healthy
+2. [x] **All four wires connected at once** (per the D3/D4-sourced wiring
+       in `wiring.md`: power+ground+TX off D4, RX off D3) rather than
+       power-only first — Lite power LED on, Pynt unaffected
+   - [x] P3 — voltage at Lite JST pin 1 under load (WiFi active, backlight
+         full): **4.77 V** (≥ 4.5 V floor — comfortable margin)
+   - [x] P4 — 30-min soak: **complete, no issues** (no brownout resets on
+         either board)
+3. [x] **Data union**: `n` test shows live NMEA (`$GBGSV`, `$GNGLL`,
+       `$GNGST`, etc.) interleaved with unreadable binary — **that binary
+       is UBX-RXM-RAWX/SFRBX rendering as raw bytes in a text terminal,
+       exactly as expected** since both are configured on for logging
+       (section 1). Confirms both the NMEA and UBX binary paths are live,
+       not a data-corruption signal.
+4. [ ] **1-hour full-stack soak**: NTRIP + logging + backlight running
+       together, no resets, SD file confirmed growing — **not yet done,
+       this is Phase 2 rover-firmware territory** (`pynt-rover` env),
+       not the Phase 1 bring-up sketch. Pick up when Phase 2 work starts.
+
+**Section 3 status: gates 1-3 CLOSED. Gate 4 deferred to Phase 2.**
 
 Notes / anomalies:
+
+- Wiring was done as a single four-wire pass rather than the
+  power-only-then-data sequencing the gate list originally implied.
+  Retroactively confirmed both P3/P4 (power) and the data path are
+  healthy, so no re-work needed — just noting the actual order for
+  anyone reading this log later.
 
 
 
