@@ -10,25 +10,59 @@ Date started: ____________  Date completed: ____________
 
 ## 1. simpleRTK2B Lite (ZED-F9P) — u-center re-verification
 
-- [ ] Physical inspection: JST-GH intact, SMA snug, no bent XBee pins
-- [ ] JST pin 1 located and marked on the pigtail
-- [ ] Top XBee socket confirmed empty
-- [ ] HC977 antenna mounted (hand-tight + 1/8 turn), sky view for fix tests
-- [ ] u-center connected via XBee-to-USB adapter, **pigtail unplugged**
-- [ ] Connection baud used: `_________` (115200 Feather-config / 38400 factory-default)
-- [ ] UBX-MON-VER firmware recorded: `_______________` (want HPG 1.32+)
-- [ ] UART1 keys verified/set (baud 115200, UBX+RTCM3X in, UBX+NMEA out, RTCM3X out = 0)
-- [ ] RAWX / SFRBX / TIM_TM2 messages on, UART1
-- [ ] NMEA set on UART1: GGA/RMC/GSA/GST/GSV = 1, VTG per preference, HIGHPREC = 1
-- [ ] Rate 1 Hz (MEAS 1000ms, NAV 1), dynamics = portable
-- [ ] Elevation mask = 12°, constellations GPS+GLO+GAL+BDS, SBAS/QZSS off
-- [ ] UART2 left untouched
-- [ ] Saved to Flash (RAM+BBR+Flash)
-- [ ] Power-cycled, reconnected at 115200, VALGET spot-check from Flash layer passed
-- [ ] Packet console clean (only RAWX+SFRBX+NMEA @ 1Hz)
-- [ ] USB adapter unplugged when done
+- [x] Physical inspection: JST-GH intact, SMA snug, no bent XBee pins
+- [x] JST pin 1 located and marked on the pigtail
+- [x] Top XBee socket confirmed empty
+- [x] HC977 antenna mounted (hand-tight + 1/8 turn), sky view for fix tests
+- [x] u-center connected via XBee-to-USB adapter, **pigtail unplugged**
+- [x] Connection baud used: `115200` (Feather-era config took, as expected)
+- [ ] UBX-MON-VER firmware not recorded this pass (want HPG 1.32+) — grab
+      this next time u-center is open, low priority since everything else
+      checked out
+- [x] **UART1 keys verified/set via VALGET→VALSET→VALGET (Flash-confirmed):**
+      baud 115200 ✅; UBX in=1 ✅; NMEA in was **1→ fixed to 0** ✅;
+      RTCM3X in=1 ✅; UBX out=1 ✅; NMEA out=1 ✅; RTCM3X out was
+      **1→fixed to 0** ✅ (this is Rover — RTCM3X out belongs on UART2 in
+      Base mode, not here)
+- [x] **RAWX / SFRBX messages: both were 0→fixed to 1**, confirmed in Flash
+      and visible live in the packet console (RAWX ~1/s, SFRBX bursting
+      several/s — normal). TIM_TM2 left off (optional, not needed)
+- [x] **NMEA set on UART1: GGA/RMC/GSA/GST/GSV all fixed 0→1**; VTG was
+      briefly mis-queued to 1, corrected to 0; HIGHPREC=1 ✅ — all
+      confirmed in Flash
+- [x] **Rate: MEAS=1000ms ✅, NAV was unset in first pass → fixed to 1** —
+      confirmed in Flash (true 1 Hz)
+- [x] Dynamics = 0 (Portable) ✅ — already correct, no fix needed
+- [x] **Elevation mask was 10°→fixed to 12°**; constellations
+      GPS/GLONASS/Galileo/BeiDou all already =1 ✅; SBAS already =0 ✅;
+      **QZSS was 1→fixed to 0** — all confirmed in Flash
+- [x] UART2 left untouched (never queried/changed)
+- [x] Saved to Flash (RAM+BBR+Flash checked on every VALSET)
+- [x] **Power-cycled — all fixes survived reconnect at 115200.** VALGET
+      re-check not repeated post-cycle (relying on pre-cycle Flash
+      confirmations + successful reconnect at the configured baud)
+- [x] Packet console reviewed live: RAWX (1/s) + SFRBX (bursty) + configured
+      NMEA set all present. **One unaccounted extra: `NMEA-GNGLL` is on**
+      (never in the checklist's target set) — harmless bandwidth-wise,
+      left on by owner decision rather than spending another VALSET round
+      trip; not a logging/protocol risk either way
+- [ ] USB adapter not yet unplugged — **do this before wiring the pigtail
+      to the Pynt** (data-contention rule in `wiring.md`)
+
+**Section 1 status: CLOSED**, pending only the physical adapter-unplug
+step before integration wiring begins.
 
 Notes / anomalies:
+
+- This Lite came over from the Feather rig "maybe already configured" —
+  in practice it was **not** correctly configured for this project's
+  Rover/RAWX-logging needs: RTCM3X-out and NMEA-in were both backwards
+  (Base-mode-ish leftovers), RAWX/SFRBX logging was entirely off, and the
+  elevation mask + QZSS were both off-target. The VALGET-first approach
+  caught all of it before assuming "it probably still has the old config."
+- `NMEA-GNGLL` chatter — see checklist line above. Revisit only if SD
+  logging bandwidth ever becomes tight (unlikely per `platform.md`'s
+  budget math).
 
 
 
