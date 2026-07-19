@@ -17,39 +17,43 @@ bank port rated 1 A carries this with margin, and it is far above the
 
 ## Candidate shapes
 
-### A. Single bank port, Lite fed through the Pynt (preferred if checks pass)
+### A. Single bank port, Lite fed through the Pynt (adopted — checks passed)
 
 ```
 USB battery bank (1 port, ≥1 A)
  └── USB cable ──► Pynt micro-USB (5V VBUS)
                      ├── Pynt 3V3 reg ──► SAMD51 + TFT + AirLift + microSD
-                     └── I2C STEMMA port 5V pin ──► Lite JST pin 1 (5V_IN)
-                                                      └── Lite's own 3V3 reg ──► F9P + antenna
-Ground: Lite JST pin 6 ↔ Pynt GND (wired, not assumed)
+                     └── D4 JST VCC pin ──► Lite JST pin 1 (5V_IN)
+                                              └── Lite's own 3V3 reg ──► F9P + antenna
+Ground: D4 JST GND pin ──► Lite JST pin 6 (wired, not assumed)
 ```
 
 One cable in the field, one thing to charge. The Lite regulates its own
 3.3 V, so the ~150 mA GNSS load never touches the Pynt's 3.3 V regulator —
 it only transits the Pynt's **5 V/VBUS copper**.
 
-**Blocking checks before adopting (do at first bring-up):**
+**Power/ground now come off the D4 JST connector itself** (not the I2C
+STEMMA port as originally planned) — P1 below confirmed D3/D4 VCC reads
+the same 5V as the STEMMA port, and D4 already carries a signal wire to
+the Lite, so routing power off the same connector means the STEMMA port
+stays fully unpopulated (this project has no I2C use). See `wiring.md`
+for the full wire list.
 
-- [ ] **P1 — D3/D4 JST power-pin voltage.** Undocumented. Board powered
-      from USB, multimeter from each JST power pin to GND: record 3.3 V or
-      5 V. (Not needed for shape A itself, but it decides whether those
-      pins are an alternate 5 V source and must be recorded before
-      anything is plugged into them.)
-- [ ] **P2 — I2C STEMMA port 5 V confirmed.** Docs say it defaults to 5 V
-      with a solder jumper for 3 V
-      ([pinouts](https://learn.adafruit.com/adafruit-pyportal/pinouts)) —
-      verify this specific board's jumper is untouched and the pin
-      measures ~VBUS.
-- [ ] **P3 — voltage drop under load.** With the Lite + antenna running
-      (WiFi active, backlight full), measure at Lite JST pin 1: must stay
-      ≥ 4.5 V (Lite's minimum). This catches thin traces, the micro-USB
-      connector's resistance, and cheap cables in one go.
-- [ ] **P4 — 30-minute soak.** No brownout resets (SAMD51 or F9P), no
-      warm connectors.
+**Blocking checks (completed at bring-up, 2026-07-17 —
+`docs/hardware/bringup-log.md`):**
+
+- [x] **P1 — D3/D4 JST power-pin voltage.** Measured 5V on both D3 and D4
+      VCC pins, board powered from USB. This is what unlocked shape A's
+      final form above — power sourced from D4 directly instead of a
+      separate STEMMA connection.
+- [x] **P2 — I2C STEMMA port 5 V confirmed.** Also measured 5V (jumper
+      untouched, defaults intact) — but the port ended up unused per the
+      D3/D4 decision above.
+- [ ] **P3 — voltage drop under load.** Not yet done — do this at the
+      power-only integration gate (Lite + antenna running, WiFi active,
+      backlight full): measure at Lite JST pin 1, must stay ≥ 4.5 V.
+- [ ] **P4 — 30-minute soak.** Not yet done — no brownout resets (SAMD51
+      or F9P), no warm connectors.
 
 ### B. Two-feed fallback (zero doubt, more cabling)
 
