@@ -161,9 +161,10 @@ Notes / anomalies:
          full): **4.77 V** (≥ 4.5 V floor — comfortable margin)
    - [x] P4 — 30-min soak: **complete, no issues** (no brownout resets on
          either board)
-3. [x] **Data union**: `n` test shows live NMEA (`$GBGSV`, `$GNGLL`,
-       `$GNGST`, etc.) interleaved with unreadable binary — **that binary
-       is UBX-RXM-RAWX/SFRBX rendering as raw bytes in a text terminal,
+3. [x] **Data union** (2026-07-19): `n` test shows live NMEA (`$GBGSV`,
+       `$GNGLL`, `$GNGST`, etc.) in the Pynt console at 115200,
+       interleaved with unreadable binary — **that binary is
+       UBX-RXM-RAWX/SFRBX rendering as raw bytes in a text terminal,
        exactly as expected** since both are configured on for logging
        (section 1). Confirms both the NMEA and UBX binary paths are live,
        not a data-corruption signal.
