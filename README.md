@@ -113,7 +113,7 @@ platformio.ini              envs: pynt-bringup, pynt-rover
       2026-07-17): silkscreen swap confirmed real (sockets tape-labeled),
       touch pin off-by-one found and fixed (18/19/20/21), rotation 2
       chosen, corner calibration captured, WiFi/TCP/SD all healthy.
-- [~] **Phase 2 — Rover firmware**: written and **compiling clean**
+- [x] **Phase 2 — Rover firmware**: written and **compiling clean**
       (2026-07-11: RAM 9.7 % / flash 10.3 %, `pynt-rover` env). NTRIP
       state machine (ported Metro→Feather→here, polled instead of tasked)
       → RTCM3 → F9P UART1; GNSS config via SparkFun v3 VALSET; RAWX/SFRBX
@@ -122,20 +122,23 @@ platformio.ini              envs: pynt-bringup, pynt-rover
       sync); portrait touch UI (fix-state header, POS/SYS pages, LOG /
       PAGE / PWR buttons with two-tap shutdown confirm); SW Maps TCP NMEA
       server on :10110; SD `/config.txt` settings + serial menu.
-      **Not yet run on real hardware.** Bench touch calibration + rotation
-      2 applied to `ui.cpp` (2026-07-19); remaining items to observe live:
-      WiFiNINA `server.available()` client-accept semantics and the
-      bounded WiFi.begin() stall (SERIAL_BUFFER_SIZE=4096 rides it out).
-      Entry gate: the 1-hour full-stack soak — runbook in
-      `docs/hardware/bringup-log.md` §3 gate 4.
-- [~] **Phase 3 — Base mode**: written and **compiling clean** (2026-07-11:
+      **1-hour full-stack soak PASSED 2026-07-19** (bringup-log.md §3
+      gate 4): 66 min, zero resets, RTK FIX from minute 2 to the end,
+      NTRIP uninterrupted, 10.8 MB RAWX written (~10 MB/h). Found live:
+      caster DNS moved to `www.`, nina-fw TCP accept is data-gated, and
+      a client-dedup bug (fixed) — see Q19. Touch buttons + on-screen
+      BUFH still unverified (headless soak).
+- [x] **Phase 3 — Base mode**: written and **compiling clean** (2026-07-11:
       RAM 9.7 % / flash 11.1 %). Survey-in (dur/acc from settings) or
       fixed-LLH TMODE; RTCM3 out **configured on UART2 only** (MSM4 set
       1005/1074/1084/1094/1124/1230 — config only, the XBee socket stays
       empty and UART2 baud is left for the future radio to decide);
       NAV-SVIN progress in the header + SVIN line; `b_` log prefix; live
-      rover/base switch via serial menu (`mode=base`). **Not yet run on
-      real hardware.**
+      rover/base switch via serial menu (`mode=base`). **Spot check
+      PASSED 2026-07-19**: live switch both directions, survey-in valid
+      at 300 s / 1.46 m on the defaults, UART2 untouched. (The `b_`
+      prefix needed a same-day fix — the log now rotates on a live mode
+      switch; rotation re-check pending next bench sit.)
 - [ ] **Phase 4 — Polish**: on-screen config keyboard, logging analytics,
       light-sensor auto-dim, speaker fix/loss chime.
 - [ ] **Phase 5 — WiFi+BLE coexistence (nina-fw 3.x port)**: reflash the

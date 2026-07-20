@@ -103,6 +103,12 @@ void handleLine(char* line) {
     if (!strcmp(line, "mode") || !strncmp(line, "svin", 4) ||
         !strncmp(line, "fixed", 5)) {
       gnssRequestModeApply();
+      // The r_/b_ log prefix is chosen at file open — cycle the logger
+      // on a live mode switch so the new mode gets its own file.
+      if (!strcmp(line, "mode") && g_log.fileOpen) {
+        sdLoggerSetEnabled(false);
+        sdLoggerSetEnabled(true);
+      }
     }
   } else {
     Serial.println(F("unknown key — 'help' for the list"));

@@ -168,12 +168,11 @@ Notes / anomalies:
        exactly as expected** since both are configured on for logging
        (section 1). Confirms both the NMEA and UBX binary paths are live,
        not a data-corruption signal.
-4. [ ] **1-hour full-stack soak**: NTRIP + logging + backlight running
-       together, no resets, SD file confirmed growing — **not yet done,
-       this is Phase 2 rover-firmware territory** (`pynt-rover` env),
-       not the Phase 1 bring-up sketch. Pick up when Phase 2 work starts.
+4. [x] **1-hour full-stack soak**: NTRIP + logging + backlight running
+       together, no resets, SD file confirmed growing — **PASS 2026-07-19**
+       (66 min captured, details below)
 
-**Section 3 status: gates 1-3 CLOSED. Gate 4 deferred to Phase 2.**
+**Section 3 status: all gates CLOSED (gate 4 soak PASS 2026-07-19).**
 
 ### Gate 4 runbook — 1-hour full-stack soak (`pynt-rover`)
 
@@ -185,43 +184,62 @@ remaining README bench items (`server.available()` semantics, bounded
 in code — watch for them below, nothing to change beforehand.
 
 **Setup (in order):**
-- [ ] u-center USB adapter physically unplugged from the Lite (wiring.md
+- [x] u-center USB adapter physically unplugged from the Lite (wiring.md
       data-contention rule); wires 1-4 connected per the tape labels,
       antenna sky view, iPhone hotspot up
-- [ ] Credentials: no `secrets.h` in the tree — either copy
-      `secrets.example.h` → `secrets.h` before flashing, or enter
-      `wifi1=`/`pass1=`/`user=`/`password=` (+ `caster`/`port`/`mount` if
-      not defaults) in the serial menu and `save` to SD `/config.txt`
-- [ ] Flash + monitor: `pio run -e pynt-rover -t upload`, then
-      `pio device monitor -b 115200` (capture the session to a file)
+- [x] Credentials: `secrets.h` created from the example (wifi1/pass1 +
+      caster user/password); macro names verified against settings.cpp
+- [x] Flash + monitor: flashed over COM5; session captured by a pyserial
+      logger with elapsed-time stamps + `status` injected every 10 min
 
 **Watch during the hour (`status` every ~10 min):**
-- [ ] `ntrip=` reaches connected and stays; `CORR` age on the POS page
-      stays low (inverse-video flash = >10 s stale)
-- [ ] `bytes=` / SYS-page `SIZE` grows monotonically; no `sd=FAIL`
-- [ ] `[main] worst loop` once-a-minute reports stay bounded (spikes
-      during `WiFi.begin()` windows are expected — the 4096 B SERCOM ring
-      is sized to ride them out; a *growing* trend is the failure signal)
-- [ ] SW Maps (or a laptop netcat) connects to `:10110` and streams NMEA;
-      `tcpClients=` matches; disconnect/reconnect works — this is the
-      `server.available()` semantics check
-- [ ] Touch: LOG / PAGE / PWR buttons hit where pressed (first hardware
-      test of the new calibration); PWR two-tap confirm works
-- [ ] `UPTM` on the SYS page never resets (any reset = fail, stop and
-      diagnose)
+- [x] `ntrip=` reached connected at 00:20 and never dropped (zero
+      `[ntrip]` error lines across the 66-min run)
+- [x] `bytes=` grew monotonically 0.26 → 11.37 MB; `sd=ok` throughout,
+      zero SD errors
+- [x] `[main] worst loop` bounded: steady-state 32-50 ms; isolated ~1.1 s
+      spikes (17:51, 23:51, 24:50 — SD/NINA ops, absorbed by design);
+      first-minute 10.9 s = the blocking `WiFi.begin()` window. ⚠ That
+      join measured **10.9 s, not the ~4 s the 4096 B SERCOM ring was
+      sized for** — harmless at boot (logging hadn't started), but a
+      mid-session WiFi rejoin would gap the RAWX stream. Carried forward.
+- [x] TCP client streamed NMEA (laptop test client). **Two findings**,
+      both recorded in QUESTIONS.md Q19: nina-fw accept is data-gated
+      (a listen-only client sits unaccepted until it sends ≥1 byte —
+      confirmed live), and the dedup in `tcp_nmea.cpp` compared clients
+      via operator-bool (fork has no operator==), so only the first
+      client could ever be accepted — fixed and flashed post-soak.
+- [ ] Touch: LOG / PAGE / PWR buttons — not exercised this run (new
+      calibration still unverified on hardware; check at next bench sit)
+- [x] No resets: **zero boot banners** in the log, per-minute reports
+      continuous, `bytes=` never restarted
 
 **Record at the end:**
-- [ ] Duration: `_____` min; resets: `_____` (must be 0)
-- [ ] Final `.ubx` size: `_____` KB (sanity ≈ 1.5-2.5 MB/h at 1 Hz RAWX)
-- [ ] RTK fix achieved: `___` (RTK FIX header seen); time-to-first-fix: `_____`
-- [ ] Worst loop over the hour: `_____` ms; `BUFH` high-water: `_____` B
+- [x] Duration: `66` min captured; resets: `0`
+- [x] Final `.ubx` size: `11,365,704` B (~10.3 MB/h — the runbook's
+      1.5-2.5 MB/h sanity guess was far low for 32-SV multi-band RAWX;
+      still only ~0.25 GB/day against a 32 GB card, no concern)
+- [x] RTK fix achieved: `yes` — carr=2 by the 02:01 status and held to
+      66:04 (TTFF < 2 min from cold boot including hotspot join)
+- [x] Worst loop over the hour: `10.9 s` (boot WiFi join); `1.1 s`
+      steady-state peak. `BUFH` not captured — `status` doesn't print
+      it (SYS TFT page only); read it on-screen next bench sit
 - [ ] Post-soak: eject SD, confirm the `.ubx` opens/parses on the laptop
 
 **Base-mode spot check (Phase 3 close-out, after the rover soak passes):**
-- [ ] `mode=base` via serial menu → SVIN progress in header/SVIN line,
-      survey-in completes (or fixed-LLH accepted), `b_` log prefix used,
-      `mode=rover` switches back live — UART2/XBee socket stays empty
-      throughout (config-only rule)
+- [x] **PASS 2026-07-19** — `mode=base` via serial menu applied live
+      (`[gnss] applying mode: base` within 1 s); survey-in ran a
+      textbook convergence, 9.16 m → 1.46 m mean accuracy, **valid at
+      exactly dur=300 s** (the svindur/svinacc defaults); `mode=rover`
+      switched back live and re-applied cleanly. UART2/XBee socket
+      stayed empty throughout (config-only rule).
+      One gap found: the **`b_` log prefix did not appear** — the
+      prefix is chosen only at file open and nothing rotated the log on
+      a live mode switch, so the boot-time `r_` file kept collecting.
+      Fixed same day (serial_menu.cpp cycles the logger on a `mode=`
+      change) and flashed; rotation itself not yet re-verified on
+      hardware — one-minute check next bench sit: `mode=base`, confirm
+      `[sd] logging to /YYYYMMDD/b_*.ubx`, `mode=rover`.
 
 Notes / anomalies:
 
@@ -230,10 +248,46 @@ Notes / anomalies:
   Retroactively confirmed both P3/P4 (power) and the data path are
   healthy, so no re-work needed — just noting the actual order for
   anyone reading this log later.
+- **First soak attempt aborted at ~2 min (2026-07-19):** NTRIP TCP
+  connect failed repeatedly — root cause was not the firmware but DNS:
+  the inherited caster hostname `acorn-gnss.net` no longer has an A
+  record at the apex (provider change since the Metro era); only
+  `www.acorn-gnss.net` resolves (verified listening on :2101 from the
+  bench PC before switching). Default fixed in `settings.h`, README +
+  QUESTIONS.md Q6 note updated, reflashed, soak restarted clean.
+- **Host-side USB stall, minutes ~30 → 55:14:** no serial delivered to
+  the logging PC for ~25 min, then everything arrived in one burst (all
+  lines stamped 55:14) and the three queued `status` commands were
+  answered on arrival. The device itself never blinked: per-minute
+  worst-loop reports all present with normal values, SD bytes grew
+  continuously, NTRIP never reconnected, fix unchanged. Attributed to
+  Windows USB suspend/driver buffering, not firmware. Post-recovery
+  statuses (62:01, 66:04) arrived on schedule.
+- **Soak binary note:** the hour ran the pre-dedup-fix `tcp_nmea.cpp`
+  (the operator== bug was found mid-soak); the fixed binary was flashed
+  immediately after the soak ended, before the base-mode spot check.
 
 
 
 ---
+
+## Open items carried forward (2026-07-19, post-soak)
+
+- **iOS phone app** (QUESTIONS.md Q19): SW Maps is BLE-only on iOS —
+  test QField (or Survey123) as the TCP client, watching for the
+  data-gated accept (a listen-only app may need the Phase 5 BLE path).
+- **`WiFi.begin()` blocks ~10.9 s**, not the ~4 s the 4096 B SERCOM RX
+  ring was sized for (measured twice at boot). Harmless at boot; a
+  mid-session rejoin would gap RAWX. Options: raise SERIAL_BUFFER_SIZE
+  (RAM is plentiful) or accept the gap and note it in the field guide.
+- **Touch buttons + BUFH high-water unverified on hardware** — the soak
+  never exercised the screen (headless bench). Next sit: press LOG /
+  PAGE / PWR (two-tap), read BUFH off the SYS page.
+- **`b_` prefix rotation fix flashed but not re-verified** (see base
+  spot check above).
+- **Post-soak `.ubx` sanity**: eject the card, open
+  `/20260720/r_031723.ubx` (10.8 MB soak log) on the laptop — RTKLIB or
+  u-center should parse RAWX/SFRBX cleanly.
 
 ## Open items carried forward
 
