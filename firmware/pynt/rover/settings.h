@@ -17,7 +17,9 @@ struct Settings {
   char wifiPass[kMaxWifiNetworks][65] = {{0}};
 
   // --- NTRIP caster --- defaults inherited from Metro via Feather.
-  char casterHost[65] = "acorn-gnss.net";
+  // 2026-07-19: the bare apex lost its DNS A record (provider change) —
+  // only www. resolves now; verified listening on :2101 before switching.
+  char casterHost[65] = "www.acorn-gnss.net";
   uint16_t casterPort = 2101;
   char casterMount[49] = "VRS_SouthCentral_RTCM3";  // alt: MS_RTCM3
   char casterUser[49] = {0};  // never defaulted — see secrets.example.h

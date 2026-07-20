@@ -43,9 +43,14 @@ void ensureServer() {
 void acceptClients() {
   WiFiClient incoming = server->available();
   if (!incoming) return;
-  // Already tracked? (available() can return an existing client with data)
+  // Already tracked? (available() can return an existing client with data.)
+  // Compare remote IP:port — this fork's WiFiClient has no operator==, so
+  // `clients[i] == incoming` would silently compare operator-bool results
+  // and block every accept after the first.
   for (uint8_t i = 0; i < kMaxClients; i++)
-    if (clients[i] && clients[i] == incoming) return;
+    if (clients[i] && clients[i].remoteIP() == incoming.remoteIP() &&
+        clients[i].remotePort() == incoming.remotePort())
+      return;
   for (uint8_t i = 0; i < kMaxClients; i++) {
     if (!clients[i] || !clients[i].connected()) {
       clients[i] = incoming;

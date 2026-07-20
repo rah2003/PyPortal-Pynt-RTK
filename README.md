@@ -73,7 +73,9 @@ for NTRIP, TCP NMEA server, SD logger on shared SPI.
 - **Repo:** public GitHub, `PyPortal-Pynt-RTK`. Secrets via gitignored
   `secrets.h` (`secrets.example.h` committed), same as Feather.
 - **Inherited defaults (from Metro via Feather):** caster
-  `acorn-gnss.net:2101`, mounts `VRS_SouthCentral_RTCM3`/`MS_RTCM3`, WiFi
+  `www.acorn-gnss.net:2101` (2026-07-19: the bare apex hostname the Metro
+  build used lost its DNS A record — `www.` is the live caster now),
+  mounts `VRS_SouthCentral_RTCM3`/`MS_RTCM3`, WiFi
   via iPhone personal hotspot, elevation mask 12°, constellations
   GPS+GLO+GAL+BDS (SBAS/QZSS off), F9P UART1 @ 115200.
 
@@ -136,6 +138,22 @@ platformio.ini              envs: pynt-bringup, pynt-rover
       real hardware.**
 - [ ] **Phase 4 — Polish**: on-screen config keyboard, logging analytics,
       light-sensor auto-dim, speaker fix/loss chime.
+- [ ] **Phase 5 — WiFi+BLE coexistence (nina-fw 3.x port)**: reflash the
+      AirLift with Arduino's nina-fw ≥3.0.1 (HCI-over-SPI, the coexistence
+      work Adafruit's fork hasn't adopted — QUESTIONS.md Q18) and swap the
+      host stack to Arduino WiFiNINA 2.0.0 + ArduinoBLE 2.0.0, then serve
+      SW Maps over BLE NUS ("Generic NMEA (Bluetooth LE)") alongside
+      WiFi/NTRIP. Feasibility verified 2026-07-19: the Pynt wires
+      ESP32_GPIO0/RESETN, so passthrough flashing works and the swap is
+      reversible (reflash Adafruit nina-fw to back out). Scope: (1)
+      passthrough flasher + nina-fw 3.x build/flash, (2) host WiFi lib
+      swap incl. PyPortal pin defines (Arduino's lib has no setPins),
+      (3) ArduinoBLE SPI-transport patch for the pyportal_m4 variant +
+      NUS peripheral (Metro's SW Maps-over-NUS pattern). Payoff beyond
+      SW Maps on iOS: with corrections on the future UART2 radio, BLE
+      phone link means **no hotspot in the field at all**. Est. 3-5 bench
+      days; own bring-up checklist when started. Until then the v1 phone
+      link is a TCP-client app (QField / Survey123 — QUESTIONS.md Q19).
 
 ## Reference builds
 

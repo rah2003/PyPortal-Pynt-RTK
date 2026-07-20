@@ -7,8 +7,11 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
 
 1. ✅ **Toolchain** — PlatformIO Arduino C++ (port Metro/Feather modules).
 2. ✅ **v1 scope** — Rover + RAWX logging + Base mode, all in v1.
-3. ✅ **Phone link** — SW Maps over WiFi TCP; BLE permanently out (AirLift
-   can't do WiFi+BLE together).
+3. ⚠️ **Phone link** — SW Maps over WiFi TCP; BLE permanently out (AirLift
+   can't do WiFi+BLE together). **Re-opened 2026-07-19 (see Q19): iOS
+   SW Maps turns out to be Bluetooth-only — the TCP half of this answer
+   doesn't exist on iPhone.** The firmware's TCP NMEA server stands; the
+   phone app has to change.
 4. ✅ **Repo** — public GitHub, `PyPortal-Pynt-RTK`.
 5. ✅ **Touch UI depth** — status pages + touch controls; config stays on
    the USB serial menu (no on-screen keyboard in v1).
@@ -84,3 +87,28 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
     radio, phone by BLE, no hotspot). Note: the Pynt is not pin-blocked
     for a hybrid (ESP32 HCI UART is wired to SERCOM4 pins 0/1, separate
     from SPI) — the blocker is firmware, not wiring.
+    **Update 2026-07-19 — scoped as Phase 5 (README)** rather than
+    waiting on Adafruit: flash Arduino's nina-fw 3.x ourselves. The Pynt
+    wires ESP32_GPIO0 (pin 6) + ESP32_RESETN (pin 7), so the documented
+    AirLift passthrough-flash path works and the move is reversible.
+    Three-part scope: nina-fw 3.x build/flash, host swap to Arduino
+    WiFiNINA 2.0.0 (needs PyPortal pin defines — no setPins), ArduinoBLE
+    2.0.0 SPI-transport patch + NUS peripheral for SW Maps. Became more
+    attractive when Q19 found iOS SW Maps is BLE-only.
+19. ❓ **iOS survey app for the TCP NMEA link** (found live 2026-07-19
+    during the rover soak). Two facts from the bench + research:
+    - **iOS SW Maps has no TCP/IP instrument support — Bluetooth LE
+      only** (per SparkFun's RTK iOS guide). The kickoff Q3 answer
+      assumed it; nobody had checked the iOS app. Apps that DO act as
+      TCP clients to an NMEA server on iOS: **QField** (free),
+      ArcGIS Survey123 / QuickCapture (Esri licensing).
+    - **The AirLift's TCP accept is data-gated**: nina-fw does not
+      surface a connected socket to `server.available()` until the
+      client sends ≥1 byte (confirmed live: a silent client sat
+      unaccepted for minutes; sending one test message accepted it
+      instantly). A pure listen-only client may never be accepted, so
+      whichever app is chosen must be tested for send-on-connect
+      behavior. If the chosen app is listen-only too, fallback options:
+      NMEA over **UDP broadcast** (no accept step at all; QField
+      supports UDP), or documenting a "send anything once" step.
+    Closes when an app is picked and verified streaming on the iPhone.
