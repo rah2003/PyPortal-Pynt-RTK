@@ -116,3 +116,12 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
       NMEA over **UDP broadcast** (no accept step at all; QField
       supports UDP), or documenting a "send anything once" step.
     Closes when an app is picked and verified streaming on the iPhone.
+    **Bench corollary (2026-07-19):** u-center 25.06 can also join as a
+    TCP network client (`tcp://<pynt-ip>:10110`) — but it connects
+    silently, so the data-gated accept leaves it uncounted until it
+    transmits once: poll any message (Messages View → UBX-MON-VER →
+    Poll) and the stream starts. Note it is a **one-way NMEA monitor**
+    there — the firmware discards inbound TCP bytes by design (network
+    clients must not reconfigure the receiver), and the tee carries no
+    UBX. If listen-only bench clients become routine, a UDP broadcast
+    tee (no accept step) is the candidate Phase 4 polish item.
