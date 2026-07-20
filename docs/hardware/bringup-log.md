@@ -281,6 +281,15 @@ Notes / anomalies:
 
 ---
 
+## Field notes (operational, learned on the bench)
+
+- **SD card must be inserted before power-on.** `sd.begin()` runs once
+  at boot with no retry — a hot-inserted card is never initialized
+  (no logging, no /config.txt, SYS page shows SD FAIL) until a power
+  cycle. Corollary of the same design: safe-eject is PWR two-tap (or
+  `log off`) *before* pulling the card. Hot-insert retry is a Phase 4
+  candidate if this ever bites in the field.
+
 ## Open items carried forward (2026-07-19, post-soak)
 
 - ~~**iOS phone app** (QUESTIONS.md Q19)~~ **CLOSED 2026-07-19: QField
