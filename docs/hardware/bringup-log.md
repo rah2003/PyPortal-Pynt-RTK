@@ -212,8 +212,9 @@ in code — watch for them below, nothing to change beforehand.
       confirmed live), and the dedup in `tcp_nmea.cpp` compared clients
       via operator-bool (fork has no operator==), so only the first
       client could ever be accepted — fixed and flashed post-soak.
-- [ ] Touch: LOG / PAGE / PWR buttons — not exercised this run (new
-      calibration still unverified on hardware; check at next bench sit)
+- [x] Touch: LOG / PAGE / PWR buttons all functioned correctly
+      (2026-07-19, owner-verified) — **bench 4-corner calibration +
+      inverted-axis mapping confirmed good on hardware**
 - [x] No resets: **zero boot banners** in the log, per-minute reports
       continuous, `bytes=` never restarted
 
@@ -282,9 +283,21 @@ Notes / anomalies:
 - ~~**`WiFi.begin()` blocks ~10.9 s**~~ **CLOSED 2026-07-19:
   SERIAL_BUFFER_SIZE raised 4096 → 32768 (~13 s of F9P output) — a
   mid-session rejoin no longer gaps the RAWX stream.
-- **Touch buttons + BUFH high-water unverified on hardware** — the soak
-  never exercised the screen (headless bench). Next sit: press LOG /
-  PAGE / PWR (two-tap), read BUFH off the SYS page.
+- ~~**Touch buttons unverified**~~ **CLOSED 2026-07-19: all three
+  buttons function correctly** (owner-verified). BUFH high-water still
+  unread — glance at the SYS page during the next logging session.
+- **SD card read back corrupted on the PC (2026-07-19)** after the
+  first full bench day; reformatted (keep FAT32) and lost the soak
+  `.ubx`. Most likely cause: card pulled while the device was powered
+  with a log file open — logging auto-starts whenever GNSS time is
+  valid, and the logger syncs on an 8 s cadence, so a pull can land
+  mid-write and damage the FAT. **Safe-eject procedure: PWR two-tap →
+  wait for "SAFE TO POWER OFF" → cut power → then pull the card.**
+  (LOG-button off also closes the file, but shutdown is the guarantee.)
+  Watch for recurrence with the procedure followed — if it corrupts
+  again on a clean shutdown, suspect the card itself (PNY U1) and
+  retest with a fresh card before blaming the SPI path. `.ubx`
+  laptop-parse item stays open pending the next capture.
 - ~~**`b_` prefix rotation fix flashed but not re-verified**~~ **CLOSED
   2026-07-19**: re-check session confirmed `mode=base` closes the `r_`
   file and opens `b_045917.ubx`, and `mode=rover` rotates back. Same
