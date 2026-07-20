@@ -290,8 +290,16 @@ Notes / anomalies:
   SERIAL_BUFFER_SIZE raised 4096 → 32768 (~13 s of F9P output) — a
   mid-session rejoin no longer gaps the RAWX stream.
 - ~~**Touch buttons unverified**~~ **CLOSED 2026-07-19: all three
-  buttons function correctly** (owner-verified). BUFH high-water still
-  unread — glance at the SYS page during the next logging session.
+  buttons function correctly** (owner-verified). **BUFH read
+  2026-07-19: typically 9,000-14,000 B** against the 32,768 B SparkFun
+  file buffer — ~43 % peak occupancy, comfortably inside the
+  platform.md contention budget. Closed.
+- **RINEX conversion verified (convbin, demo5 v2.5.1)**: the 823 KB
+  capture converted to RINEX 3.04 with **304 obs epochs in a 304 s
+  span — zero dropped epochs at 1 Hz** — dual-frequency on all four
+  constellations (G L1C/L2X, R L1/L2, E E1/E5b, C B1I/B2I) + 38 nav
+  messages, with NTRIP + TCP server running concurrently during the
+  capture. The logging pipeline is post-processing-grade.
 - **SD card read back corrupted on the PC (2026-07-19)** after the
   first full bench day; reformatted (keep FAT32) and lost the soak
   `.ubx`. Most likely cause: card pulled while the device was powered
