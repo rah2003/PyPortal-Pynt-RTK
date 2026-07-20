@@ -16,9 +16,12 @@ Date started: ____________  Date completed: ____________
 - [x] HC977 antenna mounted (hand-tight + 1/8 turn), sky view for fix tests
 - [x] u-center connected via XBee-to-USB adapter, **pigtail unplugged**
 - [x] Connection baud used: `115200` (Feather-era config took, as expected)
-- [ ] UBX-MON-VER firmware not recorded this pass (want HPG 1.32+) — grab
-      this next time u-center is open, low priority since everything else
-      checked out
+- [x] UBX-MON-VER recorded 2026-07-19 — **HPG 1.51, protver 27.50** —
+      without u-center: the rover firmware now queries MON-VER over UART1
+      at boot and prints it (`[gnss] ZED-F9P fw HPG 1.51 protver 27.50`).
+      u-center can't connect while the Pynt drives UART1 (its USB adapter
+      bridges the same port — README constraint 5), so this is the
+      go-forward way to read the version.
 - [x] **UART1 keys verified/set via VALGET→VALSET→VALGET (Flash-confirmed):**
       baud 115200 ✅; UBX in=1 ✅; NMEA in was **1→ fixed to 0** ✅;
       RTCM3X in=1 ✅; UBX out=1 ✅; NMEA out=1 ✅; RTCM3X out was
@@ -273,18 +276,21 @@ Notes / anomalies:
 
 ## Open items carried forward (2026-07-19, post-soak)
 
-- **iOS phone app** (QUESTIONS.md Q19): SW Maps is BLE-only on iOS —
-  test QField (or Survey123) as the TCP client, watching for the
-  data-gated accept (a listen-only app may need the Phase 5 BLE path).
-- **`WiFi.begin()` blocks ~10.9 s**, not the ~4 s the 4096 B SERCOM RX
-  ring was sized for (measured twice at boot). Harmless at boot; a
-  mid-session rejoin would gap RAWX. Options: raise SERIAL_BUFFER_SIZE
-  (RAM is plentiful) or accept the gap and note it in the field guide.
+- ~~**iOS phone app** (QUESTIONS.md Q19)~~ **CLOSED 2026-07-19: QField
+  connected and streamed on the first try** — it sends on connect, so
+  the data-gated accept is satisfied. QField is the v1 phone app.
+- ~~**`WiFi.begin()` blocks ~10.9 s**~~ **CLOSED 2026-07-19:
+  SERIAL_BUFFER_SIZE raised 4096 → 32768 (~13 s of F9P output) — a
+  mid-session rejoin no longer gaps the RAWX stream.
 - **Touch buttons + BUFH high-water unverified on hardware** — the soak
   never exercised the screen (headless bench). Next sit: press LOG /
   PAGE / PWR (two-tap), read BUFH off the SYS page.
-- **`b_` prefix rotation fix flashed but not re-verified** (see base
-  spot check above).
+- ~~**`b_` prefix rotation fix flashed but not re-verified**~~ **CLOSED
+  2026-07-19**: re-check session confirmed `mode=base` closes the `r_`
+  file and opens `b_045917.ubx`, and `mode=rover` rotates back. Same
+  session verified the MON-VER boot report (HPG 1.51 / 27.50) and the
+  new `ip=` status + SYS-page IP:port display, and exercised the NTRIP
+  retry path live (5 rejects at boot → connected → stable).
 - **Post-soak `.ubx` sanity**: eject the card, open
   `/20260720/r_031723.ubx` (10.8 MB soak log) on the laptop — RTKLIB or
   u-center should parse RAWX/SFRBX cleanly.

@@ -17,7 +17,7 @@ for a future plug-in radio**.
 | GNSS | ArduSimple simpleRTK2B Lite (u-blox ZED-F9P), UART1 via Pixhawk JST-GH — **moved over from the RTK-Feather rig** |
 | Antenna | Calian/Tallysman HC977 helical (33-HC977-35, 35 dB LNA), triple-band + L-band, 3.3 V bias ~21 mA, no ground plane needed |
 | Storage | PNY Elite 32 GB microSDHC UHS-I U1 (in the Pynt's slot) |
-| Phone | iPhone + SW Maps over **WiFi TCP** (NMEA server on the hotspot network) |
+| Phone | iPhone + **QField** over **WiFi TCP** (NMEA server on the hotspot network; verified 2026-07-19 — iOS SW Maps is BLE-only, deferred to Phase 5) |
 
 ## Hard constraints (inherited + new)
 

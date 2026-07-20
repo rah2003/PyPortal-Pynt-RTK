@@ -149,6 +149,22 @@ bool gnssInit() {
   }
   g_gnss.f9pDetected = true;
   Serial.println(F("[gnss] ZED-F9P connected (UART1 @115200 on SERCOM0/D3-D4)"));
+  // MON-VER over UART1 — u-center can't coexist with this link (its USB
+  // adapter bridges the same UART1), so the firmware reports the version.
+  if (gnss.getModuleInfo()) {
+    Serial.print(F("[gnss] "));
+    Serial.print(gnss.getModuleName());
+    Serial.print(F(" fw "));
+    Serial.print(gnss.getFirmwareType());
+    Serial.print(' ');
+    Serial.print(gnss.getFirmwareVersionHigh());
+    Serial.print('.');
+    Serial.print(gnss.getFirmwareVersionLow());
+    Serial.print(F(" protver "));
+    Serial.print(gnss.getProtocolVersionHigh());
+    Serial.print('.');
+    Serial.println(gnss.getProtocolVersionLow());
+  }
   if (!gnssApplyProjectConfig(gnss))
     Serial.println(F("[gnss] WARNING: some VALSET writes not ACKed"));
   setupLogging();

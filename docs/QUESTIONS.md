@@ -95,8 +95,12 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
     WiFiNINA 2.0.0 (needs PyPortal pin defines — no setPins), ArduinoBLE
     2.0.0 SPI-transport patch + NUS peripheral for SW Maps. Became more
     attractive when Q19 found iOS SW Maps is BLE-only.
-19. ❓ **iOS survey app for the TCP NMEA link** (found live 2026-07-19
-    during the rover soak). Two facts from the bench + research:
+19. ✅ **iOS survey app for the TCP NMEA link** — **Answered 2026-07-19:
+    QField connected to the Pynt's :10110 server and streamed NMEA on the
+    first try** (it evidently transmits on connect, satisfying the
+    data-gated accept below), so QField is the v1 phone app. SW Maps
+    remains the Phase 5 payoff (BLE NUS). Original findings kept for the
+    record:
     - **iOS SW Maps has no TCP/IP instrument support — Bluetooth LE
       only** (per SparkFun's RTK iOS guide). The kickoff Q3 answer
       assumed it; nobody had checked the iOS app. Apps that DO act as

@@ -205,6 +205,13 @@ void ntripInit() {
 void ntripPoll() {
   g_link.wifiUp = (WiFi.status() == WL_CONNECTED);
   g_link.wifiRssi = g_link.wifiUp ? (int8_t)WiFi.RSSI() : 0;
+  if (g_link.wifiUp) {
+    IPAddress ip = WiFi.localIP();
+    snprintf(g_link.wifiIp, sizeof(g_link.wifiIp), "%u.%u.%u.%u", ip[0],
+             ip[1], ip[2], ip[3]);
+  } else {
+    g_link.wifiIp[0] = '\0';
+  }
 
   switch (state) {
     case NtripState::WifiConnecting:

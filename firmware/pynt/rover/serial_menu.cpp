@@ -61,6 +61,12 @@ void printStatus() {
   Serial.print(ntripStateName());
   Serial.print(F(" wifi="));
   Serial.print(g_link.wifiUp ? "up" : "down");
+  if (g_link.wifiUp) {
+    Serial.print(F(" ip="));
+    Serial.print(g_link.wifiIp);
+    Serial.print(F(":"));
+    Serial.print(g_settings.tcpPort);
+  }
   Serial.print(F(" tcpClients="));
   Serial.println(g_link.tcpClients);
   Serial.print(F("sd="));

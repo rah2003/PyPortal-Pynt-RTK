@@ -190,7 +190,8 @@ void drawPageSys() {
   line(y, "FREE", v); y += 22;
   snprintf(v, sizeof(v), "%lu B", (unsigned long)g_log.bufHighWater);
   line(y, "BUFH", v); y += 22;
-  snprintf(v, sizeof(v), "%u", g_link.tcpClients);
+  line(y, "IP  ", g_link.wifiUp ? g_link.wifiIp : "-"); y += 22;
+  snprintf(v, sizeof(v), "%u on :%u", g_link.tcpClients, g_settings.tcpPort);
   line(y, "TCP ", v); y += 22;
   snprintf(v, sizeof(v), "%lu KB", (unsigned long)(g_link.rtcmBytes / 1024));
   line(y, "RTCM", v); y += 22;

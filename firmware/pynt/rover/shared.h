@@ -29,7 +29,9 @@ struct LinkStatus {
   uint32_t lastRtcmMs = 0;
   uint32_t rtcmBytes = 0;
   int8_t wifiRssi = 0;   // dBm; 0 = unknown
-  uint8_t tcpClients = 0;  // SW Maps connections (tcp_nmea.cpp)
+  uint8_t tcpClients = 0;  // NMEA TCP connections (tcp_nmea.cpp)
+  char wifiIp[16] = {0};   // dotted-quad once joined; the phone app needs
+                           // this + tcpport to connect, so the UI shows it
 };
 
 struct LogStatus {
