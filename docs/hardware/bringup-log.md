@@ -228,7 +228,13 @@ in code — watch for them below, nothing to change beforehand.
 - [x] Worst loop over the hour: `10.9 s` (boot WiFi join); `1.1 s`
       steady-state peak. `BUFH` not captured — `status` doesn't print
       it (SYS TFT page only); read it on-screen next bench sit
-- [ ] Post-soak: eject SD, confirm the `.ubx` opens/parses on the laptop
+- [x] Post-soak: `.ubx` parse **verified 2026-07-19** — the original
+      soak file was lost to the SD corruption (unsafe eject), so a fresh
+      4-min capture (`r_054749.ubx`, 823 KB, closed cleanly via
+      `log off`) was played back in u-center: RAWX 1688-1720 B at 1 Hz
+      (~30 SV multi-band) + SFRBX bursts, all well-formed. The clean
+      close → clean read also supports the unsafe-eject theory for the
+      earlier corruption.
 
 **Base-mode spot check (Phase 3 close-out, after the rover soak passes):**
 - [x] **PASS 2026-07-19** — `mode=base` via serial menu applied live
@@ -296,8 +302,9 @@ Notes / anomalies:
   (LOG-button off also closes the file, but shutdown is the guarantee.)
   Watch for recurrence with the procedure followed — if it corrupts
   again on a clean shutdown, suspect the card itself (PNY U1) and
-  retest with a fresh card before blaming the SPI path. `.ubx`
-  laptop-parse item stays open pending the next capture.
+  retest with a fresh card before blaming the SPI path. **Follow-up
+  same day: post-reformat 4-min capture closed with `log off` read back
+  perfectly in u-center — consistent with unsafe eject, not a bad card.**
 - ~~**`b_` prefix rotation fix flashed but not re-verified**~~ **CLOSED
   2026-07-19**: re-check session confirmed `mode=base` closes the `r_`
   file and opens `b_045917.ubx`, and `mode=rover` rotates back. Same
