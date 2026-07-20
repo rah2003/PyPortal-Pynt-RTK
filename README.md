@@ -103,14 +103,14 @@ platformio.ini              envs: pynt-bringup, pynt-rover
       P1–P4), u-center re-verification checklist, bring-up checklists,
       platform/SPI-contention analysis — **verify wiring against these
       documents and current vendor docs before powering anything**.
-- [~] **Phase 1 — Bring-up sketches**: written and **compiling clean**
-      (PlatformIO 6.1.19, 2026-07-11: RAM 2.3 % / flash 4.6 %) — serial
-      test menu covering TFT + portrait rotations, touch raw dump, AirLift
-      version/scan/join + TCP echo (the SW Maps path), SD 4 MB write with
-      latency histogram, D3/D4 UART loopback + TX-socket identify (the
-      label-swap tests), live NMEA echo, free-RAM report. **Not yet run on
-      real hardware** — that's the bench pass in
-      `docs/hardware/checklists.md`.
+- [x] **Phase 1 — Bring-up sketches**: serial test menu covering TFT +
+      portrait rotations, touch raw dump, AirLift version/scan/join + TCP
+      echo (the SW Maps path), SD write latency, D3/D4 UART loopback +
+      TX-socket identify (the label-swap tests), live NMEA echo, free-RAM
+      report. **Bench pass complete** (`docs/hardware/bringup-log.md`,
+      2026-07-17): silkscreen swap confirmed real (sockets tape-labeled),
+      touch pin off-by-one found and fixed (18/19/20/21), rotation 2
+      chosen, corner calibration captured, WiFi/TCP/SD all healthy.
 - [~] **Phase 2 — Rover firmware**: written and **compiling clean**
       (2026-07-11: RAM 9.7 % / flash 10.3 %, `pynt-rover` env). NTRIP
       state machine (ported Metro→Feather→here, polled instead of tasked)
@@ -120,10 +120,12 @@ platformio.ini              envs: pynt-bringup, pynt-rover
       sync); portrait touch UI (fix-state header, POS/SYS pages, LOG /
       PAGE / PWR buttons with two-tap shutdown confirm); SW Maps TCP NMEA
       server on :10110; SD `/config.txt` settings + serial menu.
-      **Not yet run on real hardware.** Known bench items are flagged in
-      code comments: touch calibration constants (from the 'p' test),
-      WiFiNINA `server.available()` client-accept semantics, and the
+      **Not yet run on real hardware.** Bench touch calibration + rotation
+      2 applied to `ui.cpp` (2026-07-19); remaining items to observe live:
+      WiFiNINA `server.available()` client-accept semantics and the
       bounded WiFi.begin() stall (SERIAL_BUFFER_SIZE=4096 rides it out).
+      Entry gate: the 1-hour full-stack soak — runbook in
+      `docs/hardware/bringup-log.md` §3 gate 4.
 - [~] **Phase 3 — Base mode**: written and **compiling clean** (2026-07-11:
       RAM 9.7 % / flash 11.1 %). Survey-in (dur/acc from settings) or
       fixed-LLH TMODE; RTCM3 out **configured on UART2 only** (MSM4 set

@@ -7,8 +7,8 @@
 // arm's length, and the correction-age line goes inverse-video when
 // corrections are >10 s stale (Feather pattern).
 //
-// Touch calibration: provisional constants below; replace with the
-// 4-corner raw values from the bring-up 'p' test (checklists.md item).
+// Touch calibration: 4-corner raw values from the bring-up 'p' test
+// (bringup-log.md section 2, captured 2026-07-17 at rotation 2).
 #include "ui.h"
 
 #include <Adafruit_GFX.h>
@@ -23,17 +23,22 @@
 
 namespace {
 
-// Which of the two portrait rotations — bench decision at bring-up
-// (checklists.md TFT item); 0 and 2 are the candidates.
-constexpr uint8_t kRotation = 0;
+// Bench decision (bringup-log.md TFT item): rotation 2 — "UP^" toward
+// the JST connectors, matching the planned cable exit.
+constexpr uint8_t kRotation = 2;
 
 Adafruit_ILI9341 tft(tft8bitbus, TFT_D0, TFT_WR, TFT_DC, TFT_CS, TFT_RST,
                      TFT_RD);
 TouchScreen ts(TOUCH_XL, TOUCH_YU, TOUCH_XR, TOUCH_YD, 300);
 
-// Provisional raw-ADC calibration — REPLACE from the 'p' bring-up test.
-constexpr int16_t kRawMin = 250, kRawMax = 3800;
-constexpr int16_t kPressMin = 100, kPressMax = 4000;
+// Raw-ADC calibration from the 'p' bring-up test, captured at rotation 2
+// (bringup-log.md: TL 825/835, TR 157/849, BL 837/130, BR 202/126).
+// Both axes read inverted vs. screen convention — raw X is high on the
+// LEFT, raw Y is high at the TOP — so the input ranges below are
+// deliberately reversed and map() performs the inversion.
+constexpr int16_t kRawXLeft = 831, kRawXRight = 180;   // corner averages
+constexpr int16_t kRawYTop = 842, kRawYBottom = 128;
+constexpr int16_t kPressMin = 100, kPressMax = 4000;   // bench z: 209-1998
 
 constexpr int16_t W = 240, H = 320;
 constexpr int16_t kHeaderH = 36;
@@ -197,9 +202,10 @@ void drawPageSys() {
 bool readTouch(int16_t& sx, int16_t& sy) {
   TSPoint p = ts.getPoint();
   if (p.z < kPressMin || p.z > kPressMax) return false;
-  int16_t x = map(p.x, kRawMin, kRawMax, 0, W - 1);
-  int16_t y = map(p.y, kRawMin, kRawMax, 0, H - 1);
-  if (kRotation == 2) { x = W - 1 - x; y = H - 1 - y; }
+  // Calibration was captured at rotation 2 (the build rotation), so this
+  // maps straight into screen coordinates — no extra flip needed.
+  int16_t x = map(p.x, kRawXLeft, kRawXRight, 0, W - 1);
+  int16_t y = map(p.y, kRawYTop, kRawYBottom, 0, H - 1);
   sx = constrain(x, 0, W - 1);
   sy = constrain(y, 0, H - 1);
   return true;

@@ -174,6 +174,54 @@ Notes / anomalies:
 
 **Section 3 status: gates 1-3 CLOSED. Gate 4 deferred to Phase 2.**
 
+### Gate 4 runbook — 1-hour full-stack soak (`pynt-rover`)
+
+**Software pre-flight (done 2026-07-19, no board attached):** bench touch
+calibration + rotation 2 applied to `ui.cpp` from the section-2 'p'
+values; both envs rebuild clean (rover RAM 9.7 % / flash 11.1 %). The two
+remaining README bench items (`server.available()` semantics, bounded
+`WiFi.begin()` stall) are runtime observations with mitigations already
+in code — watch for them below, nothing to change beforehand.
+
+**Setup (in order):**
+- [ ] u-center USB adapter physically unplugged from the Lite (wiring.md
+      data-contention rule); wires 1-4 connected per the tape labels,
+      antenna sky view, iPhone hotspot up
+- [ ] Credentials: no `secrets.h` in the tree — either copy
+      `secrets.example.h` → `secrets.h` before flashing, or enter
+      `wifi1=`/`pass1=`/`user=`/`password=` (+ `caster`/`port`/`mount` if
+      not defaults) in the serial menu and `save` to SD `/config.txt`
+- [ ] Flash + monitor: `pio run -e pynt-rover -t upload`, then
+      `pio device monitor -b 115200` (capture the session to a file)
+
+**Watch during the hour (`status` every ~10 min):**
+- [ ] `ntrip=` reaches connected and stays; `CORR` age on the POS page
+      stays low (inverse-video flash = >10 s stale)
+- [ ] `bytes=` / SYS-page `SIZE` grows monotonically; no `sd=FAIL`
+- [ ] `[main] worst loop` once-a-minute reports stay bounded (spikes
+      during `WiFi.begin()` windows are expected — the 4096 B SERCOM ring
+      is sized to ride them out; a *growing* trend is the failure signal)
+- [ ] SW Maps (or a laptop netcat) connects to `:10110` and streams NMEA;
+      `tcpClients=` matches; disconnect/reconnect works — this is the
+      `server.available()` semantics check
+- [ ] Touch: LOG / PAGE / PWR buttons hit where pressed (first hardware
+      test of the new calibration); PWR two-tap confirm works
+- [ ] `UPTM` on the SYS page never resets (any reset = fail, stop and
+      diagnose)
+
+**Record at the end:**
+- [ ] Duration: `_____` min; resets: `_____` (must be 0)
+- [ ] Final `.ubx` size: `_____` KB (sanity ≈ 1.5-2.5 MB/h at 1 Hz RAWX)
+- [ ] RTK fix achieved: `___` (RTK FIX header seen); time-to-first-fix: `_____`
+- [ ] Worst loop over the hour: `_____` ms; `BUFH` high-water: `_____` B
+- [ ] Post-soak: eject SD, confirm the `.ubx` opens/parses on the laptop
+
+**Base-mode spot check (Phase 3 close-out, after the rover soak passes):**
+- [ ] `mode=base` via serial menu → SVIN progress in header/SVIN line,
+      survey-in completes (or fixed-LLH accepted), `b_` log prefix used,
+      `mode=rover` switches back live — UART2/XBee socket stays empty
+      throughout (config-only rule)
+
 Notes / anomalies:
 
 - Wiring was done as a single four-wire pass rather than the
