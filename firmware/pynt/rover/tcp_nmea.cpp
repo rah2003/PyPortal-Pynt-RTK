@@ -11,6 +11,7 @@
 
 #include <WiFiNINA.h>
 
+#include "ble_nus.h"  // FEATURE_BLE tee — calls compiled out otherwise
 #include "features.h"
 #include "gnss.h"
 #include "settings.h"
@@ -69,6 +70,18 @@ void tcpNmeaPoll() {
   ensureServer();
   if (!serverUp) {
     g_link.tcpClients = 0;
+#if FEATURE_BLE
+    // WiFi down must not stop the phone link: BLE rides this same drain
+    // (the future radio scenario — corrections by UART2 radio, phone by
+    // BLE — runs with no WiFi at all), and the queue still can't sit
+    // stale.
+    {
+      char line[128];
+      size_t n;
+      while ((n = gnssNextNmeaLine(line, sizeof(line))) > 0)
+        bleNusOnNmeaLine(line, n);
+    }
+#endif
     return;
   }
 
@@ -90,6 +103,9 @@ void tcpNmeaPoll() {
   char line[128];
   size_t n;
   while ((n = gnssNextNmeaLine(line, sizeof(line))) > 0) {
+#if FEATURE_BLE
+    bleNusOnNmeaLine(line, n);  // tee: BLE runs alongside TCP, not instead
+#endif
     if (live == 0) continue;  // still drain the queue so it can't sit stale
     for (uint8_t i = 0; i < kMaxClients; i++) {
       if (clients[i] && clients[i].connected())

@@ -1,12 +1,13 @@
 // PyPortal-Pynt-RTK Rover — main entry. Single-core superloop (SAMD51):
 // what the Feather build split across two MCUs and four FreeRTOS tasks
-// runs here as six polled modules in one loop. Boot order matters:
-// SD first (settings live on the card), then settings, then everything
-// that consumes them.
+// runs here as six polled modules in one loop (seven with FEATURE_BLE).
+// Boot order matters: SD first (settings live on the card), then
+// settings, then everything that consumes them.
 #include <Arduino.h>
 
 #include "pins.h"
 
+#include "ble_nus.h"
 #include "features.h"
 #include "gnss.h"
 #include "ntrip.h"
@@ -50,6 +51,9 @@ void setup() {
 
   ntripInit();
   tcpNmeaInit();
+#if FEATURE_BLE
+  bleNusInit();  // after ntripInit — BLE rides the already-up SPI link
+#endif
 
   Serial.println(F("[main] running — 'help' for the serial menu"));
 }
@@ -59,7 +63,10 @@ void loop() {
 
   gnssPoll();      // parse UBX/NMEA, fire PVT callback, fill file buffer
   ntripPoll();     // WiFi + caster; injects RTCM into the F9P
-  tcpNmeaPoll();   // SW Maps NMEA broadcast
+  tcpNmeaPoll();   // NMEA broadcast (+ FEATURE_BLE tee into ble_nus)
+#if FEATURE_BLE
+  bleNusPoll();    // NUS notify drain — bounded sends per pass
+#endif
   sdLoggerPoll();  // drain file buffer -> .ubx (one bounded chunk/pass)
   uiPoll();        // touch + 2 Hz redraw
   serialMenuPoll();

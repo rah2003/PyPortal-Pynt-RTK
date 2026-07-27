@@ -69,6 +69,17 @@ void printStatus() {
   }
   Serial.print(F(" tcpClients="));
   Serial.println(g_link.tcpClients);
+#if FEATURE_BLE
+  Serial.print(F("ble="));
+  Serial.print(!g_link.bleUp        ? "off"
+               : g_link.bleSubscribed ? "streaming"
+               : g_link.bleConnected  ? "connected"
+                                      : "advertising");
+  Serial.print(F(" linesTx="));
+  Serial.print(g_link.bleLinesTx);
+  Serial.print(F(" bleDrops="));
+  Serial.println(g_link.bleDrops);
+#endif
   Serial.print(F("sd="));
   Serial.print(g_log.sdOk ? "ok" : "FAIL");
   Serial.print(F(" logging="));

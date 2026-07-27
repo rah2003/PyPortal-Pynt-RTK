@@ -219,15 +219,40 @@ were characterized against the Adafruit 1.x fork:
 - [ ] Serial `status` healthy: worst-loop time and free RAM in line
       with the stock-stack numbers
 
-### 7.4 Add the BLE NUS rover module (last code step before the soak)
+### 7.4 Add the BLE NUS rover module — WRITTEN 2026-07-27, needs bench
 
-The rover is still WiFi-only in behavior; the soak needs the phone
-link. Port Spike B's NUS service (`firmware/spike/metro_coex/`) into
-the rover as a `FEATURE_BLE`-gated module: advertise as the Pynt,
-tee the same NMEA stream that feeds the TCP server into NUS TX
-notifications, `BLE.poll()` in the superloop. This is the Q19 payoff
-path — **iOS SW Maps speaks BLE NUS only**, so this module is what
-finally connects SW Maps to the Pynt.
+Implemented as `firmware/pynt/rover/ble_nus.{h,cpp}` — the seventh
+polled superloop module, `FEATURE_BLE`-gated (default 0; only
+`pynt-rover-coex` sets `-DFEATURE_BLE=1`). Spike B's proven service,
+verbatim where it matters: same NUS UUIDs, one-sentence-per-notification
+framing (120-byte characteristic, sentences never split), advertising as
+**PyntRTK-rover**. NMEA reaches it through a tee in `tcp_nmea.cpp`'s
+existing drain — BLE runs ALONGSIDE the TCP server (QField on TCP, iOS
+SW Maps on BLE), including when WiFi is down (the future radio
+scenario). Discipline: the tee only queues into an 8-line drop-oldest
+ring; all SPI work happens in `bleNusPoll()` after gnss/ntrip/tcp, max
+3 notifications per pass, zero bus traffic with no subscriber;
+`BLE.begin()` failure degrades to WiFi-only with a log line. Status
+surfaces as the POS page's ninth line (`BLE off/advert/conn/stream`)
+and in the serial `status` report (state + linesTx + drops).
+
+Verified compiling: `pynt-rover` byte-identical footprint
+(140184 B RAM / 120044 B flash, unchanged); `pynt-rover-coex`
+142868 B RAM (54.5 %) / 149772 B flash (+~2.7 KB / +~29 KB for
+ArduinoBLE + module).
+
+Bench items for this module (fold into 7.3/7.5):
+
+- [ ] `BLE.begin()` succeeds after `ntripInit()` on the Pynt (Spike B
+      proved the ordering on the Metro; confirm on this unit)
+- [ ] iOS SW Maps discovers **PyntRTK-rover**, connects as a BLE GNSS
+      instrument, and gets a position — the actual Q19 payoff
+- [ ] Full NMEA set at 1 Hz (~8–12 sentences/epoch) drains within the
+      3-per-pass cap with `bleDrops` staying ~0 while subscribed (the
+      loop runs kHz-fast, so an epoch's burst should clear in
+      milliseconds — verify, don't assume)
+- [ ] Worst-loop time with a subscriber attached stays in line with the
+      stock numbers (each notify is one bounded SPI command)
 
 ### 7.5 Integration soak — the combined gate (replaces Spike C)
 

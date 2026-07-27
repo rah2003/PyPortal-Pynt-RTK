@@ -7,6 +7,8 @@
 #pragma once
 #include <Arduino.h>
 
+#include "features.h"  // FEATURE_BLE gates the BLE fields below
+
 struct GnssStatus {
   bool f9pDetected = false;
   uint8_t fixType = 0;   // NAV-PVT fixType: 0 none, 2 2D, 3 3D
@@ -32,6 +34,13 @@ struct LinkStatus {
   uint8_t tcpClients = 0;  // NMEA TCP connections (tcp_nmea.cpp)
   char wifiIp[16] = {0};   // dotted-quad once joined; the phone app needs
                            // this + tcpport to connect, so the UI shows it
+#if FEATURE_BLE           // written by ble_nus.cpp only
+  bool bleUp = false;         // BLE.begin() succeeded (nina-fw >= 3.0)
+  bool bleConnected = false;  // a central is connected
+  bool bleSubscribed = false; // ...and subscribed to NUS TX (streaming)
+  uint32_t bleLinesTx = 0;    // NMEA sentences notified
+  uint32_t bleDrops = 0;      // ring overflowed (slow phone), drop-oldest
+#endif
 };
 
 struct LogStatus {

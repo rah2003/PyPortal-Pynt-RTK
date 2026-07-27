@@ -171,6 +171,15 @@ void drawPagePos() {
   if (g_link.wifiUp) snprintf(v, sizeof(v), "up %d dBm", g_link.wifiRssi);
   else snprintf(v, sizeof(v), "down");
   line(y, "WIFI", v);
+#if FEATURE_BLE
+  // Ninth body line: 44 + 9*22 = 242 < kBtnY(252), still clear of the
+  // buttons. Shown like the other links; "stream" = subscribed NUS TX.
+  y += 22;
+  line(y, "BLE ", !g_link.bleUp        ? "off"
+                  : g_link.bleSubscribed ? "stream"
+                  : g_link.bleConnected  ? "conn"
+                                         : "advert");
+#endif
 }
 
 void drawPageSys() {
