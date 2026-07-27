@@ -1,0 +1,4 @@
+# The nina-fw build runs under Linux (GNU make + ESP-IDF): keep this
+# subtree LF on every checkout, or make chokes on CRLF recipes.
+* text=auto eol=lf
+*.bin binary
