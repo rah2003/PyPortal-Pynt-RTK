@@ -92,9 +92,18 @@ void setup() {
   for (size_t i = 8; i < sizeof(record); i++) record[i] = (uint8_t)i;
 
   if (WiFi.status() == WL_NO_MODULE) {
-    Serial.println(F("[FAIL] AirLift Wing not responding — GPIO0 jumper closed? nina-fw flashed?"));
+    Serial.println(F("[FAIL] nina module not responding — wiring? nina-fw flashed?"));
     while (true) delay(1000);
   }
+#ifdef SOAK_FORCE_GPIOIRQ_HIGH
+  // HUZZAH32 variant (feather-soak-coex-huzzah): the HUZZAH32 doesn't
+  // break out ESP32 GPIO0, so the data-ready IRQ line (NINA_GPIO0, host
+  // pin 10) stays UNWIRED. The WiFi.status() above ran SpiDrv::begin(),
+  // which left that pin a floating INPUT; pull it high so
+  // SpiDrv::available() always falls through to a real SPI query —
+  // functionally correct, just chattier on the bus than a wired IRQ.
+  pinMode(NINA_GPIO0, INPUT_PULLUP);
+#endif
   Serial.print(F("NINA firmware: "));
   Serial.println(WiFi.firmwareVersion());
 

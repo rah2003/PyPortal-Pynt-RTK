@@ -156,10 +156,18 @@ Why this is acceptable risk rather than a skipped gate:
   stock-firmware backup before writing anything, with the section 8
   rollback returning to the known-good `pynt-rover` state in minutes.
 
-The original standalone procedure is preserved in **Appendix A** for
+The original standalone procedure is preserved in **Appendix A.1** for
 anyone who later has the Wing on the bench and a soldering iron for its
 GPIO0 jumper. The `feather-soak-coex` and `passthrough-feather` envs
 remain in `platformio.ini` and compiling.
+
+**Update 2026-07-27 — optional no-soldering path:** Spike C is
+runnable after all, with a hand-wired **HUZZAH32** standing in for the
+Wing (same ESP32 silicon family, same `NINA_W102-3.0.1-airlift.bin`,
+flashed trivially over the HUZZAH32's own USB). Procedure, wiring
+table, and a **do-NOT-stack** warning: **Appendix A.2**, env
+`feather-soak-coex-huzzah`. This is optional extra de-risking on spare
+hardware; section 7 remains the committed path either way.
 
 ## 7. Pynt integration (unlocked 2026-07-27)
 
@@ -402,7 +410,9 @@ Pynt itself. Rationale recorded in section 6; original procedure
 preserved in Appendix A. Sections 7 (step-by-step unlock) and 8
 (rollback) rewritten accordingly.
 
-## Appendix A — original Spike C procedure (standalone Feather soak)
+## Appendix A — standalone Spike C procedures
+
+### A.1 — original AirLift FeatherWing procedure
 
 <details>
 <summary>Superseded 2026-07-27 — kept for a future bench that has the
@@ -446,3 +456,75 @@ Pass gates:
 - [ ] `soak.bin` readable afterwards, size ≈ writes × 512
 
 </details>
+
+### A.2 — HUZZAH32 variant (no soldering) — env `feather-soak-coex-huzzah`
+
+A HUZZAH32 Feather running `NINA_W102-3.0.1-airlift.bin` stands in for
+the AirLift Wing as the nina co-processor. Same ESP32 silicon family as
+the NINA-W102; nina-fw doesn't care about the carrier. Bonus: it
+revalidates the MOSI-14 patch on a second board, and the HUZZAH32's own
+USB console shows nina-fw boot output.
+
+**⚠ Do NOT physically stack the two Feathers.** Feather stacking ties
+same-POSITION header pins together, but this rig's map is deliberately
+scrambled (the module's raw GPIOs vs. the host's SPI header + 13/11/12).
+A naive M0-Adalogger-on-HUZZAH32 stack mis-connects every single line:
+
+| Stacked position | What actually connects | Why it's wrong |
+|---|---|---|
+| SCK ↔ "SCK" | M0 SPI clock → **GPIO5 = nina CS** | clock hammered into chip-select |
+| MOSI ↔ "MOSI" | M0 data-out → **GPIO18 = nina SCK** | data into clock |
+| MISO ↔ "MISO" | M0 data-in ← GPIO19 | not nina MISO at all — the real one (GPIO23) lands on the M0's **SDA** pin |
+| D13 ↔ "13" | host CS → GPIO13 | unused by nina-fw; the module is never selected |
+| D11 ↔ "27" | host BUSY ← GPIO27 | unused; the real BUSY (GPIO33) lands on M0 **D10** |
+| D12 ↔ "12" | host RESET → **GPIO12 = MTDI flash-voltage strap** | worst one: a high level here during ESP32 boot straps the flash to 1.8 V — the module may not boot at all |
+| RST ↔ "RST" | M0 reset rail ↔ ESP32 EN | resets tangle: the host's reset pulses (and auto-reset) yank the ESP32, and SpiDrv's reset pin (D12) isn't on EN anyway |
+| D5 ↔ "14" | M0 D5 ← nina MOSI (GPIO14) | the patched MOSI ends up on an unused host pin |
+| USB ↔ USB, BAT ↔ BAT | **both boards' 5 V USB rails hard-paralleled** | with each board on its own USB (which this procedure wants), current flows between the two host ports — never tie them |
+
+**Instead: keep both boards on their headers, unseated, and wire
+point-to-point with jumpers** (female-to-female onto the header pins is
+fine; keep them short — the SPI runs at 8 MHz). Common ground is
+mandatory; each board runs from its **own USB** (M0 = host + serial
+monitor, HUZZAH32 = flashing + nina console).
+
+| Function | M0 host pin (env `-D`s) | HUZZAH32 silkscreen (actual GPIO) |
+|---|---|---|
+| CS | D13 | **"SCK"** (GPIO5) |
+| BUSY/READY | D11 | **"33"** (GPIO33) |
+| RESET | D12 | **"RST"** (EN) |
+| SCK | SCK (SPI header) | **"MOSI"** (GPIO18) |
+| MOSI | MOSI (SPI header) | **"14"** (GPIO14 — the patched pin) |
+| MISO | MISO (SPI header) | **"SDA"** (GPIO23) |
+| GND | GND | GND |
+| data-ready IRQ | D10 — **leave unwired** | (GPIO0 is not on the HUZZAH32 headers) |
+
+The missing GPIO0 is the one functional difference: nina-fw drives it
+as a data-ready IRQ and WiFiNINA 2.x polls it in `SpiDrv::available()`.
+The `feather-soak-coex-huzzah` env sets `-DSOAK_FORCE_GPIOIRQ_HIGH`,
+which pulls host pin 10 high (INPUT_PULLUP) right after driver init —
+`available()` then always falls through to a real SPI query:
+functionally correct, slightly chattier on the bus. Consequence: this
+variant does NOT exercise the IRQ-gated accept path — but the Metro
+(GPIO0 board-wired) already did, and the Pynt has it wired too.
+
+**Flashing the HUZZAH32 — no passthrough, no bridge:** it has its own
+USB-serial with auto-program. Plug it in alone and:
+
+```bash
+esptool --port COMx write-flash 0 NINA_W102-3.0.1-airlift.bin
+```
+
+(Stock CLI, compression, default reset handling — none of the
+SAMD-bridge workarounds apply. The 2 MB image on the WROOM32's 4 MB
+flash at offset 0 is fine.) Back up its stock MicroPython/whatever
+first with `read-flash` if you care about it.
+
+**Run:** wire per the table, then
+
+```
+pio run -e feather-soak-coex-huzzah -t upload && pio device monitor -b 115200
+```
+
+and follow A.1's soak procedure and pass gates unchanged (same sketch,
+same gates — only the IRQ define differs).
