@@ -1,22 +1,27 @@
-# WiFi + BLE Coexistence Bench — spare-board spikes
+# WiFi + BLE Coexistence Bench
 
 Working doc for branch `coex/nina-fw-airlift`. Goal: prove simultaneous
-WiFi + BLE on AirLift hardware with custom module firmware **on spare
-boards first**. Companion to `firmware/nina-fw-airlift/AIRLIFT.md`
-(module firmware) and the `VENDORED.md` notes in `lib/`.
+WiFi + BLE on AirLift hardware with custom module firmware, de-risked on
+spare boards before the assembled Pynt. Companion to
+`firmware/nina-fw-airlift/AIRLIFT.md` (module firmware) and the
+`VENDORED.md` notes in `lib/`.
 
-> **HARD RULE — the assembled Pynt RTK unit is NOT touched until Spikes
-> A, B and C have all passed.** It passed WiFi-only bench (bringup-log
-> sections 1–3) on stock Adafruit firmware + the `pynt-rover` env, and
-> that known-good state is the fallback for the whole experiment.
+> **STATUS 2026-07-27.** Spikes A and B **PASSED** on the Metro
+> (sections 4–5, bench notes below). Spike C (Feather Wing soak) is
+> **SUPERSEDED** by owner decision — see section 6 — and its
+> SD-contention question folds into the Pynt integration soak. The
+> Pynt may now be flashed, **only** via the section 7 sequence:
+> backup first, rollback per section 8. The shipping `pynt-rover` env
+> was never modified and remains the instant fallback.
 
 Order of operations:
 
-1. Build the module firmware (section 2) — laptop only, no hardware.
-2. Metro M4 AirLift Lite: backup, flash, Spike A, Spike B (sections 3–5).
-3. Feather M0 Adalogger + AirLift FeatherWing: flash Wing, Spike C soak
-   (section 6).
-4. Only then: the Pynt (section 7).
+1. ~~Build the module firmware (section 2)~~ — **done 2026-07-26**.
+2. ~~Metro M4 AirLift Lite: backup, flash, Spike A, Spike B~~ —
+   **done 2026-07-26, all gates green**.
+3. Pynt integration (section 7): backup → flash → `pynt-rover-coex`
+   re-verification → BLE NUS module → combined integration soak.
+4. Rollback at any point: section 8.
 
 ## 1. Pinned version set
 
@@ -28,7 +33,7 @@ Order of operations:
 | ArduinoBLE (host) | **2.1.0** (`281377b`) + 2-line gate patch | vendored `lib/ArduinoBLE/` |
 | Arduino_SpiNINA (host) | **0.0.2** (`200cc35`), unpatched | vendored `lib/Arduino_SpiNINA/` |
 | Adafruit SAMD core | **1.7.16** (PIO `framework-arduino-samd-adafruit 1.10716.0`) | pinned by platform `atmelsam` |
-| esptool | **5.3.1**, installed on the Windows side (`esptool` on PATH; 5.x command names are dashed: `read-flash`, `write-flash`) | laptop |
+| esptool | **5.3.1** (dash-form commands: `read-flash`, `write-flash`); on the bench machine it lives in a scratch venv, driven via `flash_via_bridge.py` | laptop |
 
 Rollback binaries: per-board `esptool read-flash` dumps (primary) and
 stock `NINA_W102-1.7.x.bin` from
@@ -41,61 +46,49 @@ v4.4.8 (setup + exact commands: `firmware/nina-fw-airlift/AIRLIFT.md`).
 Output already sits at
 `firmware/nina-fw-airlift/NINA_W102-3.0.1-airlift.bin` — exactly
 2,097,152 bytes, `0xE9` image magic at 0x1000 and 0x30000, "3.0.1"
-version string embedded. One image for all three boards, flashed at
-offset 0x0. Gitignored (reproducible); park backups next to it.
+version string embedded, committed on the branch. One image for all
+boards, flashed at offset 0x0.
 
 To rebuild from scratch: WSL path in AIRLIFT.md (verified), or Docker
 `espressif/idf:v4.4.8` (equivalent, untested here). Either way the
 flashable file is combine.py's **`_ALL.bin`** output.
 
-## 3. Flashing procedure (Metro shown; same flow for every board)
+## 3. Flashing procedure (any board)
 
 The ESP32's serial bootloader is mask ROM — an interrupted or bad flash
 is **always** recoverable by redoing this section. Reflash-risk, not
 brick-risk.
 
-1. `pio run -e passthrough-metro -t upload` — the sketch straps the ESP32
-   into its ROM loader (GPIO0 low through a reset pulse) and bridges
-   USB↔NINA UART at a fixed 115200.
+1. `pio run -e passthrough-<board> -t upload` — the sketch straps the
+   ESP32 into its ROM loader (GPIO0 low through a reset pulse) and
+   bridges USB↔NINA UART at a fixed 115200.
 2. Note the board's COM port (Device Manager, or `pio device list`).
-3. **Backup first** (~3 min at 115200):
+3. **Backup first** (~3 min at 115200), then write. On Windows the stock
+   esptool CLI does NOT work through the SAMD bridge — esptool forces
+   DTR/RTS low and the CDC core then drops device→host bytes, and
+   compressed writes die mid-stream (bench notes, 2026-07-26). Use the
+   wrapper, from `firmware/nina-fw-airlift/`:
 
    ```bash
-   esptool --port COM7 --baud 115200 --before no_reset --after no_reset read-flash 0 0x200000 metro-stock-backup.bin
+   python flash_via_bridge.py COMx read-flash 0 0x200000 <board>-stock-backup.bin
    ```
-
-4. Write the custom image:
 
    ```bash
-   esptool --port COM7 --baud 115200 --before no_reset --after no_reset write-flash 0 NINA_W102-3.0.1-airlift.bin
+   python flash_via_bridge.py COMx write-flash --no-compress 0 NINA_W102-3.0.1-airlift.bin
    ```
 
-Keep `--baud 115200` and the two `no_reset` flags: the passthrough owns
-the strap pins and its bridge speed is fixed. After flashing, upload the
-next spike env — its own boot resets the module into the new firmware.
+   (On a non-Windows host the plain CLI form with
+   `--before no_reset --after no_reset --baud 115200` may work as-is;
+   the wrapper is always safe.)
 
-> **This host (Windows, OfficeSER): the stock esptool CLI does NOT work
-> through the bridge — use `firmware/nina-fw-airlift/flash_via_bridge.py`
-> instead** (bench note 2026-07-26): esptool forces DTR/RTS low on
-> Windows, the SAMD CDC core drops device→host bytes until the host
-> asserts them, so the CLI never sees the ROM loader. The wrapper opens
-> the port with DTR/RTS asserted and hands it to `esptool.main(esp=...)`.
-> Compressed writes also die deterministically mid-stream here — pass
-> `--no-compress` to `write-flash`:
->
-> ```bash
-> python flash_via_bridge.py COM9 read-flash 0 0x200000 <board>-stock-backup.bin
-> python flash_via_bridge.py COM9 write-flash --no-compress 0 NINA_W102-3.0.1-airlift.bin
-> ```
-
-**Recovery** = same passthrough, `write-flash 0 <backup>.bin` (or the
-Adafruit release bin).
+4. After flashing, upload the next firmware env — its own boot resets
+   the module into the new NINA firmware.
 
 Per-board passthrough envs: `passthrough-metro`, `passthrough-feather`
-(Wing pins via build flags), `passthrough-pynt` (**locked until
-section 7**).
+(Wing pins via build flags), `passthrough-pynt` (used by the section 7
+sequence).
 
-## 4. Spike A — upstream WiFi stack alone (Metro)
+## 4. Spike A — upstream WiFi stack alone (Metro) — PASSED
 
 Prereqs: custom firmware flashed (section 3);
 `firmware/spike/secrets.h` created from `secrets.example.h`; hotspot up.
@@ -115,7 +108,7 @@ Pass gates — all four, else stop and debug before any BLE work:
 
 **All four passed 2026-07-26** — see bench notes below.
 
-## 5. Spike B — WiFi + BLE simultaneously (Metro)
+## 5. Spike B — WiFi + BLE simultaneously (Metro) — PASSED
 
 ```
 pio run -e metro-spike-coex -t upload && pio device monitor -b 115200
@@ -139,68 +132,166 @@ Pass gates:
 
 **All five passed 2026-07-26** — see bench notes below.
 
-Record the numbers in `docs/hardware/bringup-log.md` style notes at the
-bottom of this file.
+## 6. Spike C — SUPERSEDED (folded into the section 7 soak)
 
-## 6. Spike C — shared-SPI soak (Feather M0 Adalogger + AirLift Wing)
+**Owner decision 2026-07-27: not run standalone.** No SD breakout on
+hand and no soldering the Wing's GPIO0 jumper; the shared-SPI
+contention check moves into the Pynt integration soak (section 7.5).
 
-This is the Pynt's dress rehearsal: SD writes + WiFi TCP + BLE notify
-contending on one SPI bus for an hour.
+Why this is acceptable risk rather than a skipped gate:
 
-Hardware prep:
+- **SD + AirLift WiFi contention on the Pynt is already proven** on the
+  stock stack: the 1-hour Phase 2/3 rover soak passed with RAWX logging
+  + NTRIP + TCP live (convbin RINEX verification, zero gaps), and the
+  SPI-contention timing is documented in `docs/hardware/platform.md`
+  and the bringup log (93.6 ms worst write, WiFi-only).
+- **What coex adds is only BLE HCI multiplexed onto the same SPI
+  command channel** — and exactly that multiplexing ran clean for
+  34 minutes on real AirLift hardware in Spike B (zero SPI errors,
+  zero resets). The Feather rig would have re-proven the combination
+  on *different* silicon than the target; the Pynt soak proves it on
+  the actual unit.
+- **The Pynt is reflash-recoverable, not brickable** (mask-ROM
+  bootloader, section 3), and the section 7 sequence takes a full
+  stock-firmware backup before writing anything, with the section 8
+  rollback returning to the known-good `pynt-rover` state in minutes.
 
-- [ ] **Close the Wing's GPIO0 solder jumper.** Needed twice over: the
-      passthrough uses GPIO0 (pin 10) to enter the ROM loader, and
-      WiFiNINA 2.x polls GPIO0 as the module's data-ready IRQ during
-      normal operation (stock Adafruit stack never did — this is new).
-- [ ] Wing stacked on the Adalogger (Wing CS/BUSY/RESET/GPIO0 =
-      pins 13/11/12/10; onboard SD CS = 4).
-- [ ] FAT32 microSD in the Adalogger slot (a spare — `soak.bin` gets
-      truncated each boot).
-- [ ] Flash the **Wing's** ESP32: `passthrough-feather` + section 3
-      commands (own backup file: `wing-stock-backup.bin`).
+The original standalone procedure is preserved in **Appendix A** for
+anyone who later has the Wing on the bench and a soldering iron for its
+GPIO0 jumper. The `feather-soak-coex` and `passthrough-feather` envs
+remain in `platformio.ini` and compiling.
 
-Run:
+## 7. Pynt integration (unlocked 2026-07-27)
+
+Run the steps in order; stop at any failure and consult section 8.
+
+### 7.1 Back up the Pynt's stock NINA firmware
 
 ```
-pio run -e feather-soak-coex -t upload && pio device monitor -b 115200
+pio run -e passthrough-pynt -t upload
 ```
 
-Connect a `nc` client and a BLE subscriber (device name **PyntRTK-soak**)
-as in Spike B, then leave it for ≥ 60 min.
+then, from `firmware/nina-fw-airlift/` (note the Pynt's COM port; the
+wrapper is required on Windows — see section 3):
 
-Pass gates:
+```bash
+python flash_via_bridge.py COMx read-flash 0 0x200000 pynt-stock-backup.bin
+```
 
-- [ ] ≥ 60 min, `up=` never restarts
-- [ ] `sdErrors=0`, writes ≈ uptime seconds (one 512 B record/s + sync
-      every 8th — the rover's cadence)
-- [ ] Worst SD write latency recorded here: `______ ms` (Pynt bench saw
-      93.6 ms WiFi-only; expect same order under coex)
-- [ ] WiFi drops recover unaided; BLE stays subscribable throughout
-- [ ] `soak.bin` readable afterwards, size ≈ writes × 512
+Sanity-check the dump before proceeding: 2,097,152 bytes, `0xE9` at
+offset 0x1000. **Keep this file safe** — it is the primary rollback
+(gitignored; park a copy off-machine).
 
-## 7. Pynt (LOCKED until A–C pass)
+### 7.2 Flash the custom firmware
 
-Gate: sections 4, 5, 6 all green, numbers recorded below.
+```bash
+python flash_via_bridge.py COMx write-flash --no-compress 0 NINA_W102-3.0.1-airlift.bin
+```
 
-The unlock sequence (do not start any of it early):
+Wait for `Hash of data verified` (~3 min uncompressed).
 
-1. `pio run -e passthrough-pynt -t upload`; backup to
-   `pynt-stock-backup.bin`; flash the same `NINA_W102-3.0.1-airlift.bin`
-   (section 3 commands).
-2. `pio run -e pynt-rover-coex -t upload` — the rover on the upstream
-   stack, still WiFi-only in behavior. Re-run the Phase-2 checks and the
-   deferred gate-4 1-hour soak (bringup-log section 3) on THIS stack:
-   the WiFiNINA-fork assumptions in `ntrip.cpp` (blocking `WiFi.begin()`
-   window, `server.available()` accept semantics) were characterized
-   against the Adafruit 1.x fork and must be re-verified.
-3. Only then: add the BLE module (`FEATURE_BLE`, NUS to SW Maps — Spike
-   B's service, ported behind a feature gate) and re-soak in coex mode.
+### 7.3 Switch to the coex env and re-verify WiFi-only behavior
 
-Instant fallback at any point: `passthrough-pynt` + `write-flash 0
-pynt-stock-backup.bin`, then `pio run -e pynt-rover -t upload` — the
-shipping env still builds against the pinned Adafruit fork and was left
-untouched.
+```
+pio run -e pynt-rover-coex -t upload
+```
+
+`pynt-rover-coex` builds the same rover source against the upstream
+stack — WiFiNINA 2.1.1 + patched ArduinoBLE 2.1.0 + vendored
+Arduino_SpiNINA, selected by `-DCOEX_UPSTREAM_NINA` (compiles out the
+Adafruit-fork `WiFi.setPins()`; pins come from the pyportal_m4 variant
+macros) and `-DBLE_NINA_SPI_TRANSPORT` (enables ArduinoBLE's SPI-HCI
+transport). The shipping `pynt-rover` env is untouched.
+
+Short attended bench (not the soak yet) — re-verify the behaviors that
+were characterized against the Adafruit 1.x fork:
+
+- [ ] Boot clean: F9P detected, SD up, WiFi joins, NTRIP connects,
+      RTK fix arrives, display sane
+- [ ] `WiFi.begin()` stall window: RAWX timeline across a forced
+      rejoin (hotspot off/on) shows only the bounded gap the 4096-byte
+      SERCOM ring was sized for
+- [ ] **Silent-TCP-client accept (Spike B follow-up):** connect a
+      listen-only client (u-center as TCP client, or `nc` without
+      typing) to :10110 — on nina-fw 3.0.1 it should be accepted
+      *without sending a byte*. If confirmed, the Q19 data-gated-accept
+      workarounds are retirable on this stack; note the result in Q19.
+- [ ] Serial `status` healthy: worst-loop time and free RAM in line
+      with the stock-stack numbers
+
+### 7.4 Add the BLE NUS rover module (last code step before the soak)
+
+The rover is still WiFi-only in behavior; the soak needs the phone
+link. Port Spike B's NUS service (`firmware/spike/metro_coex/`) into
+the rover as a `FEATURE_BLE`-gated module: advertise as the Pynt,
+tee the same NMEA stream that feeds the TCP server into NUS TX
+notifications, `BLE.poll()` in the superloop. This is the Q19 payoff
+path — **iOS SW Maps speaks BLE NUS only**, so this module is what
+finally connects SW Maps to the Pynt.
+
+### 7.5 Integration soak — the combined gate (replaces Spike C)
+
+Everything at once, ≥ 1 hour: **SD RAWX logging** (rover cadence:
+bounded 512 B writes per loop pass, 8 s sync) + **NTRIP corrections
+over WiFi** (live caster, RTK fix held) + **TCP NMEA** (QField or a
+logging `nc` client) + **BLE NUS to a phone** (SW Maps on iOS if it
+accepts the stream, else nRF Connect logging NUS TX).
+
+Pass metrics — all of them, measured, recorded in the bench notes:
+
+- [ ] **≥ 60 min**, uptime monotonic — zero watchdog/brownout resets
+- [ ] **SD integrity:** post-soak, the `.ubx` parses clean in u-center
+      / RTKLIB `convbin` (every UBX frame checksum-valid — this is the
+      CRC check on every payload) with **zero epoch gaps** outside
+      documented WiFi-rejoin windows; file size consistent with the
+      logged duration
+- [ ] **NTRIP:** zero correction-stale teardowns while the hotspot is
+      up; any genuine hotspot handoff recovers unaided; correction age
+      < 10 s steady-state; RTK fix (or float, per sky view) held
+- [ ] **TCP:** client stays connected the full soak, zero dropped
+      connections; silent-accept behavior as verified in 7.3
+- [ ] **BLE:** stays connected/subscribed throughout (operator-initiated
+      bounces allowed, must reconnect and must not perturb TCP/NTRIP —
+      the Spike B gate, now under load); notify latency bounded — 1 Hz
+      NMEA lines arrive within ~2 s, no multi-second stalls
+- [ ] **Memory/loop stability:** free RAM flat across the hour (no
+      monotonic decline = no leak) and worst-loop time bounded, both
+      via the serial `status` report at start / mid / end
+- [ ] **Worst SD write latency recorded:** `______ ms` (WiFi-only
+      baseline was 93.6 ms; expect the same order with BLE HCI added
+      to the bus)
+
+All green ⇒ the coexistence stack is proven on the target unit; Phase 5
+(SW Maps polish, UART2 radio scenario) proceeds on this branch. Any
+red ⇒ section 8, analyze from the logs, re-approach.
+
+## 8. Rollback (any time, in minutes)
+
+The two halves are independent — module firmware and host env — and
+both revert cleanly; the shipping env was never modified on this
+branch.
+
+1. **Module firmware back to stock:** `pio run -e passthrough-pynt -t
+   upload`, then from `firmware/nina-fw-airlift/`:
+
+   ```bash
+   python flash_via_bridge.py COMx write-flash --no-compress 0 pynt-stock-backup.bin
+   ```
+
+   (No backup at hand? Secondary: the stock `NINA_W102-1.7.x.bin` from
+   <https://github.com/adafruit/nina-fw/releases>, same command.)
+
+2. **Host back to the shipping stack:**
+
+   ```
+   pio run -e pynt-rover -t upload
+   ```
+
+   `pynt-rover` still builds against the pinned Adafruit WiFiNINA fork
+   exactly as it passed the Phase 2/3 soak — byte-identical env, never
+   touched by the coex work.
+
+That pair restores the unit to its last known-good field state.
 
 ## Bench notes / results
 
@@ -275,7 +366,58 @@ subscribed to NUS TX on **PyntRTK-coex**.
   data-gated. The Q19 silent-client workaround (send-anything-once /
   UDP fallback) is a stock-Adafruit-1.7.x behavior only; listen-only
   clients (u-center) should Just Work on this firmware. Re-verify on
-  the Pynt in section 7 step 2.
+  the Pynt in section 7.3.
 
-Next: Spike C (section 6) — needs the Feather M0 Adalogger + AirLift
-Wing on the bench, Wing GPIO0 jumper closed, spare FAT32 microSD.
+### 2026-07-27 — Decision: Spike C superseded, Pynt unlocked
+
+Owner call (no SD breakout on hand, no soldering the Wing's GPIO0
+jumper): the standalone Feather soak is dropped and its SD-vs-radio
+contention check folds into the section 7.5 integration soak on the
+Pynt itself. Rationale recorded in section 6; original procedure
+preserved in Appendix A. Sections 7 (step-by-step unlock) and 8
+(rollback) rewritten accordingly.
+
+## Appendix A — original Spike C procedure (standalone Feather soak)
+
+<details>
+<summary>Superseded 2026-07-27 — kept for a future bench that has the
+AirLift FeatherWing with its GPIO0 jumper soldered closed and a spare
+SD-equipped host. The <code>feather-soak-coex</code> and
+<code>passthrough-feather</code> envs still build.</summary>
+
+This was the Pynt's dress rehearsal: SD writes + WiFi TCP + BLE notify
+contending on one SPI bus for an hour, on spare silicon.
+
+Hardware prep:
+
+- [ ] **Close the Wing's GPIO0 solder jumper.** Needed twice over: the
+      passthrough uses GPIO0 (pin 10) to enter the ROM loader, and
+      WiFiNINA 2.x polls GPIO0 as the module's data-ready IRQ during
+      normal operation (stock Adafruit stack never did — this is new).
+- [ ] Wing stacked on the Adalogger (Wing CS/BUSY/RESET/GPIO0 =
+      pins 13/11/12/10; onboard SD CS = 4).
+- [ ] FAT32 microSD in the Adalogger slot (a spare — `soak.bin` gets
+      truncated each boot).
+- [ ] Flash the **Wing's** ESP32: `passthrough-feather` + section 3
+      commands (own backup file: `wing-stock-backup.bin`).
+
+Run:
+
+```
+pio run -e feather-soak-coex -t upload && pio device monitor -b 115200
+```
+
+Connect a `nc` client and a BLE subscriber (device name **PyntRTK-soak**)
+as in Spike B, then leave it for ≥ 60 min.
+
+Pass gates:
+
+- [ ] ≥ 60 min, `up=` never restarts
+- [ ] `sdErrors=0`, writes ≈ uptime seconds (one 512 B record/s + sync
+      every 8th — the rover's cadence)
+- [ ] Worst SD write latency recorded here: `______ ms` (Pynt bench saw
+      93.6 ms WiFi-only; expect same order under coex)
+- [ ] WiFi drops recover unaided; BLE stays subscribable throughout
+- [ ] `soak.bin` readable afterwards, size ≈ writes × 512
+
+</details>
