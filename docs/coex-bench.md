@@ -74,6 +74,20 @@ Keep `--baud 115200` and the two `no_reset` flags: the passthrough owns
 the strap pins and its bridge speed is fixed. After flashing, upload the
 next spike env — its own boot resets the module into the new firmware.
 
+> **This host (Windows, OfficeSER): the stock esptool CLI does NOT work
+> through the bridge — use `firmware/nina-fw-airlift/flash_via_bridge.py`
+> instead** (bench note 2026-07-26): esptool forces DTR/RTS low on
+> Windows, the SAMD CDC core drops device→host bytes until the host
+> asserts them, so the CLI never sees the ROM loader. The wrapper opens
+> the port with DTR/RTS asserted and hands it to `esptool.main(esp=...)`.
+> Compressed writes also die deterministically mid-stream here — pass
+> `--no-compress` to `write-flash`:
+>
+> ```bash
+> python flash_via_bridge.py COM9 read-flash 0 0x200000 <board>-stock-backup.bin
+> python flash_via_bridge.py COM9 write-flash --no-compress 0 NINA_W102-3.0.1-airlift.bin
+> ```
+
 **Recovery** = same passthrough, `write-flash 0 <backup>.bin` (or the
 Adafruit release bin).
 
@@ -92,12 +106,14 @@ pio run -e metro-spike-wifi -t upload && pio device monitor -b 115200
 
 Pass gates — all four, else stop and debug before any BLE work:
 
-- [ ] No `AirLift not responding` (SPI link alive through the new firmware
+- [x] No `AirLift not responding` (SPI link alive through the new firmware
       → the MOSI 12→14 patch is right)
-- [ ] `NINA firmware: 3.0.1` (stock would say 1.7.x)
-- [ ] Scan lists the hotspot SSID
-- [ ] Join succeeds; IP + RSSI keep printing at 5 s cadence, no drops
+- [x] `NINA firmware: 3.0.1` (stock would say 1.7.x)
+- [x] Scan lists the hotspot SSID
+- [x] Join succeeds; IP + RSSI keep printing at 5 s cadence, no drops
       while parked next to the phone
+
+**All four passed 2026-07-26** — see bench notes below.
 
 ## 5. Spike B — WiFi + BLE simultaneously (Metro)
 
@@ -187,3 +203,45 @@ untouched.
 ## Bench notes / results
 
 (append dated notes here as sections close, bringup-log style)
+
+### 2026-07-26 — Metro flashed (section 3) + Spike A PASS (section 4)
+
+Metro M4 AirLift Lite, app port **COM9** (bootloader enumerates
+separately as COM7).
+
+**Flashing.** The section 3 esptool commands failed as written on this
+host, twice over, both host-side — the module and procedure are fine:
+
+1. *CLI can't connect through the bridge.* esptool on Windows forces
+   DTR+RTS low before opening the port (`loader.py` "avoid unwanted
+   chip reset"); the Adafruit SAMD CDC core discards device→host bytes
+   while neither line is asserted, so the ROM loader's sync replies
+   never reach esptool ("No serial data received"). Proven by raw
+   pyserial probe with DTR/RTS asserted: loader answers instantly.
+   Fix: `flash_via_bridge.py` (parked next to the bin) — opens the port
+   itself, then `esptool.main(esp=...)`.
+2. *Compressed write dies deterministically.* `write-flash` (default
+   deflate) aborted at exactly compressed offset 294912 (block 19) on
+   two runs, even with 30 s timeouts — content-dependent transport
+   failure somewhere in the host→device path. `--no-compress` wrote all
+   2,097,152 bytes clean, ~188 s, `Hash of data verified`.
+
+Backup `metro-stock-backup.bin` taken first (2,097,152 B, 0xE9 magic at
+0x1000, ~192 s read). esptool 5.3.1 in a scratch venv (NOT on PATH on
+this machine, contrary to the section 1 table).
+
+**Spike A.** `metro-spike-wifi` + 240 s scripted capture
+(`spikeA-metro-2026-07-26.log` next to the bin):
+
+- `NINA firmware: 3.0.1` at t=1.0 s; no SPI errors at any point.
+- Scan listed hotspot `Airport` (−82 dBm) — plus a scan-print cosmetic
+  quirk: the neighboring printer's long SSID ran into the next entry on
+  one line (`...9120eAirport`), worth re-checking string termination in
+  the scan path if it ever matters; per-entry RSSI was sane.
+- Join → IP 192.168.0.168 at t=9.6 s.
+- 47/47 status lines at 5 s cadence over 240 s, `drops=0`, RSSI
+  −73…−87 dBm, uptime counter monotonic (no resets).
+
+Spike B (`metro-spike-coex`) is next; it needs the phone running nRF
+Connect / LightBlue plus a laptop `nc` client on the hotspot, so it
+wasn't run unattended.

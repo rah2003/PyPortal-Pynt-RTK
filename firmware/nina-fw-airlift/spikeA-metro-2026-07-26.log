@@ -1,0 +1,56 @@
+[   0.21] 
+[   0.21] === Spike A: Metro M4 AirLift, upstream WiFiNINA 2.x ===
+[   0.21] build: Jul 26 2026 22:48:07
+[   1.02] NINA firmware: 3.0.1
+[   1.02] Scanning...
+[   5.53]   DIRECT-7F-HP OfficeJet Pro 9120eAirport  -52 dBm
+[   5.53]   Airport  -82 dBm
+[   5.53] Joining Airport
+[   9.64] [PASS] up, IP 192.168.0.168
+[   9.64] status=connected  rssi=-82  uptime=9s
+[  14.81] status=connected  rssi=-78  uptime=14s
+[  19.75] status=connected  rssi=-77  uptime=19s
+[  24.65] status=connected  rssi=-77  uptime=24s
+[  29.76] status=connected  rssi=-80  uptime=29s
+[  34.71] status=connected  rssi=-84  uptime=34s
+[  39.61] status=connected  rssi=-79  uptime=39s
+[  44.79] status=connected  rssi=-78  uptime=44s
+[  49.74] status=connected  rssi=-78  uptime=49s
+[  54.69] status=connected  rssi=-76  uptime=54s
+[  59.65] status=connected  rssi=-79  uptime=59s
+[  64.63] status=connected  rssi=-84  uptime=64s
+[  69.77] status=connected  rssi=-82  uptime=69s
+[  74.67] status=connected  rssi=-85  uptime=74s
+[  79.60] status=connected  rssi=-82  uptime=79s
+[  84.73] status=connected  rssi=-84  uptime=84s
+[  89.75] status=connected  rssi=-82  uptime=89s
+[  94.68] status=connected  rssi=-74  uptime=94s
+[  99.64] status=connected  rssi=-80  uptime=99s
+[ 104.62] status=connected  rssi=-77  uptime=104s
+[ 109.78] status=connected  rssi=-73  uptime=109s
+[ 114.75] status=connected  rssi=-82  uptime=114s
+[ 119.65] status=connected  rssi=-80  uptime=119s
+[ 124.74] status=connected  rssi=-82  uptime=124s
+[ 129.69] status=connected  rssi=-82  uptime=129s
+[ 134.59] status=connected  rssi=-81  uptime=134s
+[ 139.72] status=connected  rssi=-80  uptime=139s
+[ 144.63] status=connected  rssi=-87  uptime=144s
+[ 149.74] status=connected  rssi=-80  uptime=149s
+[ 154.68] status=connected  rssi=-84  uptime=154s
+[ 159.60] status=connected  rssi=-82  uptime=159s
+[ 164.70] status=connected  rssi=-82  uptime=164s
+[ 169.57] status=connected  rssi=-83  uptime=169s
+[ 174.73] status=connected  rssi=-82  uptime=174s
+[ 179.70] status=connected  rssi=-87  uptime=179s
+[ 184.61] status=connected  rssi=-86  uptime=184s
+[ 189.56] status=connected  rssi=-84  uptime=189s
+[ 194.70] status=connected  rssi=-85  uptime=194s
+[ 199.65] status=connected  rssi=-85  uptime=199s
+[ 204.58] status=connected  rssi=-81  uptime=204s
+[ 209.66] status=connected  rssi=-81  uptime=209s
+[ 214.59] status=connected  rssi=-83  uptime=214s
+[ 219.71] status=connected  rssi=-80  uptime=219s
+[ 224.65] status=connected  rssi=-86  uptime=224s
+[ 229.59] status=connected  rssi=-84  uptime=229s
+[ 234.70] status=connected  rssi=-83  uptime=234s
+[ 239.64] status=connected  rssi=-83  uptime=239s
