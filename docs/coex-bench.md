@@ -23,28 +23,30 @@ Order of operations:
 | Piece | Version | Where |
 |---|---|---|
 | Module firmware | arduino/nina-fw **3.0.1** (`57d12f4`) + MOSI 12→14 | vendored `firmware/nina-fw-airlift/` |
-| ESP-IDF (builds it) | **v4.4.8** via Docker `espressif/idf:v4.4.8` | pulled at build time |
+| ESP-IDF (builds it) | **v4.4.8**, installed in WSL2 Ubuntu-22.04 at `/opt/esp-idf-v4.4.8` (Docker `espressif/idf:v4.4.8` equivalent) | this machine / AIRLIFT.md |
 | WiFiNINA (host) | **2.1.1** (`272159c`) | `platformio.ini` git-tag pin |
 | ArduinoBLE (host) | **2.1.0** (`281377b`) + 2-line gate patch | vendored `lib/ArduinoBLE/` |
 | Arduino_SpiNINA (host) | **0.0.2** (`200cc35`), unpatched | vendored `lib/Arduino_SpiNINA/` |
 | Adafruit SAMD core | **1.7.16** (PIO `framework-arduino-samd-adafruit 1.10716.0`) | pinned by platform `atmelsam` |
-| esptool | any recent (`pip install esptool`) | laptop |
+| esptool | **5.3.1**, installed on the Windows side (`esptool` on PATH; 5.x command names are dashed: `read-flash`, `write-flash`) | laptop |
 
-Rollback binaries: per-board `esptool read_flash` dumps (primary) and
+Rollback binaries: per-board `esptool read-flash` dumps (primary) and
 stock `NINA_W102-1.7.x.bin` from
 <https://github.com/adafruit/nina-fw/releases> (secondary).
 
 ## 2. Build the module firmware (no hardware needed)
 
-Docker Desktop running, then from `firmware/nina-fw-airlift/`:
+**Done 2026-07-26** on this machine via WSL2 Ubuntu-22.04 + ESP-IDF
+v4.4.8 (setup + exact commands: `firmware/nina-fw-airlift/AIRLIFT.md`).
+Output already sits at
+`firmware/nina-fw-airlift/NINA_W102-3.0.1-airlift.bin` — exactly
+2,097,152 bytes, `0xE9` image magic at 0x1000 and 0x30000, "3.0.1"
+version string embedded. One image for all three boards, flashed at
+offset 0x0. Gitignored (reproducible); park backups next to it.
 
-```bash
-docker run --rm -v "$PWD":/data espressif/idf:v4.4.8 sh -c 'cd /data && make && python combine.py NINA_W102-3.0.1-airlift.bin'
-```
-
-(PowerShell: use `${PWD}`.) Output: `NINA_W102-3.0.1-airlift.bin`,
-exactly 2 MB, flashed at offset 0x0. One image for all three boards.
-Keep it out of git (it's reproducible); park it next to the backups.
+To rebuild from scratch: WSL path in AIRLIFT.md (verified), or Docker
+`espressif/idf:v4.4.8` (equivalent, untested here). Either way the
+flashable file is combine.py's **`_ALL.bin`** output.
 
 ## 3. Flashing procedure (Metro shown; same flow for every board)
 
@@ -59,20 +61,20 @@ brick-risk.
 3. **Backup first** (~3 min at 115200):
 
    ```bash
-   esptool --port COM7 --baud 115200 --before no_reset --after no_reset read_flash 0 0x200000 metro-stock-backup.bin
+   esptool --port COM7 --baud 115200 --before no_reset --after no_reset read-flash 0 0x200000 metro-stock-backup.bin
    ```
 
 4. Write the custom image:
 
    ```bash
-   esptool --port COM7 --baud 115200 --before no_reset --after no_reset write_flash 0 NINA_W102-3.0.1-airlift.bin
+   esptool --port COM7 --baud 115200 --before no_reset --after no_reset write-flash 0 NINA_W102-3.0.1-airlift.bin
    ```
 
 Keep `--baud 115200` and the two `no_reset` flags: the passthrough owns
 the strap pins and its bridge speed is fixed. After flashing, upload the
 next spike env — its own boot resets the module into the new firmware.
 
-**Recovery** = same passthrough, `write_flash 0 <backup>.bin` (or the
+**Recovery** = same passthrough, `write-flash 0 <backup>.bin` (or the
 Adafruit release bin).
 
 Per-board passthrough envs: `passthrough-metro`, `passthrough-feather`
@@ -177,7 +179,7 @@ The unlock sequence (do not start any of it early):
 3. Only then: add the BLE module (`FEATURE_BLE`, NUS to SW Maps — Spike
    B's service, ported behind a feature gate) and re-soak in coex mode.
 
-Instant fallback at any point: `passthrough-pynt` + `write_flash 0
+Instant fallback at any point: `passthrough-pynt` + `write-flash 0
 pynt-stock-backup.bin`, then `pio run -e pynt-rover -t upload` — the
 shipping env still builds against the pinned Adafruit fork and was left
 untouched.
