@@ -95,6 +95,14 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
     WiFiNINA 2.0.0 (needs PyPortal pin defines — no setPins), ArduinoBLE
     2.0.0 SPI-transport patch + NUS peripheral for SW Maps. Became more
     attractive when Q19 found iOS SW Maps is BLE-only.
+    **Update 2026-07-26 (branch `coex/nina-fw-airlift`):** stopped
+    waiting for adafruit/nina-fw — arduino/nina-fw 3.0.1 is vendored
+    with a one-pin AirLift patch (MOSI 12→14) in
+    `firmware/nina-fw-airlift/`, host stack moves to upstream WiFiNINA
+    2.1.1 + ArduinoBLE 2.1.0 (vendored, 2-line transport-gate patch) +
+    Arduino_SpiNINA 0.0.2. De-risking on spare boards first
+    (`docs/coex-bench.md`); the assembled Pynt keeps stock firmware and
+    the `pynt-rover` env until Spikes A–C pass.
 19. ✅ **iOS survey app for the TCP NMEA link** — **Answered 2026-07-19:
     QField connected to the Pynt's :10110 server and streamed NMEA on the
     first try** (it evidently transmits on connect, satisfying the

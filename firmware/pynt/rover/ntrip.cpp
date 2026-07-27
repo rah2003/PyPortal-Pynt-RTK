@@ -196,7 +196,12 @@ void maybeSendGga() {
 }  // namespace
 
 void ntripInit() {
+#ifndef COEX_UPSTREAM_NINA
+  // Adafruit WiFiNINA fork only (pynt-rover env). The upstream 2.x stack
+  // (pynt-rover-coex) has no setPins(): Arduino_SpiNINA reads the same
+  // four pins from the pyportal_m4 variant macros, which match pins.h.
   WiFi.setPins(SPIWIFI_SS, SPIWIFI_ACK, ESP32_RESETN, ESP32_GPIO0, &SPIWIFI);
+#endif
   if (WiFi.status() == WL_NO_MODULE)
     Serial.println(F("[ntrip] AirLift not responding — check SPIWIFI pins"));
   enter(NtripState::WifiConnecting);

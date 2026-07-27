@@ -5,6 +5,12 @@
 # Credentials — never committed (copy secrets.example.h -> secrets.h)
 **/secrets.h
 
+# Built / backup NINA module images (reproducible or per-board dumps —
+# vendored data/*.bin inputs stay tracked)
+firmware/nina-fw-airlift/NINA_W102*.bin
+firmware/nina-fw-airlift/x509_crt_bundle
+*-stock-backup.bin
+
 # Local tool settings
 .claude/settings.local.json
 
