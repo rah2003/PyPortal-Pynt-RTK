@@ -131,11 +131,13 @@ Then, at the same time:
 
 Pass gates:
 
-- [ ] TCP stream and BLE notifications run **concurrently** ≥ 15 min
-- [ ] `up=` counter never restarts (no watchdog/brownout resets)
-- [ ] `drops=0`, or any WiFi drop re-joins by itself
-- [ ] BLE disconnect/reconnect mid-run doesn't disturb the TCP side
-- [ ] Serial line stays clean (no SPI timeout spew)
+- [x] TCP stream and BLE notifications run **concurrently** ≥ 15 min
+- [x] `up=` counter never restarts (no watchdog/brownout resets)
+- [x] `drops=0`, or any WiFi drop re-joins by itself
+- [x] BLE disconnect/reconnect mid-run doesn't disturb the TCP side
+- [x] Serial line stays clean (no SPI timeout spew)
+
+**All five passed 2026-07-26** — see bench notes below.
 
 Record the numbers in `docs/hardware/bringup-log.md` style notes at the
 bottom of this file.
@@ -245,3 +247,35 @@ this machine, contrary to the section 1 table).
 Spike B (`metro-spike-coex`) is next; it needs the phone running nRF
 Connect / LightBlue plus a laptop `nc` client on the hotspot, so it
 wasn't run unattended.
+
+### 2026-07-26 — Spike B PASS (section 5): WiFi + BLE simultaneous
+
+34-minute attended soak, same Metro/COM9. Logs parked next to the bin
+(`spikeB-metro-serial-2026-07-26.log`, `spikeB-metro-tcp-2026-07-26.log`).
+Serial side: scripted capture from boot; TCP side: scripted client from
+this PC (wired side of the Airport LAN), 1 Hz stream logged + a ping
+sent every 60 s to prove two-way echo. BLE side: phone on nRF Connect,
+subscribed to NUS TX on **PyntRTK-coex**.
+
+- Boot: NINA 3.0.1, WiFi join at t=4.9 s (IP 192.168.0.168), TCP server
+  bound, `BLE.begin()` OK and advertising at t=5.3 s — WiFi + BLE
+  co-resident on the one SPI link, no mode switch.
+- `up=` monotonic 5 s → 2075 s, zero non-monotonic steps (no watchdog /
+  brownout resets). `drops=0` the whole run. RSSI −72…−84 dBm.
+- TCP: connected at up≈32 s, **zero disconnects over 33 min**, 2002
+  1 Hz lines received, **34/34 pings echoed**.
+- BLE: connected up=177 s → 1239 s (17.7 min continuous, concurrent
+  with TCP — gate met on that stretch alone), user-initiated bounce,
+  reconnected up=1291 s → end. The bounce didn't perturb TCP at all
+  (echo + stream continuous through the window).
+- Serial: only the boot banner and expected events — zero SPI timeout
+  spew across 2071 consecutive status lines.
+- **Bonus finding:** the TCP client was accepted **without sending a
+  byte** — upstream nina-fw 3.0.1's `server.available()` is NOT
+  data-gated. The Q19 silent-client workaround (send-anything-once /
+  UDP fallback) is a stock-Adafruit-1.7.x behavior only; listen-only
+  clients (u-center) should Just Work on this firmware. Re-verify on
+  the Pynt in section 7 step 2.
+
+Next: Spike C (section 6) — needs the Feather M0 Adalogger + AirLift
+Wing on the bench, Wing GPIO0 jumper closed, spare FAT32 microSD.

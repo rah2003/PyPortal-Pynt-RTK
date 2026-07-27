@@ -1,0 +1,2072 @@
+[   0.14] [client] connected to 192.168.0.168:10110
+[   0.14] [client] sent ping-1
+[   0.23] ping-1
+[   0.85] COEX up=32s wifi=1 rssi=-84 drops=0 ble_conn=0
+[   1.87] COEX up=33s wifi=1 rssi=-78 drops=0 ble_conn=0
+[   2.81] COEX up=34s wifi=1 rssi=-79 drops=0 ble_conn=0
+[   3.82] COEX up=35s wifi=1 rssi=-79 drops=0 ble_conn=0
+[   4.84] COEX up=36s wifi=1 rssi=-81 drops=0 ble_conn=0
+[   5.87] COEX up=37s wifi=1 rssi=-78 drops=0 ble_conn=0
+[   6.81] COEX up=38s wifi=1 rssi=-80 drops=0 ble_conn=0
+[   7.82] COEX up=39s wifi=1 rssi=-85 drops=0 ble_conn=0
+[   8.83] COEX up=40s wifi=1 rssi=-85 drops=0 ble_conn=0
+[   9.86] COEX up=41s wifi=1 rssi=-81 drops=0 ble_conn=0
+[  10.81] COEX up=42s wifi=1 rssi=-83 drops=0 ble_conn=0
+[  11.81] COEX up=43s wifi=1 rssi=-80 drops=0 ble_conn=0
+[  12.83] COEX up=44s wifi=1 rssi=-80 drops=0 ble_conn=0
+[  13.85] COEX up=45s wifi=1 rssi=-81 drops=0 ble_conn=0
+[  14.88] COEX up=46s wifi=1 rssi=-79 drops=0 ble_conn=0
+[  15.92] COEX up=47s wifi=1 rssi=-81 drops=0 ble_conn=0
+[  16.82] COEX up=48s wifi=1 rssi=-80 drops=0 ble_conn=0
+[  17.84] COEX up=49s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  18.87] COEX up=50s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  19.81] COEX up=51s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  20.81] COEX up=52s wifi=1 rssi=-80 drops=0 ble_conn=0
+[  21.84] COEX up=53s wifi=1 rssi=-72 drops=0 ble_conn=0
+[  22.87] COEX up=54s wifi=1 rssi=-74 drops=0 ble_conn=0
+[  23.81] COEX up=55s wifi=1 rssi=-72 drops=0 ble_conn=0
+[  24.81] COEX up=56s wifi=1 rssi=-73 drops=0 ble_conn=0
+[  25.83] COEX up=57s wifi=1 rssi=-72 drops=0 ble_conn=0
+[  26.86] COEX up=58s wifi=1 rssi=-71 drops=0 ble_conn=0
+[  27.80] COEX up=59s wifi=1 rssi=-72 drops=0 ble_conn=0
+[  28.81] COEX up=60s wifi=1 rssi=-74 drops=0 ble_conn=0
+[  29.83] COEX up=61s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  30.85] COEX up=62s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  31.80] COEX up=63s wifi=1 rssi=-81 drops=0 ble_conn=0
+[  32.80] COEX up=64s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  33.82] COEX up=65s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  34.85] COEX up=66s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  35.86] COEX up=67s wifi=1 rssi=-81 drops=0 ble_conn=0
+[  36.80] COEX up=68s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  37.81] COEX up=69s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  38.84] COEX up=70s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  39.87] COEX up=71s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  40.80] COEX up=72s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  41.81] COEX up=73s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  42.83] COEX up=74s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  43.86] COEX up=75s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  44.80] COEX up=76s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  45.80] COEX up=77s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  46.83] COEX up=78s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  47.85] COEX up=79s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  48.79] COEX up=80s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  49.79] COEX up=81s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  50.82] COEX up=82s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  51.84] COEX up=83s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  52.79] COEX up=84s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  53.80] COEX up=85s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  54.81] COEX up=86s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  55.83] COEX up=87s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  56.79] COEX up=88s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  57.79] COEX up=89s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  58.81] COEX up=90s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  59.83] COEX up=91s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  60.33] [client] sent ping-2
+[  60.55] ping-2
+[  60.79] COEX up=92s wifi=1 rssi=-72 drops=0 ble_conn=0
+[  61.79] COEX up=93s wifi=1 rssi=-78 drops=0 ble_conn=0
+[  62.80] COEX up=94s wifi=1 rssi=-81 drops=0 ble_conn=0
+[  63.82] COEX up=95s wifi=1 rssi=-82 drops=0 ble_conn=0
+[  64.85] COEX up=96s wifi=1 rssi=-82 drops=0 ble_conn=0
+[  65.78] COEX up=97s wifi=1 rssi=-83 drops=0 ble_conn=0
+[  66.79] COEX up=98s wifi=1 rssi=-85 drops=0 ble_conn=0
+[  67.82] COEX up=99s wifi=1 rssi=-81 drops=0 ble_conn=0
+[  68.84] COEX up=100s wifi=1 rssi=-80 drops=0 ble_conn=0
+[  69.78] COEX up=101s wifi=1 rssi=-79 drops=0 ble_conn=0
+[  70.80] COEX up=102s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  71.82] COEX up=103s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  72.84] COEX up=104s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  73.78] COEX up=105s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  74.78] COEX up=106s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  75.81] COEX up=107s wifi=1 rssi=-79 drops=0 ble_conn=0
+[  76.83] COEX up=108s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  77.86] COEX up=109s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  78.78] COEX up=110s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  79.80] COEX up=111s wifi=1 rssi=-75 drops=0 ble_conn=0
+[  80.83] COEX up=112s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  81.78] COEX up=113s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  82.78] COEX up=114s wifi=1 rssi=-76 drops=0 ble_conn=0
+[  83.79] COEX up=115s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  84.81] COEX up=116s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  85.84] COEX up=117s wifi=1 rssi=-77 drops=0 ble_conn=0
+[  86.77] COEX up=118s wifi=1 rssi=-74 drops=0 ble_conn=0
+[  87.78] COEX up=119s wifi=1 rssi=-72 drops=0 ble_conn=0
+[  88.81] COEX up=120s wifi=1 rssi=-72 drops=0 ble_conn=0
+[  89.83] COEX up=121s wifi=1 rssi=-71 drops=0 ble_conn=0
+[  90.77] COEX up=122s wifi=1 rssi=-71 drops=0 ble_conn=0
+[  91.79] COEX up=123s wifi=1 rssi=-70 drops=0 ble_conn=0
+[  92.81] COEX up=124s wifi=1 rssi=-69 drops=0 ble_conn=0
+[  93.83] COEX up=125s wifi=1 rssi=-71 drops=0 ble_conn=0
+[  94.77] COEX up=126s wifi=1 rssi=-70 drops=0 ble_conn=0
+[  95.77] COEX up=127s wifi=1 rssi=-71 drops=0 ble_conn=0
+[  96.80] COEX up=128s wifi=1 rssi=-71 drops=0 ble_conn=0
+[  97.83] COEX up=129s wifi=1 rssi=-72 drops=0 ble_conn=0
+[  98.77] COEX up=130s wifi=1 rssi=-71 drops=0 ble_conn=0
+[  99.77] COEX up=131s wifi=1 rssi=-72 drops=0 ble_conn=0
+[ 100.80] COEX up=132s wifi=1 rssi=-72 drops=0 ble_conn=0
+[ 101.82] COEX up=133s wifi=1 rssi=-70 drops=0 ble_conn=0
+[ 102.76] COEX up=134s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 103.76] COEX up=135s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 104.78] COEX up=136s wifi=1 rssi=-72 drops=0 ble_conn=0
+[ 105.81] COEX up=137s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 106.76] COEX up=138s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 107.76] COEX up=139s wifi=1 rssi=-72 drops=0 ble_conn=0
+[ 108.78] COEX up=140s wifi=1 rssi=-70 drops=0 ble_conn=0
+[ 109.80] COEX up=141s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 110.76] COEX up=142s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 111.76] COEX up=143s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 112.77] COEX up=144s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 113.79] COEX up=145s wifi=1 rssi=-72 drops=0 ble_conn=0
+[ 114.82] COEX up=146s wifi=1 rssi=-72 drops=0 ble_conn=0
+[ 115.76] COEX up=147s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 116.76] COEX up=148s wifi=1 rssi=-75 drops=0 ble_conn=0
+[ 117.79] COEX up=149s wifi=1 rssi=-76 drops=0 ble_conn=0
+[ 118.82] COEX up=150s wifi=1 rssi=-75 drops=0 ble_conn=0
+[ 119.75] COEX up=151s wifi=1 rssi=-75 drops=0 ble_conn=0
+[ 120.76] COEX up=152s wifi=1 rssi=-77 drops=0 ble_conn=0
+[ 120.76] [client] sent ping-3
+[ 120.86] ping-3
+[ 121.78] COEX up=153s wifi=1 rssi=-76 drops=0 ble_conn=0
+[ 122.81] COEX up=154s wifi=1 rssi=-75 drops=0 ble_conn=0
+[ 123.75] COEX up=155s wifi=1 rssi=-75 drops=0 ble_conn=0
+[ 124.75] COEX up=156s wifi=1 rssi=-75 drops=0 ble_conn=0
+[ 125.78] COEX up=157s wifi=1 rssi=-76 drops=0 ble_conn=0
+[ 126.80] COEX up=158s wifi=1 rssi=-74 drops=0 ble_conn=0
+[ 127.75] COEX up=159s wifi=1 rssi=-71 drops=0 ble_conn=0
+[ 128.75] COEX up=160s wifi=1 rssi=-73 drops=0 ble_conn=0
+[ 129.76] COEX up=161s wifi=1 rssi=-74 drops=0 ble_conn=0
+[ 130.80] COEX up=162s wifi=1 rssi=-73 drops=0 ble_conn=0
+[ 131.75] COEX up=163s wifi=1 rssi=-75 drops=0 ble_conn=0
+[ 132.74] COEX up=164s wifi=1 rssi=-73 drops=0 ble_conn=0
+[ 133.76] COEX up=165s wifi=1 rssi=-73 drops=0 ble_conn=0
+[ 134.79] COEX up=166s wifi=1 rssi=-73 drops=0 ble_conn=0
+[ 135.74] COEX up=167s wifi=1 rssi=-73 drops=0 ble_conn=0
+[ 136.74] COEX up=168s wifi=1 rssi=-73 drops=0 ble_conn=0
+[ 137.76] COEX up=169s wifi=1 rssi=-74 drops=0 ble_conn=0
+[ 138.78] COEX up=170s wifi=1 rssi=-74 drops=0 ble_conn=0
+[ 139.81] COEX up=171s wifi=1 rssi=-77 drops=0 ble_conn=0
+[ 140.74] COEX up=172s wifi=1 rssi=-75 drops=0 ble_conn=0
+[ 141.75] COEX up=173s wifi=1 rssi=-75 drops=0 ble_conn=0
+[ 142.77] COEX up=174s wifi=1 rssi=-76 drops=0 ble_conn=0
+[ 143.80] COEX up=175s wifi=1 rssi=-76 drops=0 ble_conn=0
+[ 144.74] COEX up=176s wifi=1 rssi=-72 drops=0 ble_conn=0
+[ 145.75] COEX up=177s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 146.77] COEX up=178s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 147.79] COEX up=179s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 148.73] COEX up=180s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 149.74] COEX up=181s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 150.76] COEX up=182s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 151.79] COEX up=183s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 152.74] COEX up=184s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 153.74] COEX up=185s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 154.76] COEX up=186s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 155.78] COEX up=187s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 156.73] COEX up=188s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 157.73] COEX up=189s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 158.75] COEX up=190s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 159.77] COEX up=191s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 160.80] COEX up=192s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 161.73] COEX up=193s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 162.74] COEX up=194s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 163.77] COEX up=195s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 164.79] COEX up=196s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 165.73] COEX up=197s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 166.74] COEX up=198s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 167.76] COEX up=199s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 168.79] COEX up=200s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 169.72] COEX up=201s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 170.73] COEX up=202s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 171.75] COEX up=203s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 172.78] COEX up=204s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 173.72] COEX up=205s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 174.72] COEX up=206s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 175.75] COEX up=207s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 176.77] COEX up=208s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 177.72] COEX up=209s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 178.72] COEX up=210s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 179.74] COEX up=211s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 180.76] COEX up=212s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 180.76] [client] sent ping-4
+[ 180.87] ping-4
+[ 181.72] COEX up=213s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 182.72] COEX up=214s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 183.73] COEX up=215s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 184.76] COEX up=216s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 185.71] COEX up=217s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 186.71] COEX up=218s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 187.73] COEX up=219s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 188.75] COEX up=220s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 189.78] COEX up=221s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 190.71] COEX up=222s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 191.73] COEX up=223s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 192.75] COEX up=224s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 193.78] COEX up=225s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 194.71] COEX up=226s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 195.71] COEX up=227s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 196.74] COEX up=228s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 197.77] COEX up=229s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 198.71] COEX up=230s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 199.71] COEX up=231s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 200.74] COEX up=232s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 201.76] COEX up=233s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 202.71] COEX up=234s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 203.70] COEX up=235s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 204.73] COEX up=236s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 205.75] COEX up=237s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 206.70] COEX up=238s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 207.70] COEX up=239s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 208.72] COEX up=240s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 209.74] COEX up=241s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 210.70] COEX up=242s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 211.70] COEX up=243s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 212.71] COEX up=244s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 213.74] COEX up=245s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 214.76] COEX up=246s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 215.70] COEX up=247s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 216.71] COEX up=248s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 217.73] COEX up=249s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 218.75] COEX up=250s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 219.69] COEX up=251s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 220.70] COEX up=252s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 221.72] COEX up=253s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 222.75] COEX up=254s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 223.69] COEX up=255s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 224.70] COEX up=256s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 225.72] COEX up=257s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 226.75] COEX up=258s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 227.69] COEX up=259s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 228.69] COEX up=260s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 229.71] COEX up=261s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 230.74] COEX up=262s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 231.69] COEX up=263s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 232.69] COEX up=264s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 233.71] COEX up=265s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 234.73] COEX up=266s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 235.68] COEX up=267s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 236.68] COEX up=268s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 237.70] COEX up=269s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 238.73] COEX up=270s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 239.68] COEX up=271s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 240.68] COEX up=272s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 241.19] [client] sent ping-5
+[ 241.39] ping-5
+[ 241.69] COEX up=273s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 242.72] COEX up=274s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 243.74] COEX up=275s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 244.68] COEX up=276s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 245.69] COEX up=277s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 246.71] COEX up=278s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 247.74] COEX up=279s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 248.67] COEX up=280s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 249.68] COEX up=281s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 250.70] COEX up=282s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 251.73] COEX up=283s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 252.67] COEX up=284s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 253.68] COEX up=285s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 254.70] COEX up=286s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 255.72] COEX up=287s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 256.67] COEX up=288s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 257.68] COEX up=289s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 258.70] COEX up=290s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 259.72] COEX up=291s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 260.67] COEX up=292s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 261.67] COEX up=293s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 262.69] COEX up=294s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 263.71] COEX up=295s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 264.67] COEX up=296s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 265.66] COEX up=297s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 266.68] COEX up=298s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 267.71] COEX up=299s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 268.73] COEX up=300s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 269.67] COEX up=301s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 270.67] COEX up=302s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 271.70] COEX up=303s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 272.72] COEX up=304s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 273.67] COEX up=305s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 274.67] COEX up=306s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 275.69] COEX up=307s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 276.72] COEX up=308s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 277.66] COEX up=309s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 278.66] COEX up=310s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 279.68] COEX up=311s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 280.71] COEX up=312s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 281.66] COEX up=313s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 282.66] COEX up=314s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 283.68] COEX up=315s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 284.70] COEX up=316s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 285.73] COEX up=317s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 286.66] COEX up=318s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 287.68] COEX up=319s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 288.70] COEX up=320s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 289.72] COEX up=321s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 290.66] COEX up=322s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 291.66] COEX up=323s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 292.68] COEX up=324s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 293.71] COEX up=325s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 294.65] COEX up=326s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 295.66] COEX up=327s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 296.68] COEX up=328s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 297.70] COEX up=329s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 298.65] COEX up=330s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 299.65] COEX up=331s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 300.68] COEX up=332s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 301.69] [client] sent ping-6
+[ 301.70] COEX up=333s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 301.81] ping-6
+[ 302.65] COEX up=334s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 303.65] COEX up=335s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 304.67] COEX up=336s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 305.70] COEX up=337s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 306.64] COEX up=338s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 307.64] COEX up=339s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 308.66] COEX up=340s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 309.68] COEX up=341s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 310.64] COEX up=342s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 311.64] COEX up=343s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 312.66] COEX up=344s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 313.68] COEX up=345s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 314.64] COEX up=346s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 315.64] COEX up=347s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 316.65] COEX up=348s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 317.68] COEX up=349s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 318.70] COEX up=350s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 319.63] COEX up=351s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 320.65] COEX up=352s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 321.67] COEX up=353s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 322.69] COEX up=354s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 323.63] COEX up=355s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 324.64] COEX up=356s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 325.66] COEX up=357s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 326.69] COEX up=358s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 327.64] COEX up=359s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 328.63] COEX up=360s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 329.66] COEX up=361s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 330.68] COEX up=362s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 331.63] COEX up=363s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 332.63] COEX up=364s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 333.67] COEX up=365s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 334.67] COEX up=366s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 335.62] COEX up=367s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 336.62] COEX up=368s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 337.65] COEX up=369s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 338.67] COEX up=370s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 339.62] COEX up=371s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 340.62] COEX up=372s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 341.64] COEX up=373s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 342.66] COEX up=374s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 343.62] COEX up=375s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 344.61] COEX up=376s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 345.63] COEX up=377s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 346.66] COEX up=378s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 347.68] COEX up=379s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 348.61] COEX up=380s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 349.63] COEX up=381s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 350.65] COEX up=382s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 351.67] COEX up=383s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 352.61] COEX up=384s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 353.61] COEX up=385s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 354.64] COEX up=386s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 355.67] COEX up=387s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 356.61] COEX up=388s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 357.61] COEX up=389s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 358.64] COEX up=390s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 359.66] COEX up=391s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 360.61] COEX up=392s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 361.61] COEX up=393s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 362.12] [client] sent ping-7
+[ 362.33] ping-7
+[ 362.63] COEX up=394s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 363.66] COEX up=395s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 364.61] COEX up=396s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 365.61] COEX up=397s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 366.62] COEX up=398s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 367.65] COEX up=399s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 368.60] COEX up=400s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 369.60] COEX up=401s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 370.62] COEX up=402s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 371.64] COEX up=403s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 372.67] COEX up=404s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 373.60] COEX up=405s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 374.61] COEX up=406s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 375.64] COEX up=407s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 376.66] COEX up=408s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 377.60] COEX up=409s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 378.61] COEX up=410s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 379.63] COEX up=411s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 380.65] COEX up=412s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 381.60] COEX up=413s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 382.60] COEX up=414s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 383.62] COEX up=415s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 384.65] COEX up=416s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 385.59] COEX up=417s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 386.59] COEX up=418s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 387.62] COEX up=419s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 388.64] COEX up=420s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 389.59] COEX up=421s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 390.59] COEX up=422s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 391.61] COEX up=423s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 392.63] COEX up=424s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 393.59] COEX up=425s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 394.59] COEX up=426s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 395.61] COEX up=427s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 396.63] COEX up=428s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 397.65] COEX up=429s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 398.58] COEX up=430s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 399.59] COEX up=431s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 400.62] COEX up=432s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 401.65] COEX up=433s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 402.58] COEX up=434s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 403.59] COEX up=435s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 404.62] COEX up=436s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 405.64] COEX up=437s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 406.58] COEX up=438s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 407.59] COEX up=439s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 408.61] COEX up=440s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 409.63] COEX up=441s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 410.58] COEX up=442s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 411.58] COEX up=443s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 412.60] COEX up=444s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 413.63] COEX up=445s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 414.58] COEX up=446s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 415.58] COEX up=447s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 416.60] COEX up=448s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 417.62] COEX up=449s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 418.57] COEX up=450s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 419.57] COEX up=451s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 420.59] COEX up=452s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 421.61] COEX up=453s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 422.63] [client] sent ping-8
+[ 422.63] COEX up=454s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 422.74] ping-8
+[ 423.57] COEX up=455s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 424.58] COEX up=456s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 425.60] COEX up=457s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 426.63] COEX up=458s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 427.56] COEX up=459s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 428.58] COEX up=460s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 429.60] COEX up=461s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 430.62] COEX up=462s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 431.56] COEX up=463s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 432.57] COEX up=464s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 433.60] COEX up=465s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 434.62] COEX up=466s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 435.56] COEX up=467s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 436.56] COEX up=468s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 437.58] COEX up=469s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 438.61] COEX up=470s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 439.56] COEX up=471s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 440.56] COEX up=472s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 441.58] COEX up=473s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 442.60] COEX up=474s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 443.56] COEX up=475s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 444.57] COEX up=476s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 445.57] COEX up=477s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 446.60] COEX up=478s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 447.55] COEX up=479s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 448.55] COEX up=480s wifi=1 rssi=-83 drops=0 ble_conn=1
+[ 449.57] COEX up=481s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 450.60] COEX up=482s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 451.62] COEX up=483s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 452.55] COEX up=484s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 453.56] COEX up=485s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 454.59] COEX up=486s wifi=1 rssi=-83 drops=0 ble_conn=1
+[ 455.61] COEX up=487s wifi=1 rssi=-83 drops=0 ble_conn=1
+[ 456.55] COEX up=488s wifi=1 rssi=-82 drops=0 ble_conn=1
+[ 457.56] COEX up=489s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 458.58] COEX up=490s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 459.60] COEX up=491s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 460.54] COEX up=492s wifi=1 rssi=-82 drops=0 ble_conn=1
+[ 461.55] COEX up=493s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 462.57] COEX up=494s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 463.60] COEX up=495s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 464.54] COEX up=496s wifi=1 rssi=-82 drops=0 ble_conn=1
+[ 465.54] COEX up=497s wifi=1 rssi=-86 drops=0 ble_conn=1
+[ 466.57] COEX up=498s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 467.59] COEX up=499s wifi=1 rssi=-82 drops=0 ble_conn=1
+[ 468.54] COEX up=500s wifi=1 rssi=-82 drops=0 ble_conn=1
+[ 469.54] COEX up=501s wifi=1 rssi=-83 drops=0 ble_conn=1
+[ 470.56] COEX up=502s wifi=1 rssi=-82 drops=0 ble_conn=1
+[ 471.58] COEX up=503s wifi=1 rssi=-83 drops=0 ble_conn=1
+[ 472.54] COEX up=504s wifi=1 rssi=-83 drops=0 ble_conn=1
+[ 473.54] COEX up=505s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 474.55] COEX up=506s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 475.58] COEX up=507s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 476.61] COEX up=508s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 477.53] COEX up=509s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 478.55] COEX up=510s wifi=1 rssi=-83 drops=0 ble_conn=1
+[ 479.56] COEX up=511s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 480.60] COEX up=512s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 481.53] COEX up=513s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 482.54] COEX up=514s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 483.06] [client] sent ping-9
+[ 483.26] ping-9
+[ 483.57] COEX up=515s wifi=1 rssi=-82 drops=0 ble_conn=1
+[ 484.59] COEX up=516s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 485.53] COEX up=517s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 486.54] COEX up=518s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 487.56] COEX up=519s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 488.58] COEX up=520s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 489.52] COEX up=521s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 490.53] COEX up=522s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 491.55] COEX up=523s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 492.58] COEX up=524s wifi=1 rssi=-83 drops=0 ble_conn=1
+[ 493.52] COEX up=525s wifi=1 rssi=-82 drops=0 ble_conn=1
+[ 494.52] COEX up=526s wifi=1 rssi=-83 drops=0 ble_conn=1
+[ 495.55] COEX up=527s wifi=1 rssi=-82 drops=0 ble_conn=1
+[ 496.57] COEX up=528s wifi=1 rssi=-90 drops=0 ble_conn=1
+[ 497.52] COEX up=529s wifi=1 rssi=-87 drops=0 ble_conn=1
+[ 498.52] COEX up=530s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 499.54] COEX up=531s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 500.56] COEX up=532s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 501.52] COEX up=533s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 502.52] COEX up=534s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 503.54] COEX up=535s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 504.56] COEX up=536s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 505.51] COEX up=537s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 506.52] COEX up=538s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 507.53] COEX up=539s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 508.55] COEX up=540s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 509.57] COEX up=541s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 510.51] COEX up=542s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 511.52] COEX up=543s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 512.55] COEX up=544s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 513.56] COEX up=545s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 514.51] COEX up=546s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 515.51] COEX up=547s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 516.54] COEX up=548s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 517.56] COEX up=549s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 518.51] COEX up=550s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 519.51] COEX up=551s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 520.53] COEX up=552s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 521.56] COEX up=553s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 522.51] COEX up=554s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 523.51] COEX up=555s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 524.53] COEX up=556s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 525.55] COEX up=557s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 526.50] COEX up=558s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 527.50] COEX up=559s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 528.52] COEX up=560s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 529.54] COEX up=561s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 530.57] COEX up=562s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 531.50] COEX up=563s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 532.52] COEX up=564s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 533.54] COEX up=565s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 534.56] COEX up=566s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 535.50] COEX up=567s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 536.51] COEX up=568s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 537.53] COEX up=569s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 538.56] COEX up=570s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 539.50] COEX up=571s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 540.50] COEX up=572s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 541.52] COEX up=573s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 542.55] COEX up=574s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 543.50] COEX up=575s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 543.50] [client] sent ping-10
+[ 543.68] ping-10
+[ 544.50] COEX up=576s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 545.52] COEX up=577s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 546.54] COEX up=578s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 547.49] COEX up=579s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 548.49] COEX up=580s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 549.51] COEX up=581s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 550.53] COEX up=582s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 551.56] COEX up=583s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 552.49] COEX up=584s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 553.51] COEX up=585s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 554.53] COEX up=586s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 555.55] COEX up=587s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 556.49] COEX up=588s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 557.49] COEX up=589s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 558.52] COEX up=590s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 559.54] COEX up=591s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 560.49] COEX up=592s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 561.49] COEX up=593s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 562.52] COEX up=594s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 563.54] COEX up=595s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 564.48] COEX up=596s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 565.49] COEX up=597s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 566.51] COEX up=598s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 567.53] COEX up=599s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 568.48] COEX up=600s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 569.48] COEX up=601s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 570.50] COEX up=602s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 571.53] COEX up=603s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 572.47] COEX up=604s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 573.47] COEX up=605s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 574.49] COEX up=606s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 575.51] COEX up=607s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 576.47] COEX up=608s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 577.47] COEX up=609s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 578.49] COEX up=610s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 579.51] COEX up=611s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 580.47] COEX up=612s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 581.47] COEX up=613s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 582.48] COEX up=614s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 583.50] COEX up=615s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 584.46] COEX up=616s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 585.46] COEX up=617s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 586.48] COEX up=618s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 587.50] COEX up=619s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 588.52] COEX up=620s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 589.46] COEX up=621s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 590.47] COEX up=622s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 591.49] COEX up=623s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 592.52] COEX up=624s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 593.46] COEX up=625s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 594.46] COEX up=626s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 595.49] COEX up=627s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 596.51] COEX up=628s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 597.45] COEX up=629s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 598.46] COEX up=630s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 599.48] COEX up=631s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 600.51] COEX up=632s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 601.45] COEX up=633s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 602.46] COEX up=634s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 603.48] COEX up=635s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 603.98] [client] sent ping-11
+[ 604.09] ping-11
+[ 604.50] COEX up=636s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 605.45] COEX up=637s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 606.45] COEX up=638s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 607.47] COEX up=639s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 608.49] COEX up=640s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 609.45] COEX up=641s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 610.44] COEX up=642s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 611.46] COEX up=643s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 612.48] COEX up=644s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 613.44] COEX up=645s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 614.44] COEX up=646s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 615.45] COEX up=647s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 616.48] COEX up=648s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 617.44] COEX up=649s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 618.43] COEX up=650s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 619.44] COEX up=651s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 620.47] COEX up=652s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 621.50] COEX up=653s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 622.43] COEX up=654s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 623.45] COEX up=655s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 624.47] COEX up=656s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 625.49] COEX up=657s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 626.43] COEX up=658s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 627.44] COEX up=659s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 628.46] COEX up=660s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 629.49] COEX up=661s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 630.42] COEX up=662s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 631.43] COEX up=663s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 632.46] COEX up=664s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 633.48] COEX up=665s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 634.42] COEX up=666s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 635.43] COEX up=667s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 636.45] COEX up=668s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 637.47] COEX up=669s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 638.42] COEX up=670s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 639.42] COEX up=671s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 640.44] COEX up=672s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 641.46] COEX up=673s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 642.42] COEX up=674s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 643.42] COEX up=675s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 644.43] COEX up=676s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 645.45] COEX up=677s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 646.41] COEX up=678s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 647.41] COEX up=679s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 648.42] COEX up=680s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 649.45] COEX up=681s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 650.41] COEX up=682s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 651.41] COEX up=683s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 652.42] COEX up=684s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 653.45] COEX up=685s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 654.47] COEX up=686s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 655.41] COEX up=687s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 656.41] COEX up=688s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 657.44] COEX up=689s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 658.46] COEX up=690s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 659.40] COEX up=691s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 660.41] COEX up=692s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 661.43] COEX up=693s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 662.46] COEX up=694s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 663.40] COEX up=695s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 664.40] COEX up=696s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 664.40] [client] sent ping-12
+[ 664.51] ping-12
+[ 665.43] COEX up=697s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 666.46] COEX up=698s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 667.40] COEX up=699s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 668.40] COEX up=700s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 669.42] COEX up=701s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 670.45] COEX up=702s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 671.40] COEX up=703s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 672.40] COEX up=704s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 673.41] COEX up=705s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 674.44] COEX up=706s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 675.39] COEX up=707s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 676.39] COEX up=708s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 677.41] COEX up=709s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 678.43] COEX up=710s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 679.46] COEX up=711s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 680.39] COEX up=712s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 681.40] COEX up=713s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 682.43] COEX up=714s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 683.45] COEX up=715s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 684.38] COEX up=716s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 685.40] COEX up=717s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 686.42] COEX up=718s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 687.44] COEX up=719s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 688.38] COEX up=720s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 689.38] COEX up=721s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 690.41] COEX up=722s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 691.44] COEX up=723s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 692.38] COEX up=724s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 693.38] COEX up=725s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 694.41] COEX up=726s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 695.43] COEX up=727s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 696.38] COEX up=728s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 697.38] COEX up=729s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 698.40] COEX up=730s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 699.43] COEX up=731s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 700.37] COEX up=732s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 701.37] COEX up=733s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 702.39] COEX up=734s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 703.42] COEX up=735s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 704.37] COEX up=736s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 705.37] COEX up=737s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 706.38] COEX up=738s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 707.41] COEX up=739s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 708.37] COEX up=740s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 709.37] COEX up=741s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 710.38] COEX up=742s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 711.41] COEX up=743s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 712.43] COEX up=744s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 713.36] COEX up=745s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 714.38] COEX up=746s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 715.40] COEX up=747s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 716.42] COEX up=748s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 717.36] COEX up=749s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 718.37] COEX up=750s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 719.39] COEX up=751s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 720.41] COEX up=752s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 721.36] COEX up=753s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 722.36] COEX up=754s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 723.39] COEX up=755s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 724.41] [client] sent ping-13
+[ 724.41] COEX up=756s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 724.51] ping-13
+[ 725.35] COEX up=757s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 726.36] COEX up=758s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 727.38] COEX up=759s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 728.40] COEX up=760s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 729.35] COEX up=761s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 730.36] COEX up=762s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 731.37] COEX up=763s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 732.40] COEX up=764s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 733.35] COEX up=765s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 734.34] COEX up=766s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 735.37] COEX up=767s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 736.39] COEX up=768s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 737.34] COEX up=769s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 738.34] COEX up=770s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 739.36] COEX up=771s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 740.39] COEX up=772s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 741.34] COEX up=773s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 742.34] COEX up=774s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 743.35] COEX up=775s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 744.38] COEX up=776s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 745.33] COEX up=777s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 746.33] COEX up=778s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 747.34] COEX up=779s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 748.37] COEX up=780s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 749.33] COEX up=781s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 750.33] COEX up=782s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 751.34] COEX up=783s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 752.36] COEX up=784s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 753.39] COEX up=785s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 754.32] COEX up=786s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 755.34] COEX up=787s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 756.35] COEX up=788s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 757.38] COEX up=789s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 758.32] COEX up=790s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 759.33] COEX up=791s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 760.35] COEX up=792s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 761.38] COEX up=793s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 762.31] COEX up=794s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 763.32] COEX up=795s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 764.34] COEX up=796s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 765.37] COEX up=797s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 766.31] COEX up=798s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 767.31] COEX up=799s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 768.34] COEX up=800s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 769.37] COEX up=801s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 770.31] COEX up=802s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 771.31] COEX up=803s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 772.33] COEX up=804s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 773.35] COEX up=805s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 774.30] COEX up=806s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 775.31] COEX up=807s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 776.32] COEX up=808s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 777.35] COEX up=809s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 778.30] COEX up=810s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 779.30] COEX up=811s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 780.32] COEX up=812s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 781.35] COEX up=813s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 782.29] COEX up=814s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 783.30] COEX up=815s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 784.32] COEX up=816s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 784.82] [client] sent ping-14
+[ 785.03] ping-14
+[ 785.33] COEX up=817s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 786.29] COEX up=818s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 787.29] COEX up=819s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 788.30] COEX up=820s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 789.34] COEX up=821s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 790.29] COEX up=822s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 791.29] COEX up=823s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 792.30] COEX up=824s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 793.33] COEX up=825s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 794.35] COEX up=826s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 795.28] COEX up=827s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 796.30] COEX up=828s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 797.32] COEX up=829s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 798.34] COEX up=830s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 799.28] COEX up=831s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 800.29] COEX up=832s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 801.31] COEX up=833s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 802.34] COEX up=834s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 803.28] COEX up=835s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 804.28] COEX up=836s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 805.31] COEX up=837s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 806.33] COEX up=838s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 807.27] COEX up=839s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 808.28] COEX up=840s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 809.30] COEX up=841s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 810.33] COEX up=842s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 811.27] COEX up=843s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 812.27] COEX up=844s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 813.30] COEX up=845s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 814.32] COEX up=846s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 815.27] COEX up=847s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 816.27] COEX up=848s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 817.29] COEX up=849s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 818.31] COEX up=850s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 819.26] COEX up=851s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 820.26] COEX up=852s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 821.28] COEX up=853s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 822.30] COEX up=854s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 823.26] COEX up=855s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 824.26] COEX up=856s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 825.27] COEX up=857s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 826.29] COEX up=858s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 827.32] COEX up=859s wifi=1 rssi=-81 drops=0 ble_conn=1
+[ 828.25] COEX up=860s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 829.27] COEX up=861s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 830.29] COEX up=862s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 831.32] COEX up=863s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 832.25] COEX up=864s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 833.26] COEX up=865s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 834.28] COEX up=866s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 835.31] COEX up=867s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 836.25] COEX up=868s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 837.25] COEX up=869s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 838.28] COEX up=870s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 839.31] COEX up=871s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 840.24] COEX up=872s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 841.24] COEX up=873s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 842.27] COEX up=874s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 843.30] COEX up=875s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 844.24] COEX up=876s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 845.25] COEX up=877s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 845.25] [client] sent ping-15
+[ 845.35] ping-15
+[ 846.27] COEX up=878s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 847.29] COEX up=879s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 848.24] COEX up=880s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 849.24] COEX up=881s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 850.26] COEX up=882s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 851.28] COEX up=883s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 852.23] COEX up=884s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 853.23] COEX up=885s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 854.26] COEX up=886s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 855.28] COEX up=887s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 856.23] COEX up=888s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 857.23] COEX up=889s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 858.25] COEX up=890s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 859.27] COEX up=891s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 860.23] COEX up=892s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 861.22] COEX up=893s wifi=1 rssi=-68 drops=0 ble_conn=1
+[ 862.24] COEX up=894s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 863.27] COEX up=895s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 864.22] COEX up=896s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 865.22] COEX up=897s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 866.24] COEX up=898s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 867.26] COEX up=899s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 868.28] COEX up=900s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 869.22] COEX up=901s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 870.23] COEX up=902s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 871.25] COEX up=903s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 872.28] COEX up=904s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 873.21] COEX up=905s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 874.22] COEX up=906s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 875.25] COEX up=907s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 876.27] COEX up=908s wifi=1 rssi=-78 drops=0 ble_conn=1
+[ 877.21] COEX up=909s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 878.22] COEX up=910s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 879.23] COEX up=911s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 880.26] COEX up=912s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 881.21] COEX up=913s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 882.21] COEX up=914s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 883.23] COEX up=915s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 884.26] COEX up=916s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 885.20] COEX up=917s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 886.20] COEX up=918s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 887.23] COEX up=919s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 888.25] COEX up=920s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 889.20] COEX up=921s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 890.20] COEX up=922s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 891.22] COEX up=923s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 892.25] COEX up=924s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 893.19] COEX up=925s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 894.20] COEX up=926s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 895.22] COEX up=927s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 896.23] COEX up=928s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 897.19] COEX up=929s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 898.19] COEX up=930s wifi=1 rssi=-77 drops=0 ble_conn=1
+[ 899.21] COEX up=931s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 900.23] COEX up=932s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 901.18] COEX up=933s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 902.18] COEX up=934s wifi=1 rssi=-79 drops=0 ble_conn=1
+[ 903.20] COEX up=935s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 904.23] COEX up=936s wifi=1 rssi=-80 drops=0 ble_conn=1
+[ 905.18] COEX up=937s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 905.69] [client] sent ping-16
+[ 905.87] ping-16
+[ 906.18] COEX up=938s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 907.20] COEX up=939s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 908.22] COEX up=940s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 909.24] COEX up=941s wifi=1 rssi=-76 drops=0 ble_conn=1
+[ 910.17] COEX up=942s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 911.19] COEX up=943s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 912.21] COEX up=944s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 913.23] COEX up=945s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 914.17] COEX up=946s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 915.18] COEX up=947s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 916.21] COEX up=948s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 917.23] COEX up=949s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 918.17] COEX up=950s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 919.18] COEX up=951s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 920.20] COEX up=952s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 921.22] COEX up=953s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 922.17] COEX up=954s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 923.17] COEX up=955s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 924.20] COEX up=956s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 925.22] COEX up=957s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 926.16] COEX up=958s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 927.17] COEX up=959s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 928.18] COEX up=960s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 929.21] COEX up=961s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 930.16] COEX up=962s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 931.16] COEX up=963s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 932.18] COEX up=964s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 933.21] COEX up=965s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 934.16] COEX up=966s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 935.16] COEX up=967s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 936.17] COEX up=968s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 937.20] COEX up=969s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 938.15] COEX up=970s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 939.15] COEX up=971s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 940.17] COEX up=972s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 941.19] COEX up=973s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 942.15] COEX up=974s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 943.15] COEX up=975s wifi=1 rssi=-67 drops=0 ble_conn=1
+[ 944.16] COEX up=976s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 945.19] COEX up=977s wifi=1 rssi=-68 drops=0 ble_conn=1
+[ 946.21] COEX up=978s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 947.14] COEX up=979s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 948.15] COEX up=980s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 949.18] COEX up=981s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 950.21] COEX up=982s wifi=1 rssi=-74 drops=0 ble_conn=1
+[ 951.14] COEX up=983s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 952.15] COEX up=984s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 953.18] COEX up=985s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 954.20] COEX up=986s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 955.14] COEX up=987s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 956.14] COEX up=988s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 957.17] COEX up=989s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 958.19] COEX up=990s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 959.14] COEX up=991s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 960.14] COEX up=992s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 961.16] COEX up=993s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 962.19] COEX up=994s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 963.13] COEX up=995s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 964.13] COEX up=996s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 965.16] COEX up=997s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 966.17] [client] sent ping-17
+[ 966.19] COEX up=998s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 966.28] ping-17
+[ 967.20] COEX up=999s wifi=1 rssi=-67 drops=0 ble_conn=1
+[ 968.13] COEX up=1000s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 969.15] COEX up=1001s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 970.17] COEX up=1002s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 971.13] COEX up=1003s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 972.13] COEX up=1004s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 973.14] COEX up=1005s wifi=1 rssi=-68 drops=0 ble_conn=1
+[ 974.17] COEX up=1006s wifi=1 rssi=-68 drops=0 ble_conn=1
+[ 975.12] COEX up=1007s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 976.12] COEX up=1008s wifi=1 rssi=-68 drops=0 ble_conn=1
+[ 977.14] COEX up=1009s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 978.16] COEX up=1010s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 979.18] COEX up=1011s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 980.12] COEX up=1012s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 981.13] COEX up=1013s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 982.15] COEX up=1014s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 983.18] COEX up=1015s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 984.12] COEX up=1016s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 985.12] COEX up=1017s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 986.15] COEX up=1018s wifi=1 rssi=-75 drops=0 ble_conn=1
+[ 987.17] COEX up=1019s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 988.11] COEX up=1020s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 989.12] COEX up=1021s wifi=1 rssi=-73 drops=0 ble_conn=1
+[ 990.13] COEX up=1022s wifi=1 rssi=-72 drops=0 ble_conn=1
+[ 991.16] COEX up=1023s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 992.11] COEX up=1024s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 993.11] COEX up=1025s wifi=1 rssi=-71 drops=0 ble_conn=1
+[ 994.13] COEX up=1026s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 995.16] COEX up=1027s wifi=1 rssi=-69 drops=0 ble_conn=1
+[ 996.11] COEX up=1028s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 997.11] COEX up=1029s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 998.13] COEX up=1030s wifi=1 rssi=-70 drops=0 ble_conn=1
+[ 999.15] COEX up=1031s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1000.10] COEX up=1032s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1001.11] COEX up=1033s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1002.12] COEX up=1034s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1003.15] COEX up=1035s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1004.10] COEX up=1036s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1005.10] COEX up=1037s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1006.12] COEX up=1038s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1007.14] COEX up=1039s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1008.16] COEX up=1040s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1009.10] COEX up=1041s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1010.11] COEX up=1042s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1011.13] COEX up=1043s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1012.16] COEX up=1044s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1013.10] COEX up=1045s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1014.10] COEX up=1046s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1015.13] COEX up=1047s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1016.15] COEX up=1048s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1017.09] COEX up=1049s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1018.10] COEX up=1050s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1019.12] COEX up=1051s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1020.15] COEX up=1052s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1021.09] COEX up=1053s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1022.09] COEX up=1054s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1023.11] COEX up=1055s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1024.14] COEX up=1056s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1025.09] COEX up=1057s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1026.09] COEX up=1058s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1026.60] [client] sent ping-18
+[1026.80] ping-18
+[1027.11] COEX up=1059s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1028.13] COEX up=1060s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1029.08] COEX up=1061s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1030.08] COEX up=1062s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1031.09] COEX up=1063s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1032.13] COEX up=1064s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1033.08] COEX up=1065s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1034.08] COEX up=1066s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1035.10] COEX up=1067s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1036.12] COEX up=1068s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1037.14] COEX up=1069s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1038.08] COEX up=1070s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1039.09] COEX up=1071s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1040.11] COEX up=1072s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1041.14] COEX up=1073s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1042.08] COEX up=1074s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1043.08] COEX up=1075s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1044.11] COEX up=1076s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1045.12] COEX up=1077s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1046.07] COEX up=1078s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1047.08] COEX up=1079s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1048.09] COEX up=1080s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1049.12] COEX up=1081s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1050.07] COEX up=1082s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1051.07] COEX up=1083s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1052.09] COEX up=1084s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1053.11] COEX up=1085s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1054.07] COEX up=1086s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1055.07] COEX up=1087s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1056.09] COEX up=1088s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1057.11] COEX up=1089s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1058.07] COEX up=1090s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1059.07] COEX up=1091s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1060.08] COEX up=1092s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1061.11] COEX up=1093s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1062.13] COEX up=1094s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1063.06] COEX up=1095s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1064.07] COEX up=1096s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1065.10] COEX up=1097s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1066.12] COEX up=1098s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1067.06] COEX up=1099s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1068.06] COEX up=1100s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1069.09] COEX up=1101s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1070.12] COEX up=1102s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1071.06] COEX up=1103s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1072.06] COEX up=1104s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1073.08] COEX up=1105s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1074.11] COEX up=1106s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1075.06] COEX up=1107s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1076.06] COEX up=1108s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1077.08] COEX up=1109s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1078.10] COEX up=1110s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1079.05] COEX up=1111s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1080.05] COEX up=1112s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1081.07] COEX up=1113s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1082.10] COEX up=1114s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1083.05] COEX up=1115s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1084.05] COEX up=1116s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1085.07] COEX up=1117s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1086.09] COEX up=1118s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1086.60] [client] sent ping-19
+[1086.81] ping-19
+[1087.04] COEX up=1119s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1088.05] COEX up=1120s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1089.06] COEX up=1121s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1090.08] COEX up=1122s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1091.11] COEX up=1123s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1092.04] COEX up=1124s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1093.05] COEX up=1125s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1094.08] COEX up=1126s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1095.10] COEX up=1127s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1096.04] COEX up=1128s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1097.04] COEX up=1129s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1098.07] COEX up=1130s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1099.10] COEX up=1131s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1100.04] COEX up=1132s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1101.04] COEX up=1133s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1102.07] COEX up=1134s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1103.09] COEX up=1135s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1104.04] COEX up=1136s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1105.04] COEX up=1137s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1106.06] COEX up=1138s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1107.08] COEX up=1139s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1108.03] COEX up=1140s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1109.03] COEX up=1141s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1110.05] COEX up=1142s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1111.08] COEX up=1143s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1112.03] COEX up=1144s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1113.03] COEX up=1145s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1114.05] COEX up=1146s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1115.06] COEX up=1147s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1116.09] COEX up=1148s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1117.03] COEX up=1149s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1118.04] COEX up=1150s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1119.06] COEX up=1151s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1120.09] COEX up=1152s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1121.02] COEX up=1153s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1122.03] COEX up=1154s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1123.06] COEX up=1155s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1124.08] COEX up=1156s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1125.02] COEX up=1157s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1126.02] COEX up=1158s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1127.05] COEX up=1159s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1128.08] COEX up=1160s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1129.02] COEX up=1161s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1130.02] COEX up=1162s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1131.05] COEX up=1163s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1132.07] COEX up=1164s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1133.01] COEX up=1165s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1134.02] COEX up=1166s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1135.04] COEX up=1167s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1136.06] COEX up=1168s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1137.01] COEX up=1169s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1138.01] COEX up=1170s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1139.03] COEX up=1171s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1140.06] COEX up=1172s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1141.01] COEX up=1173s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1142.01] COEX up=1174s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1143.03] COEX up=1175s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1144.05] COEX up=1176s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1145.01] COEX up=1177s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1146.00] COEX up=1178s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1147.02] COEX up=1179s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1147.02] [client] sent ping-20
+[1147.12] ping-20
+[1148.04] COEX up=1180s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1149.07] COEX up=1181s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1150.00] COEX up=1182s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1151.01] COEX up=1183s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1152.04] COEX up=1184s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1153.06] COEX up=1185s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1154.00] COEX up=1186s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1155.01] COEX up=1187s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1156.02] COEX up=1188s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1157.05] COEX up=1189s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1158.00] COEX up=1190s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1159.00] COEX up=1191s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1160.02] COEX up=1192s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1161.05] COEX up=1193s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1161.99] COEX up=1194s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1162.99] COEX up=1195s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1164.02] COEX up=1196s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1165.04] COEX up=1197s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1165.99] COEX up=1198s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1166.99] COEX up=1199s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1168.01] COEX up=1200s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1169.03] COEX up=1201s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1169.99] COEX up=1202s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1170.99] COEX up=1203s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1172.00] COEX up=1204s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1173.03] COEX up=1205s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1173.98] COEX up=1206s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1174.98] COEX up=1207s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1176.00] COEX up=1208s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1177.02] COEX up=1209s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1178.05] COEX up=1210s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1178.98] COEX up=1211s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1179.99] COEX up=1212s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1181.02] COEX up=1213s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1182.04] COEX up=1214s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1182.98] COEX up=1215s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1183.98] COEX up=1216s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1185.01] COEX up=1217s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1186.03] COEX up=1218s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1186.98] COEX up=1219s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1187.98] COEX up=1220s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1189.00] COEX up=1221s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1190.03] COEX up=1222s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1190.97] COEX up=1223s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1191.97] COEX up=1224s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1193.00] COEX up=1225s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1194.02] COEX up=1226s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1194.97] COEX up=1227s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1195.97] COEX up=1228s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1196.99] COEX up=1229s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1198.02] COEX up=1230s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1198.97] COEX up=1231s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1199.97] COEX up=1232s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1200.99] COEX up=1233s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1202.01] COEX up=1234s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1202.96] COEX up=1235s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1203.96] COEX up=1236s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1204.98] COEX up=1237s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1206.00] COEX up=1238s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1206.96] COEX up=1239s wifi=1 rssi=-73 drops=0 ble_conn=0
+[1207.46] [client] sent ping-21
+[1207.64] ping-21
+[1207.96] COEX up=1240s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1208.97] COEX up=1241s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1210.00] COEX up=1242s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1211.02] COEX up=1243s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1211.95] COEX up=1244s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1212.97] COEX up=1245s wifi=1 rssi=-75 drops=0 ble_conn=0
+[1213.99] COEX up=1246s wifi=1 rssi=-73 drops=0 ble_conn=0
+[1215.01] COEX up=1247s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1215.95] COEX up=1248s wifi=1 rssi=-73 drops=0 ble_conn=0
+[1216.95] COEX up=1249s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1217.98] COEX up=1250s wifi=1 rssi=-69 drops=0 ble_conn=0
+[1219.00] COEX up=1251s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1219.95] COEX up=1252s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1220.95] COEX up=1253s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1221.98] COEX up=1254s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1223.00] COEX up=1255s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1223.94] COEX up=1256s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1224.95] COEX up=1257s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1225.97] COEX up=1258s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1226.99] COEX up=1259s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1227.94] COEX up=1260s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1228.94] COEX up=1261s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1229.96] COEX up=1262s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1230.99] COEX up=1263s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1231.94] COEX up=1264s wifi=1 rssi=-69 drops=0 ble_conn=0
+[1232.94] COEX up=1265s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1233.96] COEX up=1266s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1234.98] COEX up=1267s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1235.93] COEX up=1268s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1236.93] COEX up=1269s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1237.95] COEX up=1270s wifi=1 rssi=-69 drops=0 ble_conn=0
+[1238.98] COEX up=1271s wifi=1 rssi=-69 drops=0 ble_conn=0
+[1239.93] COEX up=1272s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1240.93] COEX up=1273s wifi=1 rssi=-69 drops=0 ble_conn=0
+[1241.95] COEX up=1274s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1242.97] COEX up=1275s wifi=1 rssi=-69 drops=0 ble_conn=0
+[1243.92] COEX up=1276s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1244.92] COEX up=1277s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1245.94] COEX up=1278s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1246.96] COEX up=1279s wifi=1 rssi=-69 drops=0 ble_conn=0
+[1247.99] COEX up=1280s wifi=1 rssi=-69 drops=0 ble_conn=0
+[1248.92] COEX up=1281s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1249.93] COEX up=1282s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1250.95] COEX up=1283s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1251.98] COEX up=1284s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1252.92] COEX up=1285s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1253.92] COEX up=1286s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1254.95] COEX up=1287s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1255.97] COEX up=1288s wifi=1 rssi=-72 drops=0 ble_conn=0
+[1256.91] COEX up=1289s wifi=1 rssi=-71 drops=0 ble_conn=0
+[1257.92] COEX up=1290s wifi=1 rssi=-70 drops=0 ble_conn=0
+[1258.94] COEX up=1291s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1259.97] COEX up=1292s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1260.91] COEX up=1293s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1261.91] COEX up=1294s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1262.94] COEX up=1295s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1263.95] COEX up=1296s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1264.91] COEX up=1297s wifi=1 rssi=-66 drops=0 ble_conn=1
+[1265.91] COEX up=1298s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1266.92] COEX up=1299s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1267.95] [client] sent ping-22
+[1267.95] COEX up=1300s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1268.06] ping-22
+[1268.90] COEX up=1301s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1269.91] COEX up=1302s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1270.92] COEX up=1303s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1271.95] COEX up=1304s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1272.90] COEX up=1305s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1273.90] COEX up=1306s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1274.92] COEX up=1307s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1275.94] COEX up=1308s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1276.97] COEX up=1309s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1277.90] COEX up=1310s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1278.91] COEX up=1311s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1279.94] COEX up=1312s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1280.96] COEX up=1313s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1281.89] COEX up=1314s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1282.91] COEX up=1315s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1283.93] COEX up=1316s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1284.95] COEX up=1317s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1285.89] COEX up=1318s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1286.89] COEX up=1319s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1287.92] COEX up=1320s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1288.95] COEX up=1321s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1289.89] COEX up=1322s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1290.89] COEX up=1323s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1291.92] COEX up=1324s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1292.93] COEX up=1325s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1293.89] COEX up=1326s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1294.89] COEX up=1327s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1295.91] COEX up=1328s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1296.93] COEX up=1329s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1297.88] COEX up=1330s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1298.88] COEX up=1331s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1299.90] COEX up=1332s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1300.93] COEX up=1333s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1301.88] COEX up=1334s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1302.88] COEX up=1335s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1303.90] COEX up=1336s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1304.92] COEX up=1337s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1305.87] COEX up=1338s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1306.87] COEX up=1339s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1307.89] COEX up=1340s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1308.91] COEX up=1341s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1309.94] COEX up=1342s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1310.87] COEX up=1343s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1311.88] COEX up=1344s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1312.91] COEX up=1345s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1313.93] COEX up=1346s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1314.87] COEX up=1347s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1315.88] COEX up=1348s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1316.91] COEX up=1349s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1317.93] COEX up=1350s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1318.86] COEX up=1351s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1319.87] COEX up=1352s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1320.90] COEX up=1353s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1321.92] COEX up=1354s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1322.86] COEX up=1355s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1323.86] COEX up=1356s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1324.89] COEX up=1357s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1325.91] COEX up=1358s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1326.85] COEX up=1359s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1327.86] COEX up=1360s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1328.37] [client] sent ping-23
+[1328.57] ping-23
+[1328.88] COEX up=1361s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1329.91] COEX up=1362s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1330.85] COEX up=1363s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1331.85] COEX up=1364s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1332.88] COEX up=1365s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1333.90] COEX up=1366s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1334.85] COEX up=1367s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1335.85] COEX up=1368s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1336.87] COEX up=1369s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1337.89] COEX up=1370s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1338.84] COEX up=1371s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1339.85] COEX up=1372s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1340.86] COEX up=1373s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1341.89] COEX up=1374s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1342.84] COEX up=1375s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1343.84] COEX up=1376s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1344.86] COEX up=1377s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1345.88] COEX up=1378s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1346.84] COEX up=1379s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1347.84] COEX up=1380s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1348.85] COEX up=1381s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1349.88] COEX up=1382s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1350.89] COEX up=1383s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1351.83] COEX up=1384s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1352.85] COEX up=1385s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1353.87] COEX up=1386s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1354.89] COEX up=1387s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1355.83] COEX up=1388s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1356.83] COEX up=1389s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1357.86] COEX up=1390s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1358.89] COEX up=1391s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1359.82] COEX up=1392s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1360.83] COEX up=1393s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1361.86] COEX up=1394s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1362.88] COEX up=1395s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1363.82] COEX up=1396s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1364.82] COEX up=1397s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1365.85] COEX up=1398s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1366.87] COEX up=1399s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1367.82] COEX up=1400s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1368.82] COEX up=1401s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1369.84] COEX up=1402s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1370.87] COEX up=1403s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1371.81] COEX up=1404s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1372.82] COEX up=1405s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1373.84] COEX up=1406s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1374.86] COEX up=1407s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1375.81] COEX up=1408s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1376.81] COEX up=1409s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1377.83] COEX up=1410s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1378.86] COEX up=1411s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1379.81] COEX up=1412s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1380.81] COEX up=1413s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1381.83] COEX up=1414s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1382.85] COEX up=1415s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1383.81] COEX up=1416s wifi=1 rssi=-83 drops=0 ble_conn=1
+[1384.80] COEX up=1417s wifi=1 rssi=-83 drops=0 ble_conn=1
+[1385.82] COEX up=1418s wifi=1 rssi=-82 drops=0 ble_conn=1
+[1386.84] COEX up=1419s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1387.87] COEX up=1420s wifi=1 rssi=-83 drops=0 ble_conn=1
+[1388.80] COEX up=1421s wifi=1 rssi=-82 drops=0 ble_conn=1
+[1388.80] [client] sent ping-24
+[1388.89] ping-24
+[1389.81] COEX up=1422s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1390.84] COEX up=1423s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1391.86] COEX up=1424s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1392.80] COEX up=1425s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1393.80] COEX up=1426s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1394.83] COEX up=1427s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1395.85] COEX up=1428s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1396.79] COEX up=1429s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1397.80] COEX up=1430s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1398.82] COEX up=1431s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1399.85] COEX up=1432s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1400.79] COEX up=1433s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1401.79] COEX up=1434s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1402.82] COEX up=1435s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1403.84] COEX up=1436s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1404.79] COEX up=1437s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1405.79] COEX up=1438s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1406.81] COEX up=1439s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1407.83] COEX up=1440s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1408.78] COEX up=1441s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1409.78] COEX up=1442s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1410.80] COEX up=1443s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1411.83] COEX up=1444s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1412.78] COEX up=1445s wifi=1 rssi=-84 drops=0 ble_conn=1
+[1413.78] COEX up=1446s wifi=1 rssi=-84 drops=0 ble_conn=1
+[1414.80] COEX up=1447s wifi=1 rssi=-84 drops=0 ble_conn=1
+[1415.81] COEX up=1448s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1416.78] COEX up=1449s wifi=1 rssi=-82 drops=0 ble_conn=1
+[1417.77] COEX up=1450s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1418.79] COEX up=1451s wifi=1 rssi=-82 drops=0 ble_conn=1
+[1419.81] COEX up=1452s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1420.84] COEX up=1453s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1421.77] COEX up=1454s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1422.78] COEX up=1455s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1423.81] COEX up=1456s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1424.83] COEX up=1457s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1425.77] COEX up=1458s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1426.77] COEX up=1459s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1427.80] COEX up=1460s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1428.83] COEX up=1461s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1429.76] COEX up=1462s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1430.77] COEX up=1463s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1431.80] COEX up=1464s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1432.82] COEX up=1465s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1433.76] COEX up=1466s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1434.77] COEX up=1467s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1435.79] COEX up=1468s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1436.81] COEX up=1469s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1437.76] COEX up=1470s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1438.76] COEX up=1471s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1439.78] COEX up=1472s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1440.81] COEX up=1473s wifi=1 rssi=-82 drops=0 ble_conn=1
+[1441.75] COEX up=1474s wifi=1 rssi=-85 drops=0 ble_conn=1
+[1442.75] COEX up=1475s wifi=1 rssi=-84 drops=0 ble_conn=1
+[1443.78] COEX up=1476s wifi=1 rssi=-85 drops=0 ble_conn=1
+[1444.80] COEX up=1477s wifi=1 rssi=-83 drops=0 ble_conn=1
+[1445.75] COEX up=1478s wifi=1 rssi=-83 drops=0 ble_conn=1
+[1446.75] COEX up=1479s wifi=1 rssi=-83 drops=0 ble_conn=1
+[1447.76] COEX up=1480s wifi=1 rssi=-82 drops=0 ble_conn=1
+[1448.79] COEX up=1481s wifi=1 rssi=-82 drops=0 ble_conn=1
+[1449.29] [client] sent ping-25
+[1449.52] ping-25
+[1449.74] COEX up=1482s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1450.75] COEX up=1483s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1451.76] COEX up=1484s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1452.79] COEX up=1485s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1453.74] COEX up=1486s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1454.74] COEX up=1487s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1455.75] COEX up=1488s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1456.78] COEX up=1489s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1457.80] COEX up=1490s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1458.74] COEX up=1491s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1459.75] COEX up=1492s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1460.77] COEX up=1493s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1461.80] COEX up=1494s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1462.74] COEX up=1495s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1463.75] COEX up=1496s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1464.77] COEX up=1497s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1465.79] COEX up=1498s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1466.73] COEX up=1499s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1467.74] COEX up=1500s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1468.76] COEX up=1501s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1469.79] COEX up=1502s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1470.73] COEX up=1503s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1471.73] COEX up=1504s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1472.76] COEX up=1505s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1473.77] COEX up=1506s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1474.72] COEX up=1507s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1475.73] COEX up=1508s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1476.75] COEX up=1509s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1477.80] COEX up=1510s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1478.72] COEX up=1511s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1479.72] COEX up=1512s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1480.74] COEX up=1513s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1481.77] COEX up=1514s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1482.72] COEX up=1515s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1483.72] COEX up=1516s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1484.73] COEX up=1517s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1485.76] COEX up=1518s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1486.71] COEX up=1519s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1487.71] COEX up=1520s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1488.73] COEX up=1521s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1489.75] COEX up=1522s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1490.71] COEX up=1523s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1491.71] COEX up=1524s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1492.72] COEX up=1525s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1493.75] COEX up=1526s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1494.70] COEX up=1527s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1495.70] COEX up=1528s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1496.72] COEX up=1529s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1497.74] COEX up=1530s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1498.77] COEX up=1531s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1499.70] COEX up=1532s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1500.71] COEX up=1533s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1501.74] COEX up=1534s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1502.76] COEX up=1535s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1503.70] COEX up=1536s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1504.70] COEX up=1537s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1505.72] COEX up=1538s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1506.75] COEX up=1539s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1507.69] COEX up=1540s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1508.69] COEX up=1541s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1509.72] [client] sent ping-26
+[1509.73] COEX up=1542s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1509.75] ping-26
+[1510.75] COEX up=1543s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1511.69] COEX up=1544s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1512.69] COEX up=1545s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1513.72] COEX up=1546s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1514.74] COEX up=1547s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1515.69] COEX up=1548s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1516.69] COEX up=1549s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1517.71] COEX up=1550s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1518.73] COEX up=1551s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1519.68] COEX up=1552s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1520.68] COEX up=1553s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1521.70] COEX up=1554s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1522.73] COEX up=1555s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1523.68] COEX up=1556s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1524.68] COEX up=1557s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1525.69] COEX up=1558s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1526.72] COEX up=1559s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1527.67] COEX up=1560s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1528.67] COEX up=1561s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1529.69] COEX up=1562s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1530.71] COEX up=1563s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1531.67] COEX up=1564s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1532.67] COEX up=1565s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1533.68] COEX up=1566s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1534.70] COEX up=1567s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1535.73] COEX up=1568s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1536.66] COEX up=1569s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1537.67] COEX up=1570s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1538.70] COEX up=1571s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1539.72] COEX up=1572s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1540.66] COEX up=1573s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1541.67] COEX up=1574s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1542.69] COEX up=1575s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1543.72] COEX up=1576s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1544.66] COEX up=1577s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1545.66] COEX up=1578s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1546.69] COEX up=1579s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1547.71] COEX up=1580s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1548.65] COEX up=1581s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1549.66] COEX up=1582s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1550.68] COEX up=1583s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1551.70] COEX up=1584s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1552.65] COEX up=1585s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1553.65] COEX up=1586s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1554.67] COEX up=1587s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1555.70] COEX up=1588s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1556.64] COEX up=1589s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1557.65] COEX up=1590s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1558.67] COEX up=1591s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1559.69] COEX up=1592s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1560.64] COEX up=1593s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1561.64] COEX up=1594s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1562.66] COEX up=1595s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1563.68] COEX up=1596s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1564.64] COEX up=1597s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1565.64] COEX up=1598s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1566.65] COEX up=1599s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1567.68] COEX up=1600s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1568.63] COEX up=1601s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1569.63] COEX up=1602s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1570.14] [client] sent ping-27
+[1570.35] ping-27
+[1570.64] COEX up=1603s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1571.68] COEX up=1604s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1572.63] COEX up=1605s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1573.63] COEX up=1606s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1574.65] COEX up=1607s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1575.67] COEX up=1608s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1576.69] COEX up=1609s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1577.63] COEX up=1610s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1578.64] COEX up=1611s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1579.66] COEX up=1612s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1580.68] COEX up=1613s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1581.62] COEX up=1614s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1582.63] COEX up=1615s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1583.65] COEX up=1616s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1584.68] COEX up=1617s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1585.62] COEX up=1618s wifi=1 rssi=-66 drops=0 ble_conn=1
+[1586.62] COEX up=1619s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1587.65] COEX up=1620s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1588.67] COEX up=1621s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1589.62] COEX up=1622s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1590.62] COEX up=1623s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1591.64] COEX up=1624s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1592.66] COEX up=1625s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1593.61] COEX up=1626s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1594.61] COEX up=1627s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1595.63] COEX up=1628s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1596.66] COEX up=1629s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1597.68] COEX up=1630s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1598.61] COEX up=1631s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1599.62] COEX up=1632s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1600.66] COEX up=1633s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1601.61] COEX up=1634s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1602.61] COEX up=1635s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1603.62] COEX up=1636s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1604.65] COEX up=1637s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1605.60] COEX up=1638s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1606.60] COEX up=1639s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1607.61] COEX up=1640s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1608.64] COEX up=1641s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1609.66] COEX up=1642s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1610.60] COEX up=1643s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1611.61] COEX up=1644s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1612.63] COEX up=1645s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1613.66] COEX up=1646s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1614.60] COEX up=1647s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1615.60] COEX up=1648s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1616.63] COEX up=1649s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1617.65] COEX up=1650s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1618.59] COEX up=1651s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1619.60] COEX up=1652s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1620.62] COEX up=1653s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1621.64] COEX up=1654s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1622.59] COEX up=1655s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1623.59] COEX up=1656s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1624.61] COEX up=1657s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1625.64] COEX up=1658s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1626.58] COEX up=1659s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1627.59] COEX up=1660s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1628.60] COEX up=1661s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1629.63] COEX up=1662s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1630.58] COEX up=1663s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1630.58] [client] sent ping-28
+[1630.76] ping-28
+[1631.58] COEX up=1664s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1632.61] COEX up=1665s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1633.63] COEX up=1666s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1634.57] COEX up=1667s wifi=1 rssi=-67 drops=0 ble_conn=1
+[1635.57] COEX up=1668s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1636.60] COEX up=1669s wifi=1 rssi=-67 drops=0 ble_conn=1
+[1637.62] COEX up=1670s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1638.57] COEX up=1671s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1639.57] COEX up=1672s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1640.59] COEX up=1673s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1641.62] COEX up=1674s wifi=1 rssi=-66 drops=0 ble_conn=1
+[1642.57] COEX up=1675s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1643.57] COEX up=1676s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1644.59] COEX up=1677s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1645.61] COEX up=1678s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1646.56] COEX up=1679s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1647.56] COEX up=1680s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1648.58] COEX up=1681s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1649.60] COEX up=1682s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1650.62] COEX up=1683s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1651.56] COEX up=1684s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1652.57] COEX up=1685s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1653.60] COEX up=1686s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1654.61] COEX up=1687s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1655.56] COEX up=1688s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1656.56] COEX up=1689s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1657.59] COEX up=1690s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1658.61] COEX up=1691s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1659.55] COEX up=1692s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1660.55] COEX up=1693s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1661.58] COEX up=1694s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1662.61] COEX up=1695s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1663.55] COEX up=1696s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1664.55] COEX up=1697s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1665.57] COEX up=1698s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1666.60] COEX up=1699s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1667.55] COEX up=1700s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1668.55] COEX up=1701s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1669.57] COEX up=1702s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1670.59] COEX up=1703s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1671.54] COEX up=1704s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1672.55] COEX up=1705s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1673.56] COEX up=1706s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1674.59] COEX up=1707s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1675.54] COEX up=1708s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1676.54] COEX up=1709s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1677.55] COEX up=1710s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1678.58] COEX up=1711s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1679.54] COEX up=1712s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1680.53] COEX up=1713s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1681.55] COEX up=1714s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1682.57] COEX up=1715s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1683.59] COEX up=1716s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1684.53] COEX up=1717s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1685.54] COEX up=1718s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1686.57] COEX up=1719s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1687.59] COEX up=1720s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1688.54] COEX up=1721s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1689.53] COEX up=1722s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1690.56] COEX up=1723s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1691.06] [client] sent ping-29
+[1691.28] ping-29
+[1691.58] COEX up=1724s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1692.53] COEX up=1725s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1693.53] COEX up=1726s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1694.55] COEX up=1727s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1695.58] COEX up=1728s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1696.52] COEX up=1729s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1697.53] COEX up=1730s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1698.55] COEX up=1731s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1699.57] COEX up=1732s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1700.52] COEX up=1733s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1701.52] COEX up=1734s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1702.54] COEX up=1735s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1703.56] COEX up=1736s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1704.52] COEX up=1737s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1705.52] COEX up=1738s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1706.53] COEX up=1739s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1707.56] COEX up=1740s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1708.51] COEX up=1741s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1709.51] COEX up=1742s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1710.53] COEX up=1743s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1711.55] COEX up=1744s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1712.58] COEX up=1745s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1713.51] COEX up=1746s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1714.52] COEX up=1747s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1715.54] COEX up=1748s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1716.57] COEX up=1749s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1717.51] COEX up=1750s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1718.51] COEX up=1751s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1719.54] COEX up=1752s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1720.56] COEX up=1753s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1721.50] COEX up=1754s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1722.50] COEX up=1755s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1723.53] COEX up=1756s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1724.56] COEX up=1757s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1725.50] COEX up=1758s wifi=1 rssi=-68 drops=0 ble_conn=1
+[1726.50] COEX up=1759s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1727.53] COEX up=1760s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1728.55] COEX up=1761s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1729.50] COEX up=1762s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1730.50] COEX up=1763s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1731.52] COEX up=1764s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1732.54] COEX up=1765s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1733.49] COEX up=1766s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1734.49] COEX up=1767s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1735.51] COEX up=1768s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1736.54] COEX up=1769s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1737.49] COEX up=1770s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1738.49] COEX up=1771s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1739.51] COEX up=1772s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1740.53] COEX up=1773s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1741.49] COEX up=1774s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1742.48] COEX up=1775s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1743.50] COEX up=1776s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1744.53] COEX up=1777s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1745.48] COEX up=1778s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1746.48] COEX up=1779s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1747.50] COEX up=1780s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1748.52] COEX up=1781s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1749.54] COEX up=1782s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1750.48] COEX up=1783s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1751.49] COEX up=1784s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1751.49] [client] sent ping-30
+[1751.59] ping-30
+[1752.51] COEX up=1785s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1753.54] COEX up=1786s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1754.47] COEX up=1787s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1755.48] COEX up=1788s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1756.51] COEX up=1789s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1757.53] COEX up=1790s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1758.47] COEX up=1791s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1759.48] COEX up=1792s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1760.50] COEX up=1793s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1761.53] COEX up=1794s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1762.46] COEX up=1795s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1763.48] COEX up=1796s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1764.50] COEX up=1797s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1765.52] COEX up=1798s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1766.46] COEX up=1799s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1767.47] COEX up=1800s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1768.49] COEX up=1801s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1769.51] COEX up=1802s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1770.46] COEX up=1803s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1771.46] COEX up=1804s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1772.48] COEX up=1805s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1773.51] COEX up=1806s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1774.45] COEX up=1807s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1775.45] COEX up=1808s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1776.47] COEX up=1809s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1777.50] COEX up=1810s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1778.45] COEX up=1811s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1779.45] COEX up=1812s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1780.47] COEX up=1813s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1781.49] COEX up=1814s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1782.44] COEX up=1815s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1783.45] COEX up=1816s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1784.46] COEX up=1817s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1785.48] COEX up=1818s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1786.44] COEX up=1819s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1787.44] COEX up=1820s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1788.45] COEX up=1821s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1789.48] COEX up=1822s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1790.44] COEX up=1823s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1791.43] COEX up=1824s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1792.45] COEX up=1825s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1793.47] COEX up=1826s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1794.50] COEX up=1827s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1795.43] COEX up=1828s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1796.44] COEX up=1829s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1797.47] COEX up=1830s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1798.49] COEX up=1831s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1799.42] COEX up=1832s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1800.44] COEX up=1833s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1801.46] COEX up=1834s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1802.48] COEX up=1835s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1803.42] COEX up=1836s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1804.43] COEX up=1837s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1805.45] COEX up=1838s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1806.48] COEX up=1839s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1807.42] COEX up=1840s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1808.42] COEX up=1841s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1809.45] COEX up=1842s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1810.47] COEX up=1843s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1811.41] COEX up=1844s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1811.92] [client] sent ping-31
+[1812.11] ping-31
+[1812.41] COEX up=1845s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1813.44] COEX up=1846s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1814.46] COEX up=1847s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1815.41] COEX up=1848s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1816.41] COEX up=1849s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1817.43] COEX up=1850s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1818.46] COEX up=1851s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1819.40] COEX up=1852s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1820.41] COEX up=1853s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1821.43] COEX up=1854s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1822.45] COEX up=1855s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1823.40] COEX up=1856s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1824.40] COEX up=1857s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1825.42] COEX up=1858s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1826.45] COEX up=1859s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1827.40] COEX up=1860s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1828.40] COEX up=1861s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1829.42] COEX up=1862s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1830.44] COEX up=1863s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1831.40] COEX up=1864s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1832.39] COEX up=1865s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1833.41] COEX up=1866s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1834.43] COEX up=1867s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1835.39] COEX up=1868s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1836.39] COEX up=1869s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1837.40] COEX up=1870s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1838.43] COEX up=1871s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1839.46] COEX up=1872s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1840.39] COEX up=1873s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1841.39] COEX up=1874s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1842.42] COEX up=1875s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1843.45] COEX up=1876s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1844.38] COEX up=1877s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1845.39] COEX up=1878s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1846.41] COEX up=1879s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1847.44] COEX up=1880s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1848.38] COEX up=1881s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1849.39] COEX up=1882s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1850.41] COEX up=1883s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1851.43] COEX up=1884s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1852.38] COEX up=1885s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1853.38] COEX up=1886s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1854.40] COEX up=1887s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1855.43] COEX up=1888s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1856.38] COEX up=1889s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1857.38] COEX up=1890s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1858.39] COEX up=1891s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1859.42] COEX up=1892s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1860.37] COEX up=1893s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1861.37] COEX up=1894s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1862.39] COEX up=1895s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1863.42] COEX up=1896s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1864.37] COEX up=1897s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1865.37] COEX up=1898s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1866.38] COEX up=1899s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1867.40] COEX up=1900s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1868.36] COEX up=1901s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1869.36] COEX up=1902s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1870.38] COEX up=1903s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1871.40] COEX up=1904s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1872.42] [client] sent ping-32
+[1872.43] COEX up=1905s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1872.53] ping-32
+[1873.36] COEX up=1906s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1874.37] COEX up=1907s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1875.39] COEX up=1908s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1876.42] COEX up=1909s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1877.36] COEX up=1910s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1878.36] COEX up=1911s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1879.39] COEX up=1912s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1880.42] COEX up=1913s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1881.35] COEX up=1914s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1882.36] COEX up=1915s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1883.38] COEX up=1916s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1884.40] COEX up=1917s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1885.35] COEX up=1918s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1886.35] COEX up=1919s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1887.37] COEX up=1920s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1888.40] COEX up=1921s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1889.34] COEX up=1922s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1890.35] COEX up=1923s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1891.37] COEX up=1924s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1892.39] COEX up=1925s wifi=1 rssi=-69 drops=0 ble_conn=1
+[1893.34] COEX up=1926s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1894.34] COEX up=1927s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1895.36] COEX up=1928s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1896.39] COEX up=1929s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1897.34] COEX up=1930s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1898.34] COEX up=1931s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1899.35] COEX up=1932s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1900.38] COEX up=1933s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1901.33] COEX up=1934s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1902.33] COEX up=1935s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1903.35] COEX up=1936s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1904.37] COEX up=1937s wifi=1 rssi=-79 drops=0 ble_conn=1
+[1905.33] COEX up=1938s wifi=1 rssi=-80 drops=0 ble_conn=1
+[1906.34] COEX up=1939s wifi=1 rssi=-81 drops=0 ble_conn=1
+[1907.34] COEX up=1940s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1908.37] COEX up=1941s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1909.39] COEX up=1942s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1910.33] COEX up=1943s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1911.34] COEX up=1944s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1912.36] COEX up=1945s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1913.38] COEX up=1946s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1914.32] COEX up=1947s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1915.33] COEX up=1948s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1916.35] COEX up=1949s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1917.38] COEX up=1950s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1918.31] COEX up=1951s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1919.35] COEX up=1952s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1920.35] COEX up=1953s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1921.37] COEX up=1954s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1922.31] COEX up=1955s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1923.32] COEX up=1956s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1924.35] COEX up=1957s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1925.37] COEX up=1958s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1926.31] COEX up=1959s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1927.32] COEX up=1960s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1928.33] COEX up=1961s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1929.36] COEX up=1962s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1930.30] COEX up=1963s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1931.30] COEX up=1964s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1932.34] COEX up=1965s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1932.86] [client] sent ping-33
+[1933.04] ping-33
+[1933.35] COEX up=1966s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1934.30] COEX up=1967s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1935.30] COEX up=1968s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1936.32] COEX up=1969s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1937.35] COEX up=1970s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1938.29] COEX up=1971s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1939.30] COEX up=1972s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1940.32] COEX up=1973s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1941.34] COEX up=1974s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1942.29] COEX up=1975s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1943.29] COEX up=1976s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1944.31] COEX up=1977s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1945.34] COEX up=1978s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1946.29] COEX up=1979s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1947.29] COEX up=1980s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1948.30] COEX up=1981s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1949.33] COEX up=1982s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1950.28] COEX up=1983s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1951.28] COEX up=1984s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1952.30] COEX up=1985s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1953.33] COEX up=1986s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1954.28] COEX up=1987s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1955.28] COEX up=1988s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1956.29] COEX up=1989s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1957.32] COEX up=1990s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1958.34] COEX up=1991s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1959.27] COEX up=1992s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1960.28] COEX up=1993s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1961.31] COEX up=1994s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1962.33] COEX up=1995s wifi=1 rssi=-76 drops=0 ble_conn=1
+[1963.27] COEX up=1996s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1964.27] COEX up=1997s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1965.31] COEX up=1998s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1966.33] COEX up=1999s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1967.27] COEX up=2000s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1968.27] COEX up=2001s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1969.29] COEX up=2002s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1970.32] COEX up=2003s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1971.26] COEX up=2004s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1972.26] COEX up=2005s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1973.29] COEX up=2006s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1974.32] COEX up=2007s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1975.26] COEX up=2008s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1976.26] COEX up=2009s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1977.28] COEX up=2010s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1978.31] COEX up=2011s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1979.26] COEX up=2012s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1980.26] COEX up=2013s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1981.28] COEX up=2014s wifi=1 rssi=-78 drops=0 ble_conn=1
+[1982.30] COEX up=2015s wifi=1 rssi=-77 drops=0 ble_conn=1
+[1983.25] COEX up=2016s wifi=1 rssi=-74 drops=0 ble_conn=1
+[1984.25] COEX up=2017s wifi=1 rssi=-75 drops=0 ble_conn=1
+[1985.27] COEX up=2018s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1986.29] COEX up=2019s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1987.25] COEX up=2020s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1988.25] COEX up=2021s wifi=1 rssi=-72 drops=0 ble_conn=1
+[1989.26] COEX up=2022s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1990.29] COEX up=2023s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1991.24] COEX up=2024s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1992.24] COEX up=2025s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1993.25] COEX up=2026s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1993.25] [client] sent ping-34
+[1993.37] ping-34
+[1994.28] COEX up=2027s wifi=1 rssi=-73 drops=0 ble_conn=1
+[1995.30] COEX up=2028s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1996.24] COEX up=2029s wifi=1 rssi=-71 drops=0 ble_conn=1
+[1997.25] COEX up=2030s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1998.27] COEX up=2031s wifi=1 rssi=-70 drops=0 ble_conn=1
+[1999.30] COEX up=2032s wifi=1 rssi=-73 drops=0 ble_conn=1
+[2000.24] COEX up=2033s wifi=1 rssi=-72 drops=0 ble_conn=1
+[2000.24] [client] soak duration reached, closing

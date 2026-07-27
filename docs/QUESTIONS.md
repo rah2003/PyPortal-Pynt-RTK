@@ -133,3 +133,8 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
     clients must not reconfigure the receiver), and the tee carries no
     UBX. If listen-only bench clients become routine, a UDP broadcast
     tee (no accept step) is the candidate Phase 4 polish item.
+    **Update 2026-07-26 (Spike B):** the data-gated accept is a
+    stock-Adafruit-1.7.x behavior — upstream nina-fw 3.0.1 accepted a
+    silent client immediately (docs/coex-bench.md bench notes). If the
+    Pynt moves to the coex stack (Q18/Phase 5), the workaround and the
+    UDP-tee motivation largely evaporate; re-verify at section 7 step 2.
