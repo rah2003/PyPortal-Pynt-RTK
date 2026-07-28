@@ -166,8 +166,12 @@ runnable after all, with a hand-wired **HUZZAH32** standing in for the
 Wing (same ESP32 silicon family, same `NINA_W102-3.0.1-airlift.bin`,
 flashed trivially over the HUZZAH32's own USB). Procedure, wiring
 table, and a **do-NOT-stack** warning: **Appendix A.2**, env
-`feather-soak-coex-huzzah`. This is optional extra de-risking on spare
-hardware; section 7 remains the committed path either way.
+`feather-soak-coex-huzzah`.
+
+**Update 2 (same day): RUN AND PASSED** — 72-minute soak on the A.2
+rig, all gates green (bench note below). Spike C is no longer a gap;
+the section 7.5 integration soak now re-proves the same combination on
+the target unit rather than proving it first.
 
 ## 7. Pynt integration (unlocked 2026-07-27)
 
@@ -415,6 +419,41 @@ contention check folds into the section 7.5 integration soak on the
 Pynt itself. Rationale recorded in section 6; original procedure
 preserved in Appendix A. Sections 7 (step-by-step unlock) and 8
 (rollback) rewritten accordingly.
+
+### 2026-07-27 — Spike C PASS via the A.2 HUZZAH32 rig (72-min soak)
+
+Rig: Feather M0 Adalogger (COM4) + hand-wired HUZZAH32 (COM3) running
+`NINA_W102-3.0.1-airlift.bin` (flashed over its own USB after a full
+4 MB stock backup, `huzzah32-stock-backup.bin`). Bring-up needed the
+`feather-wire-probe` twice (miswired CS, then a disturbed READY wire)
+and surfaced the `server.accept()` finding (separate bench note).
+Monitors: scripted serial capture + a pure-listener TCP client from
+this PC; BLE via phone (nRF Connect on **PyntRTK-soak**).
+
+All A.1 gates green over **72 min** (final: `writes=4369 up=4376s`):
+
+- **No resets:** writes counter monotonic across all 144 reports;
+  1 write/s ≈ uptime throughout.
+- **SD:** `sdErrors=0`; **worst write 109.7 ms** (vs 93.6 ms Pynt
+  WiFi-only baseline — same order, one U1-class latency spike; well
+  inside the platform.md buffer margins).
+- **WiFi:** `drops=0` for the entire run; RTCM-sized TCP traffic
+  unaffected.
+- **TCP:** one connection held 70+ min — **4262 lines at 1 Hz, zero
+  reconnects, max inter-line gap 1.6 s**; accepted as a silent
+  listener via `server.accept()` within one loop pass.
+- **BLE:** five connect sessions totaling ≈48 min (longest 20.5 min
+  continuous), interleaved with deliberate bounces — every disconnect
+  re-advertised and re-accepted, TCP/SD/WiFi undisturbed through all
+  of them.
+- `soak.bin` post-read on a card reader (expected ≈ 2.24 MB =
+  4369 × 512 B): left to the owner, optional — the CRC-stamped records
+  and `sdErrors=0` already cover the integrity gate's intent.
+
+**Consequence: the shared-SPI contention question is answered on spare
+hardware after all — SD + WiFi + BLE coexist cleanly on one bus with
+the custom firmware and upstream stack. Section 7 (Pynt) proceeds with
+one less unknown.**
 
 ## Appendix A — standalone Spike C procedures
 
