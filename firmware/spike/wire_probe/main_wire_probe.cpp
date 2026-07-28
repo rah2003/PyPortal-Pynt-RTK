@@ -81,16 +81,37 @@ void probe() {
     return;  // later stages meaningless
   }
 
-  // 2. CS ack: slave must drive READY HIGH within ~5 ms of CS low
+  // 2. CS ack: nina-fw attaches a FALLING interrupt on CS (GPIO5, internal
+  // pullup) that drives READY HIGH immediately — authoritative CS-wire test
   digitalWrite(PIN_CS, LOW);
   bool ack = waitReady(true, 5);
+  digitalWrite(PIN_CS, HIGH);
   if (ack) Serial.println(F("[2] PASS: READY acks CS (CS + READY wires good)"));
-  else
+  else {
     Serial.println(
         F("[2] FAIL: no READY reaction to CS — CS wire (D13 -> \"SCK\"/GPIO5)"));
+    // 2b. beacon: toggle CS for 4 s so the wire can be found physically.
+    // If the HUZZAH32's red LED blinks now, the wire sits on its "13"
+    // pin (GPIO13 = LED) — move it to "SCK". A multimeter on the "SCK"
+    // pin should read ~1.6 V avg while this runs (steady 3.3 V = wire
+    // not arriving; that's the chip's internal pullup).
+    Serial.println(F("[2b] CS beacon 4 s — watch the HUZZAH32 red LED /"
+                     " meter the \"SCK\" pin"));
+    uint32_t bEnd = millis() + 4000;
+    while (millis() < bEnd) {
+      digitalWrite(PIN_CS, LOW);
+      delay(20);
+      digitalWrite(PIN_CS, HIGH);
+      delay(20);
+    }
+  }
 
-  // 3. GET_FW_VERSION (0x37) via bit-bang, SpiDrv choreography
-  if (ack) {
+  // 3. GET_FW_VERSION (0x37) via bit-bang, SpiDrv choreography. Runs even
+  // after a [2] FAIL — the real driver also proceeds past its 5 ms ack
+  // timeout, and the result adds signal either way.
+  {
+    digitalWrite(PIN_CS, LOW);
+    waitReady(true, 5);
     uint8_t junk[4];
     const uint8_t cmd[4] = {0xE0, 0x37, 0x00, 0xEE};
     for (uint8_t i = 0; i < 4; i++) junk[i] = xfer(cmd[i]);

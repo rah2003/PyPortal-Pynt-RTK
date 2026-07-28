@@ -219,11 +219,14 @@ were characterized against the Adafruit 1.x fork:
 - [ ] `WiFi.begin()` stall window: RAWX timeline across a forced
       rejoin (hotspot off/on) shows only the bounded gap the 4096-byte
       SERCOM ring was sized for
-- [ ] **Silent-TCP-client accept (Spike B follow-up):** connect a
-      listen-only client (u-center as TCP client, or `nc` without
-      typing) to :10110 — on nina-fw 3.0.1 it should be accepted
-      *without sending a byte*. If confirmed, the Q19 data-gated-accept
-      workarounds are retirable on this stack; note the result in Q19.
+- [ ] **Silent-TCP-client accept — RESOLVED from source 2026-07-27,
+      verify on the Pynt:** `server.available()` is data-gated on every
+      nina-fw (the gate lives in the host's `availServer(accept=false)`
+      call); upstream's new `server.accept()` API takes nina-fw 3.x's
+      true-accept path. `tcp_nmea.cpp` now uses `accept()` under
+      `COEX_UPSTREAM_NINA` (verified live on the soak rig). Bench
+      check: a listen-only client (u-center / `nc` without typing)
+      connects to :10110 and streams immediately. Details in Q19.
 - [ ] Serial `status` healthy: worst-loop time and free RAM in line
       with the stock-stack numbers
 
@@ -394,12 +397,15 @@ subscribed to NUS TX on **PyntRTK-coex**.
   (echo + stream continuous through the window).
 - Serial: only the boot banner and expected events — zero SPI timeout
   spew across 2071 consecutive status lines.
-- **Bonus finding:** the TCP client was accepted **without sending a
+- ~~**Bonus finding:** the TCP client was accepted **without sending a
   byte** — upstream nina-fw 3.0.1's `server.available()` is NOT
-  data-gated. The Q19 silent-client workaround (send-anything-once /
-  UDP fallback) is a stock-Adafruit-1.7.x behavior only; listen-only
-  clients (u-center) should Just Work on this firmware. Re-verify on
-  the Pynt in section 7.3.
+  data-gated.~~ **CORRECTED 2026-07-27:** misread — the Spike B test
+  client pinged on connect, which is what satisfied the (still
+  data-gated) `available()` path. The real mechanism, found from
+  source during the A.2 soak bring-up: `server.available()` sends
+  `accept=false` and is data-gated on ALL nina-fw versions; nina-fw
+  3.x's true accept is reached only via upstream's new
+  `server.accept()` API. See Q19 and the 7.3 checklist item.
 
 ### 2026-07-27 — Decision: Spike C superseded, Pynt unlocked
 

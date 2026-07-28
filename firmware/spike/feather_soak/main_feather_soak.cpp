@@ -43,7 +43,7 @@ SdFat sd;
 FsFile logFile;
 
 uint8_t record[512];  // one Pynt-sized logger chunk per second
-uint32_t writes = 0, sdErrors = 0, wifiDrops = 0;
+uint32_t writes = 0, sdErrors = 0, wifiDrops = 0, accepts = 0;
 uint32_t worstWriteUs = 0;
 uint32_t lastTickMs = 0, lastReportMs = 0;
 bool wifiWasUp = false;
@@ -136,8 +136,17 @@ void loop() {
     if (!wifiWasUp) server.begin();
     wifiWasUp = true;
     if (!client || !client.connected()) {
-      WiFiClient incoming = server.available();
-      if (incoming) client = incoming;
+      // accept(), not available(): nina-fw's availDataTcp only returns a
+      // client on the accept=1 path regardless of pending data — the
+      // legacy available() path is still data-gated (a listen-only
+      // client is never surfaced). Found on this rig 2026-07-27; the
+      // Spike B "silent accept works" note was wrong (its client pinged).
+      WiFiClient incoming = server.accept();
+      if (incoming) {
+        client = incoming;
+        accepts++;
+        Serial.println(F("[tcp] client accepted"));
+      }
     } else {
       while (client.available()) client.read();  // drain
     }
@@ -175,6 +184,14 @@ void loop() {
     Serial.print(worstWriteUs / 1000.0f, 1);
     Serial.print(F("ms wifiDrops="));
     Serial.print(wifiDrops);
+    // TCP accept diagnostics (silent-server debugging, 2026-07-27):
+    // srv = WiFiServer::status(), acc = accepts, cli = tracked client live
+    Serial.print(F(" srv="));
+    Serial.print(server.status());
+    Serial.print(F(" acc="));
+    Serial.print(accepts);
+    Serial.print(F(" cli="));
+    Serial.print((client && client.connected()) ? 1 : 0);
     Serial.print(F(" ble="));
     Serial.println(BLE.connected() ? F("connected") : F("advertising"));
   }

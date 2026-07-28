@@ -42,7 +42,18 @@ void ensureServer() {
 }
 
 void acceptClients() {
+#ifdef COEX_UPSTREAM_NINA
+  // True accept (upstream WiFiNINA 2.x API + nina-fw 3.x): silent
+  // listen-only clients (u-center; apps that don't send-on-connect) are
+  // surfaced immediately. available() is STILL data-gated even on
+  // nina-fw 3.0.1 — its availDataTcp only calls accept() on the
+  // accept=1 path, which only server.accept() sends (soak rig finding,
+  // 2026-07-27). The Adafruit fork has no accept() at all, hence the
+  // gate; the Q19 data-gated behavior stands on the shipping stack.
+  WiFiClient incoming = server->accept();
+#else
   WiFiClient incoming = server->available();
+#endif
   if (!incoming) return;
   // Already tracked? (available() can return an existing client with data.)
   // Compare remote IP:port — this fork's WiFiClient has no operator==, so

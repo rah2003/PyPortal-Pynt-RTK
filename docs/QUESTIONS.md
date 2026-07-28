@@ -124,6 +124,19 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
       NMEA over **UDP broadcast** (no accept step at all; QField
       supports UDP), or documenting a "send anything once" step.
     Closes when an app is picked and verified streaming on the iPhone.
+    **Root cause found 2026-07-27 (coex branch, from source):** the
+    data-gating lives in the host library's `server.available()` path —
+    `availServer(sock, accept=false)` makes nina-fw take its legacy
+    data-gated branch on EVERY firmware, including 3.0.1. nina-fw 3.x
+    adds a true-accept branch (`accept=1`), reached only via upstream
+    WiFiNINA 2.x's new `server.accept()` API. Verified live on the
+    HUZZAH32 soak rig: `available()` never surfaced a silent client;
+    `accept()` surfaced it instantly. The coex rover build now uses
+    `accept()` (gated in `tcp_nmea.cpp`); the shipping Adafruit-fork
+    stack has no `accept()`, so QField's send-on-connect (or the UDP
+    fallback) remains required there. Note: the Spike B bench note
+    claiming silent accept worked was a misread — its test client
+    pinged on connect.
     **Bench corollary (2026-07-19):** u-center 25.06 can also join as a
     TCP network client (`tcp://<pynt-ip>:10110`) — but it connects
     silently, so the data-gated accept leaves it uncounted until it
