@@ -220,16 +220,19 @@ void drawPageSys() {
 // hardcoded defaults anywhere); the web System card can change them.
 void drawPageWeb() {
   char v[40];
+  bool ap = webConfigApActive();
   int16_t y = kHeaderH + 8;
   line(y, "WEB ", g_settings.webEnable ? "on" : "off"); y += 22;
-  line(y, "IP  ", g_link.wifiUp ? g_link.wifiIp : "-"); y += 22;
+  line(y, "IP  ", ap ? "192.168.4.1"
+                     : (g_link.wifiUp ? g_link.wifiIp : "-")); y += 22;
   snprintf(v, sizeof(v), ":%u", g_settings.webPort);
   line(y, "PORT", v); y += 22;
   line(y, "HOST", g_settings.hostname); y += 22;
   line(y, "ADMN", webConfigAdminPass()); y += 22;   // user "admin"
-  line(y, "APPW", webConfigApPass()); y += 22;      // AP WPA2 key (W2)
-  line(y, "AP  ", webConfigApRequested() ? "requested (W2)" : "off"); y += 22;
-  line(y, "", "AP btn: setup mode");
+  line(y, "APSS", webConfigApSsid()); y += 22;      // provisioning SSID
+  line(y, "APPW", webConfigApPass()); y += 22;      // its WPA2 key
+  line(y, "AP  ", ap ? "ACTIVE" : "off"); y += 22;
+  line(y, "", ap ? "AP btn: exit+reboot" : "AP btn: setup mode");
 }
 #endif
 

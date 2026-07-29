@@ -1,6 +1,7 @@
-// Web config GUI (ENABLE_WEB_CONFIG, pynt-rover-coex only). W1 scope:
-// GET / (gzipped SPA from PROGMEM) + GET /api/status (JSON snapshot),
-// admin auth on by default, W2-W5 routes scaffolded as 501s.
+// Web config GUI (ENABLE_WEB_CONFIG, pynt-rover-coex only). W1+W2 scope:
+// GET / (gzipped SPA from PROGMEM), GET /api/status, W2 WiFi
+// provisioning (GET/POST /api/wifi, GET /api/scan, POST /api/reboot)
+// and the on-demand AP mode; W3-W5 routes remain 501 scaffolds.
 //
 // Concurrency model (docs/web-config-spike.md): the server is the
 // LOWEST-priority superloop resident. Hand-rolled HTTP/1.1 state
@@ -9,10 +10,18 @@
 // pass so a slow phone can never stall the correction path. accept()
 // (not available()) so browsers mid-handshake are picked up instantly.
 //
+// AP provisioning mode (W2, entered ONLY by the TFT AP button):
+//   enter = WiFi.end() -> beginAP(<hostname>-setup, apPass). This is
+//   the exact W0-proven sequence; W0 also proved WiFi.end() WEDGES any
+//   later STA join until the module resets, so the ONLY exit is
+//   save-then-reboot (NVIC_SystemReset -> SpiDrv's boot-time RESETN
+//   pulse gives the module a clean start). ntripPoll stands down while
+//   the AP is active; BLE keeps running (W0.6: AP+BLE coexist).
+//
 // Auth: HTTP Basic, user "admin", password g_settings.adminPass —
-// generated from the SAMD51 TRNG at first boot if unset (no hardcoded
-// default), shown on the TFT WEB page, changeable via the W5 System
-// card. The AP WPA2 password (W2) is generated the same way.
+// generated from the SAMD51 TRNG at first web boot if unset (no
+// hardcoded default), shown on the TFT WEB page. The expected header
+// is recomputed per request, so a password change applies instantly.
 #include "web_config.h"
 
 #include "features.h"
@@ -34,31 +43,35 @@ WiFiServer* server = nullptr;
 bool serverUp = false;
 WiFiClient conn;
 
-enum class HttpState : uint8_t { Idle, ReadRequest, Respond };
+enum class HttpState : uint8_t { Idle, ReadRequest, ReadBody, Respond };
 HttpState state = HttpState::Idle;
 uint32_t stateEnteredMs = 0;
 constexpr uint32_t kRequestTimeoutMs = 2000;
 constexpr uint32_t kResponseTimeoutMs = 8000;
 
-// Request scratch: we only need the request line + Authorization header.
+// Request scratch.
 char reqLine[128];
 size_t reqLen = 0;
 bool reqLineDone = false;
 char hdrLine[160];
 size_t hdrLen = 0;
 bool authOk = false;
+size_t contentLen = 0;
+char body[320];
+size_t bodyLen = 0;
 
 // Response streaming (one bounded chunk per pass).
-const uint8_t* rspBody = nullptr;  // PROGMEM or RAM
+const uint8_t* rspBody = nullptr;
 size_t rspBodyLen = 0, rspBodySent = 0;
 char rspHead[224];
 size_t rspHeadLen = 0, rspHeadSent = 0;
-char jsonBuf[560];  // /api/status body lives here between passes
-constexpr size_t kChunk = 1024;  // one TCP-buffer-sized write per pass
+char jsonBuf[900];  // status JSON / wifi list / scan results
+constexpr size_t kChunk = 1024;
 
-char expectedAuth[64];  // "Basic <b64(admin:pass)>" precomputed
-
-bool apRequested = false;
+// AP provisioning mode (W2).
+bool apActive = false;
+char apSsid[41] = {0};
+uint32_t rebootAtMs = 0;  // nonzero = reboot pending (response drains first)
 
 // --- SAMD51 TRNG ------------------------------------------------------
 uint32_t trng32() {
@@ -95,28 +108,78 @@ void base64enc(const char* in, char* out, size_t outLen) {  // as ntrip.cpp
   out[o] = '\0';
 }
 
-void computeExpectedAuth() {
-  char creds[40];
+bool authHeaderMatches(const char* value) {
+  // Recomputed per request: a changed admin password applies instantly.
+  char creds[40], b64[56], expected[64];
   snprintf(creds, sizeof(creds), "admin:%s", g_settings.adminPass);
-  char b64[56];
   base64enc(creds, b64, sizeof(b64));
-  snprintf(expectedAuth, sizeof(expectedAuth), "Basic %s", b64);
+  snprintf(expected, sizeof(expected), "Basic %s", b64);
+  return strcmp(value, expected) == 0;
+}
+
+// --- tiny urlencoded-form parser --------------------------------------
+int hexVal(char c) {
+  if (c >= '0' && c <= '9') return c - '0';
+  if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+  if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+  return -1;
+}
+
+void urldecode(char* s) {
+  char* w = s;
+  for (char* r = s; *r; r++) {
+    if (*r == '+') { *w++ = ' '; continue; }
+    if (*r == '%' && hexVal(r[1]) >= 0 && hexVal(r[2]) >= 0) {
+      *w++ = (char)(hexVal(r[1]) * 16 + hexVal(r[2]));
+      r += 2;
+      continue;
+    }
+    *w++ = *r;
+  }
+  *w = '\0';
+}
+
+// Find key= in an urlencoded body; copies decoded value.
+bool formField(const char* form, const char* key, char* out, size_t cap) {
+  size_t klen = strlen(key);
+  const char* p = form;
+  out[0] = '\0';
+  while (p && *p) {
+    if (!strncmp(p, key, klen) && p[klen] == '=') {
+      const char* v = p + klen + 1;
+      const char* e = strchr(v, '&');
+      size_t n = e ? (size_t)(e - v) : strlen(v);
+      if (n >= cap) n = cap - 1;
+      memcpy(out, v, n);
+      out[n] = '\0';
+      urldecode(out);
+      return true;
+    }
+    p = strchr(p, '&');
+    if (p) p++;
+  }
+  return false;
 }
 
 // --- response builders ------------------------------------------------
 void startResponse(const char* status, const char* type, const char* extra,
-                   const uint8_t* body, size_t bodyLen) {
+                   const uint8_t* bodyPtr, size_t bodyN) {
   rspHeadLen = (size_t)snprintf(
       rspHead, sizeof(rspHead),
       "HTTP/1.1 %s\r\nContent-Type: %s\r\nContent-Length: %u\r\n"
       "Cache-Control: no-store\r\nConnection: close\r\n%s\r\n",
-      status, type, (unsigned)bodyLen, extra ? extra : "");
+      status, type, (unsigned)bodyN, extra ? extra : "");
   rspHeadSent = 0;
-  rspBody = body;
-  rspBodyLen = bodyLen;
+  rspBody = bodyPtr;
+  rspBodyLen = bodyN;
   rspBodySent = 0;
   state = HttpState::Respond;
   stateEnteredMs = millis();
+}
+
+void respondJson(const char* status, int n) {
+  startResponse(status, "application/json", nullptr, (const uint8_t*)jsonBuf,
+                (size_t)(n > 0 ? n : 0));
 }
 
 void respond401() {
@@ -135,8 +198,7 @@ void respond404() {
 void respond501(const char* what) {
   int n = snprintf(jsonBuf, sizeof(jsonBuf),
                    "{\"err\":\"%s not implemented yet\"}", what);
-  startResponse("501 Not Implemented", "application/json", nullptr,
-                (const uint8_t*)jsonBuf, (size_t)(n > 0 ? n : 0));
+  respondJson("501 Not Implemented", n);
 }
 
 void respondStatusJson() {
@@ -158,29 +220,98 @@ void respondStatusJson() {
       jsonBuf, sizeof(jsonBuf),
       "{\"fix\":%u,\"carr\":%u,\"sv\":%u,\"lat\":%.7f,\"lon\":%.7f,"
       "\"alt\":%.1f,\"hacc\":%lu,\"pdop\":%.1f,\"ntrip\":\"%s\","
-      "\"corr\":%ld,\"rssi\":%d,\"ip\":\"%s\",\"tcp\":%u,\"ble\":%u,"
-      "\"sd\":%d,\"file\":\"%s\",\"kb\":%lu,\"freemb\":%lu,"
-      "\"up\":%lu,\"mode\":\"%s\"}",
+      "\"corr\":%ld,\"rssi\":%d,\"ip\":\"%s\",\"ssid\":\"%s\",\"tcp\":%u,"
+      "\"ble\":%u,\"sd\":%d,\"file\":\"%s\",\"kb\":%lu,\"freemb\":%lu,"
+      "\"up\":%lu,\"mode\":\"%s\",\"ap\":%d}",
       g_gnss.fixType, g_gnss.carrSoln, g_gnss.numSV, g_gnss.latDeg,
       g_gnss.lonDeg, g_gnss.hMslM, (unsigned long)g_gnss.hAccMm,
       g_gnss.pdop, ntripStateName(), corrS, g_link.wifiRssi,
-      g_link.wifiIp, g_link.tcpClients, ble, g_log.sdOk ? 1 : 0, fn,
+      apActive ? "192.168.4.1" : g_link.wifiIp,
+      apActive ? apSsid : (g_link.wifiUp ? WiFi.SSID() : ""),
+      g_link.tcpClients, ble, g_log.sdOk ? 1 : 0, fn,
       (unsigned long)(g_log.bytesWritten / 1024),
       (unsigned long)(g_log.sdFreeKB / 1024), (unsigned long)(millis() / 1000),
-      g_settings.mode == DeviceMode::Base ? "base" : "rover");
-  startResponse("200 OK", "application/json", nullptr,
-                (const uint8_t*)jsonBuf, (size_t)(n > 0 ? n : 0));
+      g_settings.mode == DeviceMode::Base ? "base" : "rover", apActive ? 1 : 0);
+  respondJson("200 OK", n);
+}
+
+void respondWifiListJson() {
+  int n = snprintf(jsonBuf, sizeof(jsonBuf), "{\"slots\":[");
+  for (int i = 0; i < kMaxWifiNetworks; i++) {
+    n += snprintf(jsonBuf + n, sizeof(jsonBuf) - n,
+                  "%s{\"slot\":%d,\"ssid\":\"%s\",\"set\":%d}", i ? "," : "",
+                  i + 1, g_settings.wifiSsid[i],
+                  g_settings.wifiSsid[i][0] ? 1 : 0);
+  }
+  n += snprintf(jsonBuf + n, sizeof(jsonBuf) - n,
+                "],\"connected\":\"%s\",\"ip\":\"%s\",\"ap\":%d,"
+                "\"apssid\":\"%s\"}",
+                (!apActive && g_link.wifiUp) ? WiFi.SSID() : "",
+                g_link.wifiIp, apActive ? 1 : 0, apSsid);
+  respondJson("200 OK", n);
+}
+
+void handleWifiPost() {
+  char slotStr[8], ssid[33], pass[65];
+  formField(body, "slot", slotStr, sizeof(slotStr));
+  bool haveSsid = formField(body, "ssid", ssid, sizeof(ssid));
+  bool havePass = formField(body, "pass", pass, sizeof(pass));
+  int slot = atoi(slotStr);
+  if (slot < 1 || slot > kMaxWifiNetworks || !haveSsid) {
+    int n = snprintf(jsonBuf, sizeof(jsonBuf),
+                     "{\"err\":\"need slot=1..%d and ssid\"}", kMaxWifiNetworks);
+    respondJson("400 Bad Request", n);
+    return;
+  }
+  // Empty ssid clears the slot; empty/absent pass = open network.
+  strncpy(g_settings.wifiSsid[slot - 1], ssid, 32);
+  g_settings.wifiSsid[slot - 1][32] = '\0';
+  strncpy(g_settings.wifiPass[slot - 1], havePass ? pass : "", 64);
+  g_settings.wifiPass[slot - 1][64] = '\0';
+  bool saved = settingsSave();
+  Serial.print(F("[web] wifi slot "));
+  Serial.print(slot);
+  Serial.println(ssid[0] ? F(" updated") : F(" cleared"));
+  int n = snprintf(jsonBuf, sizeof(jsonBuf), "{\"ok\":1,\"saved\":%d}",
+                   saved ? 1 : 0);
+  respondJson("200 OK", n);
+}
+
+void respondScanJson() {
+  // BLOCKING for the scan duration (~2-4 s): same stall class as a
+  // WiFi.begin() rejoin, covered by the 32 KiB SERCOM ring. On-demand
+  // only — typically pressed while provisioning, when NTRIP is down
+  // anyway.
+  Serial.println(F("[web] scanning (bounded stall)..."));
+  int8_t count = WiFi.scanNetworks();
+  int n = snprintf(jsonBuf, sizeof(jsonBuf), "{\"nets\":[");
+  int emitted = 0;
+  for (int8_t i = 0; i < count && emitted < 12; i++) {
+    const char* s = WiFi.SSID(i);
+    if (!s || !s[0]) continue;
+    // crude JSON safety: skip SSIDs containing quote/backslash
+    if (strchr(s, '"') || strchr(s, '\\')) continue;
+    int add = snprintf(jsonBuf + n, sizeof(jsonBuf) - n,
+                       "%s{\"ssid\":\"%s\",\"rssi\":%ld,\"enc\":%u}",
+                       emitted ? "," : "", s, (long)WiFi.RSSI(i),
+                       (unsigned)WiFi.encryptionType(i));
+    if (n + add >= (int)sizeof(jsonBuf) - 24) break;
+    n += add;
+    emitted++;
+  }
+  n += snprintf(jsonBuf + n, sizeof(jsonBuf) - n, "]}");
+  respondJson("200 OK", n);
 }
 
 // --- routing ----------------------------------------------------------
 void route() {
-  // reqLine: "GET /path HTTP/1.1"
   char* path = strchr(reqLine, ' ');
   if (!path) { respond404(); return; }
   *path++ = '\0';
   char* end = strchr(path, ' ');
   if (end) *end = '\0';
   const bool isGet = !strcmp(reqLine, "GET");
+  const bool isPost = !strcmp(reqLine, "POST");
 
   if (!authOk) { respond401(); return; }
 
@@ -192,15 +323,26 @@ void route() {
   }
   if (isGet && !strcmp(path, "/api/status")) { respondStatusJson(); return; }
 
-  // W2-W5 scaffolding — structure visible, bodies land per-increment.
-  // W2 (AP provisioning flow) is BLOCKED on the W0 beginAP+BLE spike.
-  if (!strncmp(path, "/api/wifi", 9))     { respond501("wifi (W2)"); return; }
-  if (!strncmp(path, "/api/scan", 9))     { respond501("scan (W2)"); return; }
-  if (!strncmp(path, "/api/gnss", 9))     { respond501("gnss (W3)"); return; }
-  if (!strncmp(path, "/api/ntrip", 10))   { respond501("ntrip (W3)"); return; }
-  if (!strncmp(path, "/api/ble", 8))      { respond501("ble (W5)"); return; }
-  if (!strncmp(path, "/api/log", 8))      { respond501("logging (W4)"); return; }
-  if (!strncmp(path, "/api/system", 11))  { respond501("system (W5)"); return; }
+  // ---- W2: WiFi provisioning ----
+  if (!strcmp(path, "/api/wifi")) {
+    if (isGet) { respondWifiListJson(); return; }
+    if (isPost) { handleWifiPost(); return; }
+  }
+  if (isGet && !strcmp(path, "/api/scan")) { respondScanJson(); return; }
+  if (isPost && !strcmp(path, "/api/reboot")) {
+    rebootAtMs = millis() + 700;  // let the response drain first
+    Serial.println(F("[web] reboot requested"));
+    int n = snprintf(jsonBuf, sizeof(jsonBuf), "{\"ok\":1,\"rebooting\":1}");
+    respondJson("200 OK", n);
+    return;
+  }
+
+  // W3-W5 scaffolding.
+  if (!strncmp(path, "/api/gnss", 9))    { respond501("gnss (W3)"); return; }
+  if (!strncmp(path, "/api/ntrip", 10))  { respond501("ntrip (W3)"); return; }
+  if (!strncmp(path, "/api/ble", 8))     { respond501("ble (W5)"); return; }
+  if (!strncmp(path, "/api/log", 8))     { respond501("logging (W4)"); return; }
+  if (!strncmp(path, "/api/system", 11)) { respond501("system (W5)"); return; }
 
   respond404();
 }
@@ -210,7 +352,7 @@ void resetConn() {
   conn.stop();
   conn = WiFiClient();
   state = HttpState::Idle;
-  reqLen = hdrLen = 0;
+  reqLen = hdrLen = bodyLen = contentLen = 0;
   reqLineDone = false;
   authOk = false;
 }
@@ -222,9 +364,19 @@ void pollIdle() {
   conn = incoming;
   state = HttpState::ReadRequest;
   stateEnteredMs = millis();
-  reqLen = hdrLen = 0;
+  reqLen = hdrLen = bodyLen = contentLen = 0;
   reqLineDone = false;
   authOk = false;
+}
+
+void maybeStartBody() {
+  if (contentLen == 0) { route(); return; }
+  if (contentLen >= sizeof(body)) {
+    int n = snprintf(jsonBuf, sizeof(jsonBuf), "{\"err\":\"body too large\"}");
+    respondJson("413 Payload Too Large", n);
+    return;
+  }
+  state = HttpState::ReadBody;
 }
 
 void pollRead() {
@@ -232,7 +384,6 @@ void pollRead() {
     resetConn();
     return;
   }
-  // Bounded: drain what's buffered this pass, stop at end of headers.
   int budget = 512;
   while (budget-- > 0 && conn.available()) {
     char c = (char)conn.read();
@@ -247,11 +398,13 @@ void pollRead() {
     }
     if (c == '\n') {
       hdrLine[hdrLen] = '\0';
-      if (hdrLen == 0) { route(); return; }  // blank line = headers done
+      if (hdrLen == 0) { maybeStartBody(); return; }
       if (!strncasecmp(hdrLine, "Authorization:", 14)) {
         const char* v = hdrLine + 14;
         while (*v == ' ') v++;
-        if (!strcmp(v, expectedAuth)) authOk = true;
+        if (authHeaderMatches(v)) authOk = true;
+      } else if (!strncasecmp(hdrLine, "Content-Length:", 15)) {
+        contentLen = (size_t)atoi(hdrLine + 15);
       }
       hdrLen = 0;
     } else if (c != '\r' && hdrLen < sizeof(hdrLine) - 1) {
@@ -260,12 +413,26 @@ void pollRead() {
   }
 }
 
+void pollReadBody() {
+  if (!conn.connected() || millis() - stateEnteredMs > kRequestTimeoutMs) {
+    resetConn();
+    return;
+  }
+  int budget = 512;
+  while (budget-- > 0 && conn.available() && bodyLen < contentLen) {
+    body[bodyLen++] = (char)conn.read();
+  }
+  if (bodyLen >= contentLen) {
+    body[bodyLen] = '\0';
+    route();
+  }
+}
+
 void pollRespond() {
   if (!conn.connected() || millis() - stateEnteredMs > kResponseTimeoutMs) {
     resetConn();
     return;
   }
-  // One bounded write per pass: headers first, then body chunks.
   if (rspHeadSent < rspHeadLen) {
     rspHeadSent += conn.write((const uint8_t*)rspHead + rspHeadSent,
                               rspHeadLen - rspHeadSent);
@@ -298,14 +465,12 @@ void webConfigInit() {
     dirty = true;
   }
   if (dirty) settingsSave();
-  computeExpectedAuth();
+  snprintf(apSsid, sizeof(apSsid), "%s-setup", g_settings.hostname);
 
-  WiFi.setHostname(g_settings.hostname);  // takes effect on next join;
-                                          // W0 spike verifies support
+  WiFi.setHostname(g_settings.hostname);  // applies on the next join
 
   static WiFiServer srv(g_settings.webPort);
   server = &srv;
-  // Bind happens lazily once WiFi is up (same lesson as tcp_nmea).
   Serial.print(F("[web] config GUI on :"));
   Serial.println(g_settings.webPort);
 }
@@ -313,35 +478,68 @@ void webConfigInit() {
 void webConfigPoll() {
   if (!g_settings.webEnable || !server) return;
 
-  if (WiFi.status() != WL_CONNECTED) {
+  if (rebootAtMs && millis() > rebootAtMs && state == HttpState::Idle) {
+    Serial.println(F("[web] rebooting"));
+    Serial.flush();
+    sdLoggerShutdown();  // close/sync the .ubx before the reset
+    delay(50);
+    NVIC_SystemReset();
+  }
+
+  uint8_t st = WiFi.status();
+  bool netUp = apActive ? (st == WL_AP_LISTENING || st == WL_AP_CONNECTED)
+                        : (st == WL_CONNECTED);
+  if (!netUp) {
     if (serverUp) { serverUp = false; resetConn(); }
-    return;  // W2 adds the AP-mode path here
+    return;
   }
   if (!serverUp) {
     server->begin();
     serverUp = true;
+    if (apActive) Serial.println(F("[web] serving on http://192.168.4.1/"));
   }
 
   switch (state) {
     case HttpState::Idle:        pollIdle(); break;
     case HttpState::ReadRequest: pollRead(); break;
+    case HttpState::ReadBody:    pollReadBody(); break;
     case HttpState::Respond:     pollRespond(); break;
   }
 }
 
 void webConfigRequestApMode() {
-  apRequested = !apRequested;
-  // W2: actual beginAP() switch lands after the W0 spike answers whether
-  // AP mode coexists with BLE HCI (or needs bleNus paused) on nina-fw
-  // 3.0.1. Until then the button just arms/disarms the request flag.
-  Serial.println(apRequested
-                     ? F("[web] AP mode requested — W2 not implemented yet "
-                         "(blocked on W0 beginAP+BLE spike)")
-                     : F("[web] AP mode request cleared"));
+  if (!apActive) {
+    // Enter provisioning: end() then beginAP — the W0-proven sequence.
+    // end() wedges STA-join until module reset, which is fine: the only
+    // exit from AP mode is the reboot below.
+    Serial.println(F("[web] entering AP provisioning mode"));
+    WiFi.end();
+    serverUp = false;
+    resetConn();
+    uint8_t r = WiFi.beginAP(apSsid, g_settings.apPass);
+    apActive = (r == WL_AP_LISTENING || r == WL_AP_CONNECTED);
+    if (apActive) {
+      Serial.print(F("[web] AP up: "));
+      Serial.print(apSsid);
+      Serial.println(F(" @ 192.168.4.1 (AP button again = exit + reboot)"));
+    } else {
+      Serial.print(F("[web] beginAP FAILED code "));
+      Serial.println(r);
+      // The module is end()-wedged for STA now too — reboot to recover.
+      rebootAtMs = millis() + 100;
+    }
+  } else {
+    // Exit provisioning: reboot is the ONLY reliable path back to STA
+    // (WiFi.end() wedge — docs/web-config-spike.md critical finding).
+    Serial.println(F("[web] leaving AP mode -> reboot"));
+    rebootAtMs = millis() + 100;
+  }
 }
 
-bool webConfigApRequested() { return apRequested; }
+bool webConfigApRequested() { return apActive; }
+bool webConfigApActive() { return apActive; }
 const char* webConfigAdminPass() { return g_settings.adminPass; }
 const char* webConfigApPass() { return g_settings.apPass; }
+const char* webConfigApSsid() { return apSsid; }
 
 #endif  // ENABLE_WEB_CONFIG

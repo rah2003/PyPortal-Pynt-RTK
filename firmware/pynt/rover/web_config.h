@@ -10,9 +10,12 @@ void webConfigPoll();  // lowest-priority residual: one bounded read OR
                        // write per loop pass, single connection at a time
 
 // Touch-UI hooks (WEB page):
-void webConfigRequestApMode();   // on-demand AP provisioning entry — W2;
-                                 // stub logs until the W0 spike answers
-                                 // beginAP()+BLE coexistence
-bool webConfigApRequested();
+void webConfigRequestApMode();   // AP button: enter AP provisioning, or
+                                 // (if active) exit via reboot — the only
+                                 // reliable AP->STA path (WiFi.end() wedge,
+                                 // docs/web-config-spike.md)
+bool webConfigApRequested();     // = AP mode active (legacy name)
+bool webConfigApActive();        // ntripPoll stands down while true
 const char* webConfigAdminPass();  // generated at first boot if unset —
 const char* webConfigApPass();     // displayed on the TFT WEB page
+const char* webConfigApSsid();     // "<hostname>-setup"

@@ -22,6 +22,11 @@ nav button.on{color:var(--txt);border-color:var(--acc)}
 .ok{color:var(--acc)}.warn{color:var(--warn)}.bad{color:var(--bad)}
 footer{color:var(--dim);font-size:.75rem;text-align:center;margin-top:16px}
 .soon{color:var(--dim);font-style:italic;padding:20px;text-align:center}
+input,select{background:#10151b;color:var(--txt);border:1px solid #2a323c;border-radius:8px;padding:9px 10px;font-size:1rem;width:100%}
+button.act{background:#233042;color:var(--txt);border:1px solid #33465e;border-radius:8px;padding:10px;font-size:.95rem}
+button.act.warn2{border-color:var(--warn);color:var(--warn)}
+.slotrow,.scanrow{display:flex;justify-content:space-between;background:#10151b;border:1px solid #2a323c;border-radius:8px;padding:8px 10px;font-size:.9rem}
+.scanrow{cursor:pointer}
 </style>
 </head>
 <body>
@@ -70,7 +75,39 @@ footer{color:var(--dim);font-size:.75rem;text-align:center;margin-top:16px}
 </div>
 </div>
 </div>
-<div id="t-wifi" hidden><div class="card"><div class="soon">WiFi provisioning — W2 (after the W0 AP spike)</div></div></div>
+<div id="t-wifi" hidden>
+<div class="card">
+<h2>Connection</h2>
+<div class="grid">
+<div class="kv"><b>Network</b><span id="w-cur">—</span></div>
+<div class="kv"><b>IP</b><span id="w-ip">—</span></div>
+</div>
+</div>
+<div class="card">
+<h2>Saved networks</h2>
+<div id="w-slots" style="display:grid;gap:6px"></div>
+</div>
+<div class="card">
+<h2>Add / edit</h2>
+<div style="display:grid;gap:8px">
+<select id="w-slot"><option value="1">Slot 1</option><option value="2">Slot 2</option><option value="3">Slot 3</option><option value="4">Slot 4</option></select>
+<input id="w-ssid" placeholder="SSID" maxlength="32" autocapitalize="off">
+<input id="w-pass" placeholder="Password (blank = open)" maxlength="64" type="password" autocapitalize="off">
+<button id="w-save" class="act">Save network</button>
+<button id="w-scan" class="act">Scan for networks</button>
+<div id="w-scanlist" style="display:grid;gap:4px"></div>
+<div id="w-msg" style="color:var(--dim);font-size:.85rem"></div>
+</div>
+</div>
+<div class="card">
+<h2>Apply</h2>
+<p style="color:var(--dim);font-size:.85rem;margin-bottom:8px">
+Saved networks are tried in slot order at boot and on every WiFi retry.
+If the device is in setup (AP) mode, restarting is how it returns to
+normal WiFi — connections to this page will drop for ~30 s.</p>
+<button id="w-reboot" class="act warn2">Restart device</button>
+</div>
+</div>
 <div id="t-gnss" hidden><div class="card"><div class="soon">GNSS settings — W3</div></div></div>
 <div id="t-ntrip" hidden><div class="card"><div class="soon">Corrections / NTRIP — W3</div></div></div>
 <div id="t-ble" hidden><div class="card"><div class="soon">BLE phone link — W5</div></div></div>
@@ -119,6 +156,60 @@ async function tick(){
   }
 }
 tick();setInterval(tick,1000);
+
+// ---- WiFi tab (W2) ----
+const wmsg=t=>{$('w-msg').textContent=t};
+async function loadWifi(){
+  try{
+    const d=await (await fetch('/api/wifi')).json();
+    $('w-cur').textContent=d.ap?('SETUP: '+d.apssid):(d.connected||'not connected');
+    $('w-ip').textContent=d.ip||'—';
+    $('w-slots').innerHTML='';
+    d.slots.forEach(s=>{
+      const r=document.createElement('div');r.className='slotrow';
+      r.innerHTML=`<span>${s.slot}. ${s.set?s.ssid:'<i style="color:var(--dim)">empty</i>'}</span>`+
+        (s.set?`<a href="#" data-s="${s.slot}" style="color:var(--bad)">clear</a>`:'');
+      $('w-slots').appendChild(r);
+    });
+    $('w-slots').querySelectorAll('a').forEach(a=>a.onclick=async e=>{
+      e.preventDefault();
+      if(!confirm('Clear slot '+a.dataset.s+'?'))return;
+      await fetch('/api/wifi',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body:new URLSearchParams({slot:a.dataset.s,ssid:'',pass:''})});
+      loadWifi();
+    });
+  }catch(e){wmsg('load failed: '+e)}
+}
+document.querySelector('nav button[data-t="wifi"]').addEventListener('click',loadWifi);
+$('w-save').onclick=async()=>{
+  const ssid=$('w-ssid').value.trim();
+  if(!ssid){wmsg('SSID required');return}
+  wmsg('saving…');
+  const r=await fetch('/api/wifi',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams({slot:$('w-slot').value,ssid,pass:$('w-pass').value})});
+  const d=await r.json();
+  wmsg(d.ok?(d.saved?'saved to SD':'applied (no SD — lost on reboot)'):('error: '+d.err));
+  loadWifi();
+};
+$('w-scan').onclick=async()=>{
+  wmsg('scanning… (device pauses ~3 s)');
+  $('w-scanlist').innerHTML='';
+  try{
+    const d=await (await fetch('/api/scan')).json();
+    d.nets.sort((a,b)=>b.rssi-a.rssi).forEach(n=>{
+      const r=document.createElement('div');r.className='scanrow';
+      r.innerHTML=`<span>${n.ssid}${n.enc?' 🔒':''}</span><span>${n.rssi} dBm</span>`;
+      r.onclick=()=>{$('w-ssid').value=n.ssid;wmsg('SSID filled — enter password and save')};
+      $('w-scanlist').appendChild(r);
+    });
+    wmsg(d.nets.length+' networks');
+  }catch(e){wmsg('scan failed: '+e)}
+};
+$('w-reboot').onclick=async()=>{
+  if(!confirm('Restart the device now?'))return;
+  try{await fetch('/api/reboot',{method:'POST'})}catch(e){}
+  wmsg('rebooting — reconnect to the device network, then reload');
+};
 </script>
 </body>
 </html>

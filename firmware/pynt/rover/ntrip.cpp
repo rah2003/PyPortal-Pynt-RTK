@@ -26,6 +26,7 @@
 #include <WiFiNINA.h>
 
 #include "features.h"
+#include "web_config.h"  // ENABLE_WEB_CONFIG AP-mode standdown — gated call
 #include "gnss.h"
 #include "pins.h"
 #include "settings.h"
@@ -208,6 +209,16 @@ void ntripInit() {
 }
 
 void ntripPoll() {
+#if ENABLE_WEB_CONFIG
+  if (webConfigApActive()) {
+    // AP provisioning mode (web_config.cpp): STA is down by design and
+    // WiFi.begin() here would fight the AP. Stand down; the exit path
+    // is a reboot, which lands back in WifiConnecting cleanly.
+    g_link.wifiUp = false;
+    g_link.ntripConnected = false;
+    return;
+  }
+#endif
   g_link.wifiUp = (WiFi.status() == WL_CONNECTED);
   g_link.wifiRssi = g_link.wifiUp ? (int8_t)WiFi.RSSI() : 0;
   if (g_link.wifiUp) {
