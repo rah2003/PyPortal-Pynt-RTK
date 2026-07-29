@@ -20,3 +20,14 @@
 #if FEATURE_BLE && !FEATURE_TCP_NMEA
 #error "FEATURE_BLE rides tcp_nmea's NMEA drain — enable FEATURE_TCP_NMEA too"
 #endif
+
+#ifndef ENABLE_WEB_CONFIG
+#define ENABLE_WEB_CONFIG 0  // Web config GUI on :80 (docs/web-config-spike.md).
+                             // Off in shipping pynt-rover; pynt-rover-coex
+                             // sets -DENABLE_WEB_CONFIG=1. Needs the
+                             // upstream stack (server.accept()) and the
+                             // web_assets.h build step (extra_scripts).
+#endif
+#if ENABLE_WEB_CONFIG && !defined(COEX_UPSTREAM_NINA)
+#error "ENABLE_WEB_CONFIG needs the upstream WiFiNINA stack (COEX_UPSTREAM_NINA env)"
+#endif

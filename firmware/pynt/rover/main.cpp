@@ -17,6 +17,7 @@
 #include "shared.h"
 #include "tcp_nmea.h"
 #include "ui.h"
+#include "web_config.h"
 
 namespace {
 uint32_t loopWorstUs = 0;  // loop-time high-water; 'status' shows health
@@ -54,6 +55,9 @@ void setup() {
 #if FEATURE_BLE
   bleNusInit();  // after ntripInit — BLE rides the already-up SPI link
 #endif
+#if ENABLE_WEB_CONFIG
+  webConfigInit();  // after settingsLoad (port/passwords) + ntripInit
+#endif
 
   Serial.println(F("[main] running — 'help' for the serial menu"));
 }
@@ -70,6 +74,9 @@ void loop() {
   sdLoggerPoll();  // drain file buffer -> .ubx (one bounded chunk/pass)
   uiPoll();        // touch + 2 Hz redraw
   serialMenuPoll();
+#if ENABLE_WEB_CONFIG
+  webConfigPoll();  // lowest-priority residual: one bounded read/write
+#endif
 
   uint32_t dt = micros() - t0;
   if (dt > loopWorstUs) loopWorstUs = dt;

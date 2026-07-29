@@ -106,6 +106,24 @@ bool settingsSave() {
     f.print(F("fixedlon=")); f.println(g_settings.fixedLonDeg, 9);
     f.print(F("fixedalt=")); f.println(g_settings.fixedAltM, 3);
   }
+#if FEATURE_BLE
+  f.print(F("bleenable=")); f.println(g_settings.bleEnable ? 1 : 0);
+  f.print(F("blename="));   f.println(g_settings.bleName);
+#endif
+#if ENABLE_WEB_CONFIG
+  f.print(F("webenable=")); f.println(g_settings.webEnable ? 1 : 0);
+  f.print(F("webport="));   f.println(g_settings.webPort);
+  f.print(F("hostname="));  f.println(g_settings.hostname);
+  if (g_settings.adminPass[0]) {
+    f.print(F("adminpass=")); f.println(g_settings.adminPass);
+  }
+  if (g_settings.apPass[0]) {
+    f.print(F("appass="));    f.println(g_settings.apPass);
+  }
+  f.print(F("measrate="));  f.println(g_settings.measRateHz);
+  f.print(F("dynmodel="));  f.println(g_settings.dynModel);
+  f.print(F("nmeagsv="));   f.println(g_settings.nmeaGsv ? 1 : 0);
+#endif
   f.close();
   return true;
 }
@@ -153,6 +171,20 @@ bool settingsApplyKeyValue(const char* key, const char* value) {
     if (!strcmp(value, "rover")) { g_settings.mode = DeviceMode::Rover; return true; }
     return false;
   }
+#if FEATURE_BLE
+  if (!strcmp(key, "bleenable")) { g_settings.bleEnable = atoi(value) != 0; return true; }
+  if (!strcmp(key, "blename"))   { setStr(g_settings.bleName, 25, value); return true; }
+#endif
+#if ENABLE_WEB_CONFIG
+  if (!strcmp(key, "webenable")) { g_settings.webEnable = atoi(value) != 0; return true; }
+  if (!strcmp(key, "webport"))   { g_settings.webPort = (uint16_t)atoi(value); return true; }
+  if (!strcmp(key, "hostname"))  { setStr(g_settings.hostname, 33, value); return true; }
+  if (!strcmp(key, "adminpass")) { setStr(g_settings.adminPass, 17, value); return true; }
+  if (!strcmp(key, "appass"))    { setStr(g_settings.apPass, 17, value); return true; }
+  if (!strcmp(key, "measrate"))  { g_settings.measRateHz = (uint8_t)atoi(value); return true; }
+  if (!strcmp(key, "dynmodel"))  { g_settings.dynModel = (uint8_t)atoi(value); return true; }
+  if (!strcmp(key, "nmeagsv"))   { g_settings.nmeaGsv = atoi(value) != 0; return true; }
+#endif
   if (!strcmp(key, "svindur"))  { g_settings.svinMinDurS = (uint16_t)atoi(value); return true; }
   if (!strcmp(key, "svinacc"))  { g_settings.svinAccLimit01mm = (uint32_t)atol(value); return true; }
   if (!strcmp(key, "fixedlat")) { g_settings.fixedLatDeg = atof(value); return true; }

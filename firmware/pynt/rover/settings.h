@@ -7,6 +7,8 @@
 #pragma once
 #include <Arduino.h>
 
+#include "features.h"  // ENABLE_WEB_CONFIG / FEATURE_BLE gate fields below
+
 constexpr int kMaxWifiNetworks = 4;
 
 enum class DeviceMode : uint8_t { Rover = 0, Base = 1 };
@@ -43,6 +45,27 @@ struct Settings {
   // --- Logging / phone link ---
   bool logUbx = true;       // log from boot; the LOG touch button toggles
   uint16_t tcpPort = 10110; // SW Maps NMEA server port
+
+#if FEATURE_BLE
+  // --- BLE NUS (coex stack only) ---
+  bool bleEnable = true;
+  char bleName[25] = "PyntRTK-rover";
+#endif
+
+#if ENABLE_WEB_CONFIG
+  // --- Web config GUI (coex stack only; docs/web-config-spike.md) ---
+  bool webEnable = true;      // STA server always-on while surveying
+  uint16_t webPort = 80;
+  char hostname[33] = "pynt-rtk";   // DHCP hostname (WiFi.setHostname)
+  char adminPass[17] = {0};   // empty = generate at first web boot (TRNG),
+  char apPass[17] = {0};      // shown on the TFT WEB page; web System card
+                              // can change them. Never hardcoded defaults.
+  // --- GNSS knobs surfaced by the W3 card (keys parsed + persisted now;
+  // gnss_config consumption lands with W3 — flagged in the plan) ---
+  uint8_t measRateHz = 1;     // CFG-RATE-MEAS (1..5 sane on F9P all-const)
+  uint8_t dynModel = 0;       // CFG-NAVSPG-DYNMODEL (0=portable,2,3,4..)
+  bool nmeaGsv = true;        // GSV on UART1 (the bandwidth knob)
+#endif
 };
 
 extern Settings g_settings;

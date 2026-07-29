@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pynt RTK</title>
+<style>
+:root{--bg:#101418;--card:#1a2027;--txt:#e8edf2;--dim:#8a96a3;--acc:#25b86f;--warn:#e0b040;--bad:#e05c50;font-size:16px}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--txt);font:1rem/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:12px;max-width:640px;margin:0 auto}
+h1{font-size:1.15rem;letter-spacing:.04em;margin:4px 2px 12px}
+h1 small{color:var(--dim);font-weight:400;margin-left:8px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+nav button{background:var(--card);color:var(--dim);border:1px solid #2a323c;border-radius:8px;padding:6px 12px;font-size:.85rem}
+nav button.on{color:var(--txt);border-color:var(--acc)}
+.card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:12px}
+.card h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}
+.kv b{display:block;font-size:.7rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.kv span{font-variant-numeric:tabular-nums;font-size:1.02rem}
+.fix{font-size:1.35rem;font-weight:600}
+.ok{color:var(--acc)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+footer{color:var(--dim);font-size:.75rem;text-align:center;margin-top:16px}
+.soon{color:var(--dim);font-style:italic;padding:20px;text-align:center}
+</style>
+</head>
+<body>
+<h1>PYNT RTK <small id="host"></small></h1>
+<nav>
+<button class="on" data-t="status">Status</button>
+<button data-t="wifi">WiFi</button>
+<button data-t="gnss">GNSS</button>
+<button data-t="ntrip">Corrections</button>
+<button data-t="ble">BLE</button>
+<button data-t="log">Logging</button>
+<button data-t="sys">System</button>
+</nav>
+
+<div id="t-status">
+<div class="card">
+<h2>Position</h2>
+<div class="fix" id="fix">—</div>
+<div class="grid" style="margin-top:8px">
+<div class="kv"><b>Lat</b><span id="lat">—</span></div>
+<div class="kv"><b>Lon</b><span id="lon">—</span></div>
+<div class="kv"><b>Alt (MSL)</b><span id="alt">—</span></div>
+<div class="kv"><b>H-acc</b><span id="hacc">—</span></div>
+<div class="kv"><b>Sats</b><span id="sv">—</span></div>
+<div class="kv"><b>PDOP</b><span id="pdop">—</span></div>
+</div>
+</div>
+<div class="card">
+<h2>Links</h2>
+<div class="grid">
+<div class="kv"><b>NTRIP</b><span id="ntrip">—</span></div>
+<div class="kv"><b>Corr age</b><span id="corr">—</span></div>
+<div class="kv"><b>WiFi</b><span id="wifi">—</span></div>
+<div class="kv"><b>TCP clients</b><span id="tcp">—</span></div>
+<div class="kv"><b>BLE</b><span id="ble">—</span></div>
+<div class="kv"><b>Uptime</b><span id="up">—</span></div>
+</div>
+</div>
+<div class="card">
+<h2>Logging</h2>
+<div class="grid">
+<div class="kv"><b>SD</b><span id="sd">—</span></div>
+<div class="kv"><b>File</b><span id="file">—</span></div>
+<div class="kv"><b>Size</b><span id="size">—</span></div>
+<div class="kv"><b>Free</b><span id="free">—</span></div>
+</div>
+</div>
+</div>
+<div id="t-wifi" hidden><div class="card"><div class="soon">WiFi provisioning — W2 (after the W0 AP spike)</div></div></div>
+<div id="t-gnss" hidden><div class="card"><div class="soon">GNSS settings — W3</div></div></div>
+<div id="t-ntrip" hidden><div class="card"><div class="soon">Corrections / NTRIP — W3</div></div></div>
+<div id="t-ble" hidden><div class="card"><div class="soon">BLE phone link — W5</div></div></div>
+<div id="t-log" hidden><div class="card"><div class="soon">Logging control — W4</div></div></div>
+<div id="t-sys" hidden><div class="card"><div class="soon">System (passwords, hostname, reboot) — W5</div></div></div>
+<footer id="foot">connecting…</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  ['status','wifi','gnss','ntrip','ble','log','sys'].forEach(t=>$('t-'+t).hidden=(t!==b.dataset.t));
+});
+const FIX=['NO FIX','DR','2D','3D','GNSS+DR','TIME'];
+const CARR=['','FLOAT','RTK FIX'];
+function fmtDur(s){const h=s/3600|0,m=(s%3600)/60|0;return h?`${h}h${m}m`:`${m}m${s%60|0}s`}
+let fails=0;
+async function tick(){
+  try{
+    const r=await fetch('/api/status');
+    if(!r.ok)throw 0;
+    const d=await r.json();fails=0;
+    let f=FIX[d.fix]||('fix'+d.fix);
+    if(d.carr>0)f=CARR[d.carr];
+    $('fix').textContent=f;
+    $('fix').className='fix '+(d.carr===2?'ok':d.carr===1?'warn':d.fix>=2?'':'bad');
+    $('lat').textContent=d.lat.toFixed(7);$('lon').textContent=d.lon.toFixed(7);
+    $('alt').textContent=d.alt.toFixed(1)+' m';
+    $('hacc').textContent=(d.hacc/10).toFixed(1)+' cm';
+    $('sv').textContent=d.sv;$('pdop').textContent=d.pdop.toFixed(1);
+    $('ntrip').textContent=d.ntrip;
+    $('corr').textContent=d.corr<0?'—':(d.corr+' s');
+    $('corr').className=d.corr>=0&&d.corr<=10?'ok':'warn';
+    $('wifi').textContent=d.rssi?d.rssi+' dBm':'down';
+    $('tcp').textContent=d.tcp;
+    $('ble').textContent=['off','advertising','connected','streaming'][d.ble]||'—';
+    $('up').textContent=fmtDur(d.up);
+    $('sd').textContent=d.sd?'ok':'FAIL';$('sd').className=d.sd?'ok':'bad';
+    $('file').textContent=d.file||'—';
+    $('size').textContent=(d.kb/1024).toFixed(1)+' MB';
+    $('free').textContent=(d.freemb/1024).toFixed(1)+' GB';
+    $('foot').textContent='live · '+new Date().toLocaleTimeString();
+  }catch(e){
+    if(++fails>3)$('foot').textContent='connection lost — retrying…';
+  }
+}
+tick();setInterval(tick,1000);
+</script>
+</body>
+</html>

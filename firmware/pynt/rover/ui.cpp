@@ -20,6 +20,7 @@
 #include "sd_logger.h"
 #include "settings.h"
 #include "shared.h"
+#include "web_config.h"  // ENABLE_WEB_CONFIG page — calls gated below
 
 namespace {
 
@@ -81,6 +82,11 @@ void fixState(const char*& txt, uint16_t& color) {
 
 void drawButtons() {
   const char* logLabel = g_log.fileOpen ? "LOG\xFE" : "LOG";  // 0xFE = solid block
+#if ENABLE_WEB_CONFIG
+  // On the WEB page the first button becomes the on-demand AP-mode
+  // entry (locked decision: touch button only, never auto-fallback).
+  if (page == 2) logLabel = webConfigApRequested() ? "AP\xFE" : "AP";
+#endif
   const char* pwrLabel = (pwrConfirmMs && millis() - pwrConfirmMs < 3000)
                              ? "SURE?"
                              : "PWR";
@@ -208,6 +214,25 @@ void drawPageSys() {
   line(y, "UPTM", v);
 }
 
+#if ENABLE_WEB_CONFIG
+// Third page: everything a phone needs to reach the web GUI. Locked
+// decision: the generated admin + AP passwords are DISPLAYED here (no
+// hardcoded defaults anywhere); the web System card can change them.
+void drawPageWeb() {
+  char v[40];
+  int16_t y = kHeaderH + 8;
+  line(y, "WEB ", g_settings.webEnable ? "on" : "off"); y += 22;
+  line(y, "IP  ", g_link.wifiUp ? g_link.wifiIp : "-"); y += 22;
+  snprintf(v, sizeof(v), ":%u", g_settings.webPort);
+  line(y, "PORT", v); y += 22;
+  line(y, "HOST", g_settings.hostname); y += 22;
+  line(y, "ADMN", webConfigAdminPass()); y += 22;   // user "admin"
+  line(y, "APPW", webConfigApPass()); y += 22;      // AP WPA2 key (W2)
+  line(y, "AP  ", webConfigApRequested() ? "requested (W2)" : "off"); y += 22;
+  line(y, "", "AP btn: setup mode");
+}
+#endif
+
 // Map a raw touch sample to screen x/y for the active rotation.
 bool readTouch(int16_t& sx, int16_t& sy) {
   TSPoint p = ts.getPoint();
@@ -232,13 +257,25 @@ void handleTouch() {
   uint8_t idx = x / (kBtnW + kBtnGap);
   if (idx > 2) idx = 2;
   switch (idx) {
-    case 0:  // LOG toggle
+    case 0:  // LOG toggle (AP-mode request on the WEB page)
+#if ENABLE_WEB_CONFIG
+      if (page == 2) {
+        webConfigRequestApMode();
+        drawButtons();
+        break;
+      }
+#endif
       sdLoggerSetEnabled(!(g_log.fileOpen || g_log.loggingEnabled));
       drawButtons();
       break;
     case 1:  // PAGE
+#if ENABLE_WEB_CONFIG
+      page = (page + 1) % 3;  // POS -> SYS -> WEB
+#else
       page = (page + 1) % 2;
+#endif
       tft.fillRect(0, kHeaderH, W, kBtnY - kHeaderH, C_BG);
+      drawButtons();  // first-button label depends on the page
       break;
     case 2:  // PWR: two-tap confirm within 3 s
       if (pwrConfirmMs && millis() - pwrConfirmMs < 3000) {
@@ -292,5 +329,8 @@ void uiPoll() {
 
   drawHeader();
   if (page == 0) drawPagePos();
+#if ENABLE_WEB_CONFIG
+  else if (page == 2) drawPageWeb();
+#endif
   else drawPageSys();
 }

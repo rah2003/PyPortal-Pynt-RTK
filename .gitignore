@@ -17,3 +17,6 @@ firmware/nina-fw-airlift/x509_crt_bundle
 # OS noise
 Thumbs.db
 .DS_Store
+
+# Generated web UI asset header (tools/webui/build_assets.py)
+firmware/pynt/rover/web_assets.h
