@@ -132,7 +132,9 @@ void loop() {
   while (Serial.available()) Serial.read();
   switch (cmd) {
     case '1': {
-      WiFi.end();
+      if (netMode) WiFi.end();  // end() only when something was begun —
+                                // an unconditional end() before the first
+                                // begin() broke every join (bench find)
       netMode = 0;
       serverUp = false;
       Serial.print(F("joining "));
@@ -150,7 +152,7 @@ void loop() {
       break;
     }
     case '2': {
-      WiFi.end();
+      if (netMode) WiFi.end();
       netMode = 0;
       serverUp = false;
       // WPA2 AP — W0.5. Password fixed for the spike; the rover

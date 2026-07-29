@@ -133,14 +133,40 @@ tcpport mode svindur svinacc fixedlat/lon/alt elevmask`.
 **Persistence is SD `/config.txt` + optional secrets.h seed — there is
 no NVS on this platform** (plan assumption corrected).
 
-## Results (fill during bench)
+## Results (bench run 2026-07-28, Metro/COM8, scripted driver)
 
 | Test | Result | Notes |
 |---|---|---|
-| W0.1 iOS Safari / Android Chrome | | |
-| W0.2 accept | | |
-| W0.3 parallel curls before failure | | |
-| W0.4 /big throughput best/worst | | |
-| W0.5 beginAP code + AP IP | | |
-| W0.6 AP+BLE / STA+BLE | | |
-| W0.7 hostname in DHCP table | | |
+| W0.1 gzip serve | **PASS** (curl) | `Content-Encoding: gzip`, 2197 B wire → 5719 B page, content intact. Phone-browser render pending (device left in AP for it) |
+| W0.2 accept | **PASS** | 5 s silent connect → request → 200 OK |
+| W0.3 parallel curls | **FAIL in spike form** — 0/3, 0/6 | Sequential is solid; simultaneous connects all die against the spike's blocking one-at-a-time handler. Re-characterize against the rover's non-blocking module before drawing design conclusions; the SPA's 1 Hz retry masks transient failures either way |
+| W0.4 /big throughput | **PASS** — 57.8–71.2 KB/s | 3× the 20 KB/s bar; whole UI (2.2 KB) ≪ 1 s |
+| W0.5 beginAP | **PASS** — code 7 (WL_AP_LISTENING), IP 192.168.4.1 | Phone join pending |
+| W0.6 AP+BLE | **PASS (device side)** — `BLE.begin()` OK + advertising while AP up and serving | **W2 unblocked: BLE need not stop during provisioning.** Phone visibility check pending |
+| W0.7 hostname | **BLOCKED** by the `WiFi.end()` finding below | `setHostname()` accepted; rejoin never completed so no DHCP lease to inspect |
+
+### Critical finding — `WiFi.end()` wedges STA rejoin
+
+Two clean experiments, same session:
+
+1. Unconditional `WiFi.end()` before the *first* `begin()` → **every
+   join fails** (5/5). Guarding it (`if (netMode) WiFi.end()`) → first
+   join succeeds instantly.
+2. After a legitimate `end()` (mode switch path) → STA rejoin fails
+   **5/5 again**, while `beginAP()` still works (code 7) and BLE is
+   unaffected. So on nina-fw 3.0.1 + upstream WiFiNINA 2.1.1,
+   **`WiFi.end()` permanently wedges STA-join until module reset**;
+   AP bring-up survives.
+
+Consequences:
+
+- The **rover is unaffected** — ntrip.cpp never calls `WiFi.end()`
+  (its retry loop just calls `begin()` again).
+- **W2's AP↔STA transition must not use `WiFi.end()`.** Design options
+  to test: `beginAP()` directly after STA (no end — worked in this
+  session's sequence), and STA-after-AP via module reset (drive
+  RESETN / SpiDrv re-init) as the exit path from provisioning. A
+  reboot-into-STA after saving credentials is also acceptable UX for
+  an on-demand provisioning mode and may be the simplest correct
+  answer.
+- W0.7 retest rides on whichever transition design wins.
