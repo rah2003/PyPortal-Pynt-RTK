@@ -380,6 +380,11 @@ concurrent:**
 **Simultaneous WiFi + BLE is proven on the assembled Pynt.** Q18's
 original constraint is dead on this branch.
 
+**Owner confirmation (same day): the soak's BLE client was iOS
+SW Maps** connected to `PyntRTK-rover` as a Bluetooth GNSS instrument
+— the Q19 payoff, delivered. Q19 closed with both phone paths live
+(QField/TCP + SW Maps/BLE).
+
 ### 2026-07-26 — Metro flashed (section 3) + Spike A PASS (section 4)
 
 Metro M4 AirLift Lite, app port **COM9** (bootloader enumerates
