@@ -137,6 +137,13 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
     fallback) remains required there. Note: the Spike B bench note
     claiming silent accept worked was a misread — its test client
     pinged on connect.
+    **CLOSED 2026-07-28 — both phone paths verified on the Pynt:**
+    QField over TCP (2026-07-19, stock stack) and now **iOS SW Maps
+    over BLE NUS** — owner connected SW Maps to `PyntRTK-rover` during
+    the §7.5 coex soak (~58 min streaming, 37,628 sentences notified,
+    clean reconnects; docs/coex-bench.md). The "Phase 5 payoff"
+    originally deferred to the radio scenario arrived early via the
+    coex firmware.
     **Bench corollary (2026-07-19):** u-center 25.06 can also join as a
     TCP network client (`tcp://<pynt-ip>:10110`) — but it connects
     silently, so the data-gated accept leaves it uncounted until it
