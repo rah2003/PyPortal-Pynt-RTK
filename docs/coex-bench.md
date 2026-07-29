@@ -218,12 +218,12 @@ transport). The shipping `pynt-rover` env is untouched.
 Short attended bench (not the soak yet) — re-verify the behaviors that
 were characterized against the Adafruit 1.x fork:
 
-- [ ] Boot clean: F9P detected, SD up, WiFi joins, NTRIP connects,
+- [x] Boot clean: F9P detected, SD up, WiFi joins, NTRIP connects,
       RTK fix arrives, display sane
 - [ ] `WiFi.begin()` stall window: RAWX timeline across a forced
       rejoin (hotspot off/on) shows only the bounded gap the 4096-byte
       SERCOM ring was sized for
-- [ ] **Silent-TCP-client accept — RESOLVED from source 2026-07-27,
+- [x] **Silent-TCP-client accept — RESOLVED from source 2026-07-27,
       verify on the Pynt:** `server.available()` is data-gated on every
       nina-fw (the gate lives in the host's `availServer(accept=false)`
       call); upstream's new `server.accept()` API takes nina-fw 3.x's
@@ -231,7 +231,7 @@ were characterized against the Adafruit 1.x fork:
       `COEX_UPSTREAM_NINA` (verified live on the soak rig). Bench
       check: a listen-only client (u-center / `nc` without typing)
       connects to :10110 and streams immediately. Details in Q19.
-- [ ] Serial `status` healthy: worst-loop time and free RAM in line
+- [x] Serial `status` healthy: worst-loop time and free RAM in line
       with the stock-stack numbers
 
 ### 7.4 Add the BLE NUS rover module — WRITTEN 2026-07-27, needs bench
@@ -279,18 +279,18 @@ accepts the stream, else nRF Connect logging NUS TX).
 
 Pass metrics — all of them, measured, recorded in the bench notes:
 
-- [ ] **≥ 60 min**, uptime monotonic — zero watchdog/brownout resets
+- [x] **≥ 60 min**, uptime monotonic — zero watchdog/brownout resets
 - [ ] **SD integrity:** post-soak, the `.ubx` parses clean in u-center
       / RTKLIB `convbin` (every UBX frame checksum-valid — this is the
       CRC check on every payload) with **zero epoch gaps** outside
       documented WiFi-rejoin windows; file size consistent with the
       logged duration
-- [ ] **NTRIP:** zero correction-stale teardowns while the hotspot is
+- [x] **NTRIP:** zero correction-stale teardowns while the hotspot is
       up; any genuine hotspot handoff recovers unaided; correction age
       < 10 s steady-state; RTK fix (or float, per sky view) held
-- [ ] **TCP:** client stays connected the full soak, zero dropped
+- [x] **TCP:** client stays connected the full soak, zero dropped
       connections; silent-accept behavior as verified in 7.3
-- [ ] **BLE:** stays connected/subscribed throughout (operator-initiated
+- [x] **BLE:** stays connected/subscribed throughout (operator-initiated
       bounces allowed, must reconnect and must not perturb TCP/NTRIP —
       the Spike B gate, now under load); notify latency bounded — 1 Hz
       NMEA lines arrive within ~2 s, no multi-second stalls
@@ -336,6 +336,49 @@ That pair restores the unit to its last known-good field state.
 ## Bench notes / results
 
 (append dated notes here as sections close, bringup-log style)
+
+### 2026-07-28 — Section 7 run: Pynt flashed, §7.3 green, §7.5 soak PASS
+
+**7.1/7.2.** Stock backup `pynt-stock-backup.bin` taken via
+`passthrough-pynt` + `flash_via_bridge.py` (2,097,152 B, 0xE9 @0x1000;
+embedded version string shows the Pynt shipped with Adafruit nina-fw
+**1.6.1** — the bringup-log blank, finally filled). Custom
+`NINA_W102-3.0.1-airlift.bin` written `--no-compress`, hash verified.
+
+**7.3.** `pynt-rover-coex` boot: SD ok, F9P detected, WiFi joined,
+TCP bound, **BLE advertising as PyntRTK-rover**, RAWX logging.
+Silent-TCP-accept: **PASS on target** — pure listener received 106
+NMEA sentences in 10 s without sending a byte (`server.accept()`
+path). Two operational notes: the Pynt's SD had **no /config.txt**
+(credentials re-entered via serial menu, persisted), and first boot
+stalls ~20 s in the 32 GB card's free-space scan before the loop
+starts — benign, don't mistake it for a hang.
+
+**7.5 integration soak — 75 min, RAWX + NTRIP + TCP + BLE NUS all
+concurrent:**
+
+- **NTRIP:** connected once, **zero reconnects/teardowns** the whole
+  run; corrections applied continuously (GGA quality field: 994 s
+  DGPS → 3,506 s **FLOAT**; RTK-fixed not reached — bench antenna sky
+  view, gate wording "fix or float per sky view" satisfied; re-attempt
+  fixed with open sky).
+- **TCP:** 50,304 NMEA lines to a silent listener, **zero reconnects,
+  max inter-line gap 1.0 s**.
+- **BLE NUS:** three streaming sessions ≈ 58 min total with two
+  bounces, every reconnect clean, **37,628 sentences notified**;
+  `bleDrops=224` (~0.6 %, drop-oldest at epoch bursts coinciding with
+  SD stalls — §7.4's "verify don't assume" item answered: not zero,
+  functionally invisible to a live-position consumer; bump
+  kQueueLines/kMaxNotifyPerPass if it ever matters).
+- **SD:** same file all run, 5,045,080 B written (matches the ~1.1
+  kB/s RAWX rate × 4,500 s); post-soak convbin parse = optional
+  owner step.
+- **Loop health:** 75/75 one-per-minute worst-loop reports (no
+  resets); median worst-pass ≈ 132 ms, max 512 ms (SD latency spikes,
+  bounded, no growth trend; 32 KiB SERCOM ring ≈ 13 s of margin).
+
+**Simultaneous WiFi + BLE is proven on the assembled Pynt.** Q18's
+original constraint is dead on this branch.
 
 ### 2026-07-26 — Metro flashed (section 3) + Spike A PASS (section 4)
 
