@@ -170,3 +170,37 @@ Consequences:
   an on-demand provisioning mode and may be the simplest correct
   answer.
 - W0.7 retest rides on whichever transition design wins.
+
+## W2 bench — 2026-07-31, on the Pynt (pynt-rover-coex)
+
+Full stack live during all of this: NTRIP connected, 3D fix ~25 SV,
+RAWX logging, BLE advertising.
+
+| Check | Result |
+|---|---|
+| Auth | **PASS** — 401 bare, 200 with creds (per-request recompute verified via serial `adminpass=` override) |
+| GET / + /api/status | **PASS** — gzipped SPA + live JSON (all fields incl. ssid/ap) |
+| **W0.3 re-test: parallel connects** | **RESOLVED — PASS**: 3/3 and 6/6 parallel requests return 200 against the non-blocking module; the spike's 0/3 was its blocking handler, not the firmware |
+| POST /api/wifi | **PASS** — slot 4 saved to SD, listed, cleared |
+| GET /api/scan in STA | **FINDING**: `scanNetworks()` during an active association DROPS the STA link (self-heals via the ntrip retry loop in ~30–60 s). Now gated: 409 in STA, allowed in AP mode; SPA surfaces the message. Verified 409 + association intact after the fix |
+| W0.7 hostname | `setHostname("pynt-rtk")` applied before join — **owner: check the router's DHCP client table** |
+| Boot | Clean with triage markers; hardened TRNG (bounded wait) — first-boot hang did not reproduce |
+
+Flash-recovery note for this Pynt (bootloader quirk, worth knowing):
+its UF2 bootloader goes bulk-transfer-dead when left IDLE in bootloader
+mode (SAM-BA silent, MSC mounts but reads/writes hang — two different
+copy tools, fresh double-taps, known-good cable all failed). The
+reliable flash path is the **touch-flow**: boot the app (single reset
+if needed), then `pio run -e pynt-rover-coex -t upload --upload-port
+<app COM>` — PIO's 1200-touch + immediate bossac write works every
+time (~12 s). Avoid parking this board in its bootloader.
+
+Remaining W2 items (owner, phone in hand):
+- TFT: PAGE → WEB page shows IP/HOST/ADMN/APSS/APPW; AP button enters
+  provisioning (BLE stays up); join `pynt-rtk-setup` with the APPW
+  key, browse http://192.168.4.1/, WiFi tab: scan (allowed there),
+  save a network, then AP button again = exit + reboot to STA.
+- Router DHCP table shows `pynt-rtk` (W0.7 close-out).
+- Note: admin password currently overridden to a bench value; clear
+  `adminpass=` in /config.txt (or wait for the W5 System card) to
+  regenerate a TRNG one.

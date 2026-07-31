@@ -196,6 +196,7 @@ $('w-scan').onclick=async()=>{
   $('w-scanlist').innerHTML='';
   try{
     const d=await (await fetch('/api/scan')).json();
+    if(d.err){wmsg(d.err);return}
     d.nets.sort((a,b)=>b.rssi-a.rssi).forEach(n=>{
       const r=document.createElement('div');r.className='scanrow';
       r.innerHTML=`<span>${n.ssid}${n.enc?' 🔒':''}</span><span>${n.rssi} dBm</span>`;

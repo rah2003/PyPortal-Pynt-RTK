@@ -76,13 +76,17 @@ uint32_t rebootAtMs = 0;  // nonzero = reboot pending (response drains first)
 // --- SAMD51 TRNG ------------------------------------------------------
 uint32_t trng32() {
 #ifdef __SAMD51__
+  // Bounded wait: DATARDY is due after 84 APB cycles, so 100k spins is
+  // orders of magnitude past "working" — a miss means the peripheral
+  // isn't running (clock/errata) and we degrade instead of hanging boot.
   MCLK->APBCMASK.bit.TRNG_ = 1;
   TRNG->CTRLA.bit.ENABLE = 1;
-  while (!TRNG->INTFLAG.bit.DATARDY) {}
-  return TRNG->DATA.reg;
-#else
-  return micros() ^ (analogRead(A0) << 16);  // spike boards fallback
+  for (uint32_t i = 0; i < 100000; i++) {
+    if (TRNG->INTFLAG.bit.DATARDY) return TRNG->DATA.reg;
+  }
+  Serial.println(F("[web] TRNG timeout — weak-entropy fallback"));
 #endif
+  return micros() ^ ((uint32_t)analogRead(A0) << 16) ^ (millis() << 8);
 }
 
 void genPassword(char* dst, size_t len) {
@@ -278,10 +282,19 @@ void handleWifiPost() {
 }
 
 void respondScanJson() {
+  if (!apActive && WiFi.status() == WL_CONNECTED) {
+    // Pynt bench 2026-07-31: scanNetworks() during an active STA
+    // association DROPS the association (the scan reply dies with it;
+    // ntrip's retry loop self-heals in ~30-60 s, but corrections and
+    // the GUI take the hit). Scan is a provisioning tool — AP mode only.
+    int n = snprintf(jsonBuf, sizeof(jsonBuf),
+                     "{\"err\":\"scan only in setup (AP) mode — it drops"
+                     " the WiFi link\"}");
+    respondJson("409 Conflict", n);
+    return;
+  }
   // BLOCKING for the scan duration (~2-4 s): same stall class as a
-  // WiFi.begin() rejoin, covered by the 32 KiB SERCOM ring. On-demand
-  // only — typically pressed while provisioning, when NTRIP is down
-  // anyway.
+  // WiFi.begin() rejoin, covered by the 32 KiB SERCOM ring.
   Serial.println(F("[web] scanning (bounded stall)..."));
   int8_t count = WiFi.scanNetworks();
   int n = snprintf(jsonBuf, sizeof(jsonBuf), "{\"nets\":[");
@@ -450,6 +463,7 @@ void pollRespond() {
 }  // namespace
 
 void webConfigInit() {
+  Serial.println(F("[web] init"));  // boot-hang triage marker
   if (!g_settings.webEnable) {
     Serial.println(F("[web] disabled (webenable=0)"));
     return;
@@ -457,17 +471,19 @@ void webConfigInit() {
   bool dirty = false;
   if (!g_settings.adminPass[0]) {
     genPassword(g_settings.adminPass, 10);
-    Serial.println(F("[web] generated admin password (TFT WEB page shows it)"));
+    Serial.println(F("[web] admin password generated (TFT WEB page shows it)"));
     dirty = true;
   }
   if (!g_settings.apPass[0]) {
     genPassword(g_settings.apPass, 10);
     dirty = true;
   }
-  if (dirty) settingsSave();
+  if (dirty && !settingsSave())
+    Serial.println(F("[web] WARN: passwords not persisted (no SD)"));
   snprintf(apSsid, sizeof(apSsid), "%s-setup", g_settings.hostname);
 
   WiFi.setHostname(g_settings.hostname);  // applies on the next join
+  Serial.println(F("[web] hostname set"));
 
   static WiFiServer srv(g_settings.webPort);
   server = &srv;
