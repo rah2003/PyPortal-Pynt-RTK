@@ -60,6 +60,14 @@ struct Settings {
   char adminPass[17] = {0};   // empty = generate at first web boot (TRNG),
   char apPass[17] = {0};      // shown on the TFT WEB page; web System card
                               // can change them. Never hardcoded defaults.
+  bool bootAp = false;        // one-shot: enter AP provisioning at next boot.
+                              // Set+saved by the TFT AP button, cleared at
+                              // boot before entering AP. Both AP transitions
+                              // are reboots: the NINA's socket table doesn't
+                              // survive WiFi.end() honestly (bench 2026-07-31
+                              // — leaked socks starve getSocket, bind fails,
+                              // phantom-accept storm), so AP mode only ever
+                              // starts on a freshly reset module.
   // --- GNSS knobs surfaced by the W3 card (keys parsed + persisted now;
   // gnss_config consumption lands with W3 — flagged in the plan) ---
   uint8_t measRateHz = 1;     // CFG-RATE-MEAS (1..5 sane on F9P all-const)

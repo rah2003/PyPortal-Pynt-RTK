@@ -214,6 +214,8 @@ void ntripPoll() {
     // AP provisioning mode (web_config.cpp): STA is down by design and
     // WiFi.begin() here would fight the AP. Stand down; the exit path
     // is a reboot, which lands back in WifiConnecting cleanly.
+    if (state == NtripState::Connected || state == NtripState::HeaderWait)
+      backoff();  // close the dead socket + honest state label
     g_link.wifiUp = false;
     g_link.ntripConnected = false;
     return;

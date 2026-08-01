@@ -112,6 +112,7 @@ bool settingsSave() {
 #endif
 #if ENABLE_WEB_CONFIG
   f.print(F("webenable=")); f.println(g_settings.webEnable ? 1 : 0);
+  if (g_settings.bootAp) f.println(F("bootap=1"));  // one-shot AP-at-boot flag
   f.print(F("webport="));   f.println(g_settings.webPort);
   f.print(F("hostname="));  f.println(g_settings.hostname);
   if (g_settings.adminPass[0]) {
@@ -180,6 +181,7 @@ bool settingsApplyKeyValue(const char* key, const char* value) {
   if (!strcmp(key, "webport"))   { g_settings.webPort = (uint16_t)atoi(value); return true; }
   if (!strcmp(key, "hostname"))  { setStr(g_settings.hostname, 33, value); return true; }
   if (!strcmp(key, "adminpass")) { setStr(g_settings.adminPass, 17, value); return true; }
+  if (!strcmp(key, "bootap"))    { g_settings.bootAp = atoi(value) != 0; return true; }
   if (!strcmp(key, "appass"))    { setStr(g_settings.apPass, 17, value); return true; }
   if (!strcmp(key, "measrate"))  { g_settings.measRateHz = (uint8_t)atoi(value); return true; }
   if (!strcmp(key, "dynmodel"))  { g_settings.dynModel = (uint8_t)atoi(value); return true; }

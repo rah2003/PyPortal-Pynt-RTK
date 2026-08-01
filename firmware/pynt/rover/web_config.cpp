@@ -73,6 +73,18 @@ bool apActive = false;
 char apSsid[41] = {0};
 uint32_t rebootAtMs = 0;  // nonzero = reboot pending (response drains first)
 
+// Scan cache. scanNetworks() is radioactive on this fw whenever a
+// network is live — it drops an STA association AND stops the AP
+// beaconing without recovery (bench 2026-07-31, st stuck at
+// WL_SCAN_COMPLETED). The only safe window is the AP-entry boot,
+// BEFORE beginAP(): radio idle, nothing to kill. Scan once there,
+// serve the cache from /api/scan, never scan live.
+constexpr uint8_t kScanMax = 12;
+struct ScanEntry { char ssid[33]; int16_t rssi; uint8_t enc; };
+ScanEntry scanCache[kScanMax];
+uint8_t scanCount = 0;
+bool scanDone = false;
+
 // --- SAMD51 TRNG ------------------------------------------------------
 uint32_t trng32() {
 #ifdef __SAMD51__
@@ -281,36 +293,45 @@ void handleWifiPost() {
   respondJson("200 OK", n);
 }
 
+void scanIntoCache() {
+  // ONLY callable while the radio is idle (AP-entry boot, pre-beginAP).
+  Serial.println(F("[web] pre-AP scan..."));
+  int8_t count = WiFi.scanNetworks();
+  scanCount = 0;
+  for (int8_t i = 0; i < count && scanCount < kScanMax; i++) {
+    const char* s = WiFi.SSID(i);
+    if (!s || !s[0]) continue;
+    if (strchr(s, '"') || strchr(s, '\\')) continue;  // crude JSON safety
+    strncpy(scanCache[scanCount].ssid, s, 32);
+    scanCache[scanCount].ssid[32] = '\0';
+    scanCache[scanCount].rssi = (int16_t)WiFi.RSSI(i);
+    scanCache[scanCount].enc = (uint8_t)WiFi.encryptionType(i);
+    scanCount++;
+  }
+  scanDone = true;
+  Serial.print(F("[web] cached "));
+  Serial.print(scanCount);
+  Serial.println(F(" networks"));
+}
+
 void respondScanJson() {
-  if (!apActive && WiFi.status() == WL_CONNECTED) {
-    // Pynt bench 2026-07-31: scanNetworks() during an active STA
-    // association DROPS the association (the scan reply dies with it;
-    // ntrip's retry loop self-heals in ~30-60 s, but corrections and
-    // the GUI take the hit). Scan is a provisioning tool — AP mode only.
+  if (!scanDone) {
+    // No live scan ever: it kills whatever network is up (see cache
+    // comment). The cache fills at AP-entry boot only.
     int n = snprintf(jsonBuf, sizeof(jsonBuf),
-                     "{\"err\":\"scan only in setup (AP) mode — it drops"
-                     " the WiFi link\"}");
+                     "{\"err\":\"scan runs when setup mode starts — enter"
+                     " setup (AP) mode to get a fresh list\"}");
     respondJson("409 Conflict", n);
     return;
   }
-  // BLOCKING for the scan duration (~2-4 s): same stall class as a
-  // WiFi.begin() rejoin, covered by the 32 KiB SERCOM ring.
-  Serial.println(F("[web] scanning (bounded stall)..."));
-  int8_t count = WiFi.scanNetworks();
   int n = snprintf(jsonBuf, sizeof(jsonBuf), "{\"nets\":[");
-  int emitted = 0;
-  for (int8_t i = 0; i < count && emitted < 12; i++) {
-    const char* s = WiFi.SSID(i);
-    if (!s || !s[0]) continue;
-    // crude JSON safety: skip SSIDs containing quote/backslash
-    if (strchr(s, '"') || strchr(s, '\\')) continue;
+  for (uint8_t i = 0; i < scanCount; i++) {
     int add = snprintf(jsonBuf + n, sizeof(jsonBuf) - n,
-                       "%s{\"ssid\":\"%s\",\"rssi\":%ld,\"enc\":%u}",
-                       emitted ? "," : "", s, (long)WiFi.RSSI(i),
-                       (unsigned)WiFi.encryptionType(i));
+                       "%s{\"ssid\":\"%s\",\"rssi\":%d,\"enc\":%u}",
+                       i ? "," : "", scanCache[i].ssid, scanCache[i].rssi,
+                       scanCache[i].enc);
     if (n + add >= (int)sizeof(jsonBuf) - 24) break;
     n += add;
-    emitted++;
   }
   n += snprintf(jsonBuf + n, sizeof(jsonBuf) - n, "]}");
   respondJson("200 OK", n);
@@ -374,6 +395,9 @@ void pollIdle() {
   if (!server) return;
   WiFiClient incoming = server->accept();
   if (!incoming) return;
+#if WEB_AP_DEBUG
+  if (apActive) Serial.println(F("[web-dbg] accepted conn"));
+#endif
   conn = incoming;
   state = HttpState::ReadRequest;
   stateEnteredMs = millis();
@@ -489,6 +513,24 @@ void webConfigInit() {
   server = &srv;
   Serial.print(F("[web] config GUI on :"));
   Serial.println(g_settings.webPort);
+
+  if (g_settings.bootAp) {
+    // One-shot AP-at-boot (see webConfigRequestApMode): clear the flag
+    // FIRST so any exit — button, power cycle, crash — lands in STA.
+    g_settings.bootAp = false;
+    settingsSave();
+    scanIntoCache();  // the one safe scan window: radio idle, pre-AP
+    uint8_t r = WiFi.beginAP(apSsid, g_settings.apPass);
+    apActive = (r == WL_AP_LISTENING || r == WL_AP_CONNECTED);
+    if (apActive) {
+      Serial.print(F("[web] AP provisioning: "));
+      Serial.print(apSsid);
+      Serial.println(F(" @ 192.168.4.1 (AP button = exit + reboot)"));
+    } else {
+      Serial.print(F("[web] beginAP FAILED code "));
+      Serial.println(r);  // falls through to normal STA operation
+    }
+  }
 }
 
 void webConfigPoll() {
@@ -503,8 +545,28 @@ void webConfigPoll() {
   }
 
   uint8_t st = WiFi.status();
-  bool netUp = apActive ? (st == WL_AP_LISTENING || st == WL_AP_CONNECTED)
-                        : (st == WL_CONNECTED);
+  // AP mode: serve unconditionally. nina-fw's status leaks STA events
+  // while the AP runs (WL_CONNECTION_LOST observed mid-AP with the AP
+  // still beaconing and the phone still joined — bench 2026-07-31), so
+  // st is untrustworthy there; the AP doesn't stop by itself and the
+  // only exit is our own reboot.
+  bool netUp = apActive ? true : (st == WL_CONNECTED);
+#if WEB_AP_DEBUG
+  // AP-serve triage (2026-07-31: phone joins the AP but HTTP won't
+  // connect): 5 s heartbeat of the gate inputs + accept activity.
+  static uint32_t dbgMs = 0;
+  if (apActive && millis() - dbgMs > 5000) {
+    dbgMs = millis();
+    Serial.print(F("[web-dbg] st="));
+    Serial.print(st);
+    Serial.print(F(" netUp="));
+    Serial.print(netUp);
+    Serial.print(F(" serverUp="));
+    Serial.print(serverUp);
+    Serial.print(F(" httpState="));
+    Serial.println((int)state);
+  }
+#endif
   if (!netUp) {
     if (serverUp) { serverUp = false; resetConn(); }
     return;
@@ -512,7 +574,10 @@ void webConfigPoll() {
   if (!serverUp) {
     server->begin();
     serverUp = true;
-    if (apActive) Serial.println(F("[web] serving on http://192.168.4.1/"));
+    if (apActive) {
+      Serial.print(F("[web] serving on http://192.168.4.1/  srvStatus="));
+      Serial.println(server->status());
+    }
   }
 
   switch (state) {
@@ -525,28 +590,24 @@ void webConfigPoll() {
 
 void webConfigRequestApMode() {
   if (!apActive) {
-    // Enter provisioning: end() then beginAP — the W0-proven sequence.
-    // end() wedges STA-join until module reset, which is fine: the only
-    // exit from AP mode is the reboot below.
-    Serial.println(F("[web] entering AP provisioning mode"));
-    WiFi.end();
-    serverUp = false;
-    resetConn();
-    uint8_t r = WiFi.beginAP(apSsid, g_settings.apPass);
-    apActive = (r == WL_AP_LISTENING || r == WL_AP_CONNECTED);
-    if (apActive) {
-      Serial.print(F("[web] AP up: "));
-      Serial.print(apSsid);
-      Serial.println(F(" @ 192.168.4.1 (AP button again = exit + reboot)"));
-    } else {
-      Serial.print(F("[web] beginAP FAILED code "));
-      Serial.println(r);
-      // The module is end()-wedged for STA now too — reboot to recover.
-      rebootAtMs = millis() + 100;
+    // BOTH AP transitions are reboots (bench 2026-07-31): switching
+    // modes on a live module fails two ways — WiFi.end() wedges STA
+    // rejoin, and the NINA's socket table leaks across end() (the STA
+    // session's server/client socks are never freed, getSocket starves,
+    // the AP-mode bind comes up CLOSED and accept() floods phantom
+    // clients). A one-shot bootap flag + reset gives AP mode a freshly
+    // reset module with an empty socket table, every time.
+    Serial.println(F("[web] AP mode at next boot -> reboot"));
+    g_settings.bootAp = true;
+    if (!settingsSave()) {
+      Serial.println(F("[web] no SD — can't persist bootap; staying in STA"));
+      g_settings.bootAp = false;
+      return;
     }
+    rebootAtMs = millis() + 100;
   } else {
-    // Exit provisioning: reboot is the ONLY reliable path back to STA
-    // (WiFi.end() wedge — docs/web-config-spike.md critical finding).
+    // Exit provisioning: bootap was already cleared at AP entry, so a
+    // plain reboot lands back in STA.
     Serial.println(F("[web] leaving AP mode -> reboot"));
     rebootAtMs = millis() + 100;
   }

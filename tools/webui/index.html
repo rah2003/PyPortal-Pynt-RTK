@@ -192,7 +192,7 @@ $('w-save').onclick=async()=>{
   loadWifi();
 };
 $('w-scan').onclick=async()=>{
-  wmsg('scanning… (device pauses ~3 s)');
+  wmsg('loading networks (scanned when setup mode started)…');
   $('w-scanlist').innerHTML='';
   try{
     const d=await (await fetch('/api/scan')).json();

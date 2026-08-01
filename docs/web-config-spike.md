@@ -26,7 +26,7 @@ Increment status:
 |---|---|
 | W0 spike | **sketch + this doc ready — needs the bench pass below** |
 | W1 status dashboard | implemented (`web_config.cpp`, `tools/webui/`) |
-| W2 WiFi provisioning + AP flow | scaffolded (501) — **BLOCKED on W0.5/W0.6** |
+| W2 WiFi provisioning + AP flow | **DONE — full round trip verified on the Pynt 2026-07-31** |
 | W3 GNSS + Corrections cards | scaffolded (501); settings keys parsed/persisted, gnss_config consumption lands with W3 |
 | W4 Logging card | scaffolded (501) |
 | W5 BLE + System cards | scaffolded (501) |
@@ -204,3 +204,46 @@ Remaining W2 items (owner, phone in hand):
 - Note: admin password currently overridden to a bench value; clear
   `adminpass=` in /config.txt (or wait for the W5 System card) to
   regenerate a TRNG one.
+
+## W2 AP-flow bench — 2026-07-31, on the Pynt (three sessions, two findings)
+
+**Final design: BOTH AP transitions are reboots.** The TFT AP button
+saves a one-shot `bootap=1` to /config.txt and resets; at the next boot
+`webConfigInit` clears the flag (crash/power-pull lands in STA), runs
+the pre-AP scan (below), then `beginAP()` on the freshly reset module.
+Exit = plain reboot. Entry/exit each cost a boot (~2 min with the SD
+free-scan) — acceptable for an on-demand provisioning mode.
+
+Two findings forced this design:
+
+1. **The NINA's socket table does not survive `WiFi.end()`.** Switching
+   STA→AP live left `WiFiServer::begin()` with no socket (`getSocket`
+   starved by the STA session's leaked server/client socks):
+   `srvStatus=0` (CLOSED) and `accept()` then returns phantom clients
+   (~100/s flood, 38k–49k observed) — nina-fw's `availDataTcp` indexes
+   its socket arrays with the host's stale sock number, out of bounds.
+   Pre-stopping the server didn't help; only a module reset empties the
+   table reliably. (Also seen: `WiFi.status()` leaking STA events —
+   `WL_CONNECTION_LOST`, `WL_SCAN_COMPLETED` — while the AP runs, so
+   AP-mode serving now ignores the status register entirely.)
+2. **`scanNetworks()` kills whatever network is live — both modes.**
+   STA: drops the association (recovers via the retry loop). AP: stops
+   the AP beaconing permanently (`st` stuck at WL_SCAN_COMPLETED; the
+   phone sees the network vanish; owner hit exactly this). The ONLY
+   safe window is the AP-entry boot before `beginAP()` — radio idle.
+   `/api/scan` now serves a cache filled in that window (12 entries,
+   SSID/RSSI/enc); no live scan path exists anymore, in any mode.
+
+**Round-trip verification (owner + wire log):** STA boot → AP button →
+reboot → pre-AP scan cached 4 networks → `pynt-rtk-setup` up,
+`srvStatus=1` (LISTEN) → phone joined (WPA2 key from TFT), Basic-auth
+login, dashboard live over the AP (63 clean accepts ≈ the SPA's 1 Hz
+poll) → Scan button returned the cached list instantly → saved the
+owner's hotspot to slot 2 (`[web] wifi slot 2 updated`, persisted —
+visible in /config.txt and /api/wifi after reboot) → AP button →
+reboot → STA rejoined, NTRIP reconnected, GUI reachable at the STA IP.
+
+W2 residuals: W0.7 hostname check (router DHCP table, owner);
+Android-browser render (no device on hand); `WEB_AP_DEBUG` triage
+prints remain in web_config.cpp behind their flag (off) for future
+benches.
