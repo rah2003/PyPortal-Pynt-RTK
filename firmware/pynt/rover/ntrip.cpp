@@ -303,6 +303,16 @@ void ntripPoll() {
 
 const char* ntripStateName() { return kStateNames[(int)state]; }
 
+#if ENABLE_WEB_CONFIG
+void ntripRequestReconnect() {
+  sock.stop();
+  g_link.ntripConnected = false;
+  retryDelayMs = 1000;  // prompt retry, not wherever backoff had crept
+  enter(WiFi.status() == WL_CONNECTED ? NtripState::CasterConnecting
+                                      : NtripState::WifiConnecting);
+}
+#endif
+
 #else
 void ntripInit() {}
 void ntripPoll() {}

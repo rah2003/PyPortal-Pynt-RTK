@@ -337,6 +337,92 @@ void respondScanJson() {
   respondJson("200 OK", n);
 }
 
+// ---- W3: GNSS + Corrections cards ------------------------------------
+void respondGnssJson() {
+  int n = snprintf(jsonBuf, sizeof(jsonBuf),
+                   "{\"measrate\":%u,\"dynmodel\":%u,\"gsv\":%d,"
+                   "\"elevmask\":%u,\"mode\":\"%s\"}",
+                   g_settings.measRateHz, g_settings.dynModel,
+                   g_settings.nmeaGsv ? 1 : 0, g_settings.elevMaskDeg,
+                   g_settings.mode == DeviceMode::Base ? "base" : "rover");
+  respondJson("200 OK", n);
+}
+
+void handleGnssPost() {
+  char v[12];
+  if (formField(body, "measrate", v, sizeof(v))) {
+    int hz = atoi(v);
+    if (hz >= 1 && hz <= 5) g_settings.measRateHz = (uint8_t)hz;
+  }
+  if (formField(body, "dynmodel", v, sizeof(v))) {
+    int m = atoi(v);
+    // F9P-sane platform models: 0 portable, 2 stationary, 3 pedestrian,
+    // 4 automotive, 5 sea, 6 airborne-1g.
+    if (m == 0 || (m >= 2 && m <= 6)) g_settings.dynModel = (uint8_t)m;
+  }
+  if (formField(body, "gsv", v, sizeof(v))) g_settings.nmeaGsv = atoi(v) != 0;
+  if (formField(body, "elevmask", v, sizeof(v))) {
+    int e = atoi(v);
+    if (e >= 0 && e <= 45) g_settings.elevMaskDeg = (uint8_t)e;
+  }
+  bool saved = settingsSave();
+  gnssRequestModeApply();  // full VALSET re-apply on the next gnss poll
+  Serial.println(F("[web] gnss settings applied"));
+  int n = snprintf(jsonBuf, sizeof(jsonBuf),
+                   "{\"ok\":1,\"saved\":%d,\"applied\":1}", saved ? 1 : 0);
+  respondJson("200 OK", n);
+}
+
+void respondNtripJson() {
+  uint32_t age = correctionAgeMs();
+  long corrS = (age == UINT32_MAX) ? -1 : (long)(age / 1000);
+  int n = snprintf(
+      jsonBuf, sizeof(jsonBuf),
+      "{\"caster\":\"%s\",\"port\":%u,\"mount\":\"%s\",\"user\":\"%s\","
+      "\"passset\":%d,\"gga\":%u,\"state\":\"%s\",\"corr\":%ld,"
+      "\"rtcmkb\":%lu}",
+      g_settings.casterHost, g_settings.casterPort, g_settings.casterMount,
+      g_settings.casterUser, g_settings.casterPass[0] ? 1 : 0,
+      g_settings.ggaPeriodS, ntripStateName(), corrS,
+      (unsigned long)(g_link.rtcmBytes / 1024));
+  respondJson("200 OK", n);
+}
+
+void handleNtripPost() {
+  char v[65];
+  if (formField(body, "caster", v, sizeof(v)) && v[0]) {
+    strncpy(g_settings.casterHost, v, 64);
+    g_settings.casterHost[64] = '\0';
+  }
+  if (formField(body, "port", v, sizeof(v)) && v[0]) {
+    long p = atol(v);
+    if (p > 0 && p <= 65535) g_settings.casterPort = (uint16_t)p;
+  }
+  if (formField(body, "mount", v, sizeof(v))) {
+    strncpy(g_settings.casterMount, v, 48);
+    g_settings.casterMount[48] = '\0';
+  }
+  if (formField(body, "user", v, sizeof(v))) {
+    strncpy(g_settings.casterUser, v, 48);
+    g_settings.casterUser[48] = '\0';
+  }
+  // Blank/absent password = keep the existing one (it's never echoed).
+  if (formField(body, "pass", v, sizeof(v)) && v[0]) {
+    strncpy(g_settings.casterPass, v, 48);
+    g_settings.casterPass[48] = '\0';
+  }
+  if (formField(body, "gga", v, sizeof(v)) && v[0]) {
+    int s = atoi(v);
+    if (s >= 1 && s <= 120) g_settings.ggaPeriodS = (uint16_t)s;
+  }
+  bool saved = settingsSave();
+  ntripRequestReconnect();  // pick up the new caster promptly
+  Serial.println(F("[web] ntrip settings applied, reconnecting"));
+  int n = snprintf(jsonBuf, sizeof(jsonBuf),
+                   "{\"ok\":1,\"saved\":%d,\"reconnecting\":1}", saved ? 1 : 0);
+  respondJson("200 OK", n);
+}
+
 // --- routing ----------------------------------------------------------
 void route() {
   char* path = strchr(reqLine, ' ');
@@ -371,9 +457,17 @@ void route() {
     return;
   }
 
-  // W3-W5 scaffolding.
-  if (!strncmp(path, "/api/gnss", 9))    { respond501("gnss (W3)"); return; }
-  if (!strncmp(path, "/api/ntrip", 10))  { respond501("ntrip (W3)"); return; }
+  // ---- W3: GNSS + Corrections ----
+  if (!strcmp(path, "/api/gnss")) {
+    if (isGet) { respondGnssJson(); return; }
+    if (isPost) { handleGnssPost(); return; }
+  }
+  if (!strcmp(path, "/api/ntrip")) {
+    if (isGet) { respondNtripJson(); return; }
+    if (isPost) { handleNtripPost(); return; }
+  }
+
+  // W4-W5 scaffolding.
   if (!strncmp(path, "/api/ble", 8))     { respond501("ble (W5)"); return; }
   if (!strncmp(path, "/api/log", 8))     { respond501("logging (W4)"); return; }
   if (!strncmp(path, "/api/system", 11)) { respond501("system (W5)"); return; }

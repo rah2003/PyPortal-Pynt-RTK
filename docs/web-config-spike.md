@@ -27,7 +27,7 @@ Increment status:
 | W0 spike | **sketch + this doc ready — needs the bench pass below** |
 | W1 status dashboard | implemented (`web_config.cpp`, `tools/webui/`) |
 | W2 WiFi provisioning + AP flow | **DONE — full round trip verified on the Pynt 2026-07-31** |
-| W3 GNSS + Corrections cards | scaffolded (501); settings keys parsed/persisted, gnss_config consumption lands with W3 |
+| W3 GNSS + Corrections cards | **DONE — benched on the Pynt 2026-07-31** |
 | W4 Logging card | scaffolded (501) |
 | W5 BLE + System cards | scaffolded (501) |
 
@@ -247,3 +247,19 @@ W2 residuals: W0.7 hostname check (router DHCP table, owner);
 Android-browser render (no device on hand); `WEB_AP_DEBUG` triage
 prints remain in web_config.cpp behind their flag (off) for future
 benches.
+
+## W3 bench — 2026-07-31, on the Pynt
+
+GNSS card: GET/POST `/api/gnss` (measrate 1/2/5 Hz, dynmodel
+0/2/3/4/5/6, elevmask 0–45, GSV toggle) — POST persists to SD and
+re-applies the full VALSET via the existing gnssRequestModeApply()
+path; verified live (2 Hz/pedestrian/15°/GSV-off applied and read
+back, then restored to project defaults). gnss_config now consumes
+measRateHz/dynModel/nmeaGsv under ENABLE_WEB_CONFIG (shipping build
+keeps the fixed 1 Hz/GSV-5 constants, byte-identical).
+
+Corrections card: GET/POST `/api/ntrip` (caster/port/mount/user, blank
+password = unchanged and never echoed, GGA period) — POST persists and
+calls the new ntripRequestReconnect() (gated): drop socket, retry at
+1 s. Verified live: reconnected to the caster with RTCM flowing within
+8 s of the POST.

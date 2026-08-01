@@ -108,8 +108,50 @@ normal WiFi — connections to this page will drop for ~30 s.</p>
 <button id="w-reboot" class="act warn2">Restart device</button>
 </div>
 </div>
-<div id="t-gnss" hidden><div class="card"><div class="soon">GNSS settings — W3</div></div></div>
-<div id="t-ntrip" hidden><div class="card"><div class="soon">Corrections / NTRIP — W3</div></div></div>
+<div id="t-gnss" hidden>
+<div class="card">
+<h2>Receiver</h2>
+<div style="display:grid;gap:8px">
+<label>Measurement rate
+<select id="g-rate"><option value="1">1 Hz</option><option value="2">2 Hz</option><option value="5">5 Hz</option></select></label>
+<label>Dynamic model
+<select id="g-dyn"><option value="0">Portable</option><option value="2">Stationary</option><option value="3">Pedestrian</option><option value="4">Automotive</option><option value="5">Sea</option><option value="6">Airborne &lt;1g</option></select></label>
+<label>Elevation mask (°)
+<input id="g-elev" type="number" min="0" max="45"></label>
+<label style="display:flex;align-items:center;gap:8px">
+<input id="g-gsv" type="checkbox" style="width:auto">GSV satellite detail (off saves NMEA bandwidth)</label>
+<button id="g-save" class="act">Save &amp; apply to receiver</button>
+<div id="g-msg" style="color:var(--dim);font-size:.85rem"></div>
+<p style="color:var(--dim);font-size:.8rem">Higher rates multiply RAWX
+logging bandwidth (5 Hz ≈ 5× SD writes) — fine on paper, watch the
+worst-loop numbers if you push it.</p>
+</div>
+</div>
+</div>
+<div id="t-ntrip" hidden>
+<div class="card">
+<h2>Status</h2>
+<div class="grid">
+<div class="kv"><b>State</b><span id="n-state">—</span></div>
+<div class="kv"><b>Corr age</b><span id="n-corr">—</span></div>
+<div class="kv"><b>RTCM</b><span id="n-kb">—</span></div>
+</div>
+</div>
+<div class="card">
+<h2>Caster</h2>
+<div style="display:grid;gap:8px">
+<input id="n-caster" placeholder="Caster host" autocapitalize="off">
+<input id="n-port" type="number" placeholder="Port (2101)" min="1" max="65535">
+<input id="n-mount" placeholder="Mountpoint" autocapitalize="off">
+<input id="n-user" placeholder="Username" autocapitalize="off">
+<input id="n-pass" type="password" placeholder="Password (blank = unchanged)">
+<label>GGA upload period (s)
+<input id="n-gga" type="number" min="1" max="120"></label>
+<button id="n-save" class="act">Save &amp; reconnect</button>
+<div id="n-msg" style="color:var(--dim);font-size:.85rem"></div>
+</div>
+</div>
+</div>
 <div id="t-ble" hidden><div class="card"><div class="soon">BLE phone link — W5</div></div></div>
 <div id="t-log" hidden><div class="card"><div class="soon">Logging control — W4</div></div></div>
 <div id="t-sys" hidden><div class="card"><div class="soon">System (passwords, hostname, reboot) — W5</div></div></div>
@@ -210,6 +252,53 @@ $('w-reboot').onclick=async()=>{
   if(!confirm('Restart the device now?'))return;
   try{await fetch('/api/reboot',{method:'POST'})}catch(e){}
   wmsg('rebooting — reconnect to the device network, then reload');
+};
+
+// ---- GNSS tab (W3) ----
+const gmsg=t=>{$('g-msg').textContent=t};
+async function loadGnss(){
+  try{
+    const d=await (await fetch('/api/gnss')).json();
+    $('g-rate').value=d.measrate;$('g-dyn').value=d.dynmodel;
+    $('g-elev').value=d.elevmask;$('g-gsv').checked=!!d.gsv;
+    gmsg(d.mode==='base'?'note: device is in BASE mode':'');
+  }catch(e){gmsg('load failed: '+e)}
+}
+document.querySelector('nav button[data-t="gnss"]').addEventListener('click',loadGnss);
+$('g-save').onclick=async()=>{
+  gmsg('applying…');
+  const r=await fetch('/api/gnss',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams({measrate:$('g-rate').value,dynmodel:$('g-dyn').value,
+      elevmask:$('g-elev').value,gsv:$('g-gsv').checked?1:0})});
+  const d=await r.json();
+  gmsg(d.ok?(d.saved?'saved + applied to receiver':'applied (no SD — lost on reboot)'):'error: '+d.err);
+};
+
+// ---- Corrections tab (W3) ----
+const nmsg=t=>{$('n-msg').textContent=t};
+async function loadNtrip(){
+  try{
+    const d=await (await fetch('/api/ntrip')).json();
+    $('n-state').textContent=d.state;
+    $('n-corr').textContent=d.corr<0?'—':d.corr+' s';
+    $('n-kb').textContent=d.rtcmkb+' KB';
+    $('n-caster').value=d.caster;$('n-port').value=d.port;
+    $('n-mount').value=d.mount;$('n-user').value=d.user;
+    $('n-pass').placeholder=d.passset?'Password (blank = unchanged)':'Password (not set)';
+    $('n-gga').value=d.gga;
+  }catch(e){nmsg('load failed: '+e)}
+}
+document.querySelector('nav button[data-t="ntrip"]').addEventListener('click',loadNtrip);
+$('n-save').onclick=async()=>{
+  nmsg('saving…');
+  const r=await fetch('/api/ntrip',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams({caster:$('n-caster').value.trim(),port:$('n-port').value,
+      mount:$('n-mount').value.trim(),user:$('n-user').value.trim(),
+      pass:$('n-pass').value,gga:$('n-gga').value})});
+  const d=await r.json();
+  nmsg(d.ok?(d.saved?'saved — reconnecting to caster':'applied (no SD)'):'error: '+d.err);
+  $('n-pass').value='';
+  setTimeout(loadNtrip,3000);
 };
 </script>
 </body>

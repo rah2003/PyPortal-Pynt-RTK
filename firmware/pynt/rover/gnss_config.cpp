@@ -39,7 +39,13 @@ bool applyMessages(SFE_UBLOX_GNSS_SERIAL& g) {
   ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_NMEA_ID_RMC_UART1, 1);
   ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_NMEA_ID_GST_UART1, 1);
   ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_NMEA_ID_GSA_UART1, 1);
+#if ENABLE_WEB_CONFIG
+  // W3 card: GSV is the NMEA bandwidth knob (every 5th epoch when on).
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_NMEA_ID_GSV_UART1,
+                       g_settings.nmeaGsv ? 5 : 0);
+#else
   ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_NMEA_ID_GSV_UART1, 5);  // every 5th epoch
+#endif
   ok &= g.addCfgValset(UBLOX_CFG_NMEA_HIGHPREC, 1);
   ok &= g.sendCfgValset();
   return ok;
@@ -47,7 +53,19 @@ bool applyMessages(SFE_UBLOX_GNSS_SERIAL& g) {
 
 bool applyNav(SFE_UBLOX_GNSS_SERIAL& g) {
   bool ok = g.newCfgValset(kLayers);
+#if ENABLE_WEB_CONFIG
+  // W3 card: 1..5 Hz measurement rate + dynamic platform model. RAWX at
+  // 5 Hz quintuples the logging bandwidth — still inside platform.md's
+  // budget, but the SD latency margin shrinks; the card's UI says so.
+  {
+    uint8_t hz = g_settings.measRateHz;
+    if (hz < 1 || hz > 5) hz = 1;
+    ok &= g.addCfgValset(UBLOX_CFG_RATE_MEAS, (uint16_t)(1000 / hz));
+    ok &= g.addCfgValset(UBLOX_CFG_NAVSPG_DYNMODEL, g_settings.dynModel);
+  }
+#else
   ok &= g.addCfgValset(UBLOX_CFG_RATE_MEAS, 1000);  // 1 Hz
+#endif
   ok &= g.addCfgValset(UBLOX_CFG_RATE_NAV, 1);
   ok &= g.addCfgValset(UBLOX_CFG_NAVSPG_INFIL_MINELEV, g_settings.elevMaskDeg);
   ok &= g.addCfgValset(UBLOX_CFG_SIGNAL_GPS_ENA, 1);
