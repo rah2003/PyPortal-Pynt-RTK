@@ -26,6 +26,7 @@
 
 #include <ArduinoBLE.h>
 
+#include "settings.h"
 #include "shared.h"
 
 namespace {
@@ -54,6 +55,10 @@ bool bleUp = false;
 }  // namespace
 
 void bleNusInit() {
+  if (!g_settings.bleEnable) {
+    Serial.println(F("[ble] disabled (bleenable=0)"));
+    return;
+  }
   // ntripInit() already brought up the SPI link to the NINA (SpiDrv
   // initializes inside the WiFi driver); BLE_BEGIN is just another
   // command on that link — no second bus setup, no mode switch.
@@ -62,7 +67,7 @@ void bleNusInit() {
         "[ble] BLE.begin() failed — nina-fw < 3.0? running WiFi-only"));
     return;
   }
-  BLE.setLocalName("PyntRTK-rover");
+  BLE.setLocalName(g_settings.bleName);  // W5 card; applies at restart
   BLE.setAdvertisedService(nus);
   nus.addCharacteristic(nusTx);
   nus.addCharacteristic(nusRx);
@@ -70,7 +75,9 @@ void bleNusInit() {
   BLE.advertise();
   bleUp = true;
   g_link.bleUp = true;
-  Serial.println(F("[ble] advertising as PyntRTK-rover (NUS)"));
+  Serial.print(F("[ble] advertising as "));
+  Serial.print(g_settings.bleName);
+  Serial.println(F(" (NUS)"));
 }
 
 void bleNusOnNmeaLine(const char* line, size_t len) {

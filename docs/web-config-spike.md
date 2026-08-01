@@ -28,8 +28,8 @@ Increment status:
 | W1 status dashboard | implemented (`web_config.cpp`, `tools/webui/`) |
 | W2 WiFi provisioning + AP flow | **DONE — full round trip verified on the Pynt 2026-07-31** |
 | W3 GNSS + Corrections cards | **DONE — benched on the Pynt 2026-07-31** |
-| W4 Logging card | scaffolded (501) |
-| W5 BLE + System cards | scaffolded (501) |
+| W4 Logging card | **DONE — benched on the Pynt 2026-07-31** |
+| W5 BLE + System cards | **DONE — benched on the Pynt 2026-07-31** |
 
 ## W0 bench (Metro M4 AirLift, custom nina-fw already flashed)
 
@@ -263,3 +263,26 @@ password = unchanged and never echoed, GGA period) — POST persists and
 calls the new ntripRequestReconnect() (gated): drop socket, retry at
 1 s. Verified live: reconnected to the caster with RTCM flowing within
 8 s of the POST.
+
+## W4+W5 bench — 2026-07-31, on the Pynt — v1 scope (W0–W5) COMPLETE
+
+- **W4 `/api/log`**: GET live state (file/size/free/buffer high-water);
+  POST toggles via the same sdLoggerSetEnabled path as the LOG touch
+  button and persists `logubx` as the boot default. Verified: stop
+  closed the file, start reopened logging.
+- **W5 `/api/ble`**: GET state + linesTx/drops; POST saves
+  bleenable/blename (applies at restart — no clean ArduinoBLE re-init
+  on this transport). ble_nus now consumes both settings.
+- **W5 `/api/system`**: GET hostname/port/uptime/build/AP-SSID; POST
+  hostname (re-derives the AP SSID + setHostname live), admin password,
+  AP password (min 8), and `regen=1` (TRNG both, read off the TFT).
+  **Live password change verified: old creds 401 / new creds 200 on
+  the very next request** — the per-request auth recompute at work.
+  Browser re-prompts, as the card warns.
+
+The web GUI v1 is feature-complete: status, WiFi provisioning with the
+reboot-AP flow, GNSS tuning, caster management, logging control, and
+system identity/access — all from a phone. W6 (mDNS, sourcetable
+browser, SD file manager, profiles) remains deferred. Residuals: W0.7
+router-DHCP hostname check (owner), Android render check, bench admin
+password still set (regen from the System card when done benching).

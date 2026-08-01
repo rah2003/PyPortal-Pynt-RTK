@@ -152,9 +152,66 @@ worst-loop numbers if you push it.</p>
 </div>
 </div>
 </div>
-<div id="t-ble" hidden><div class="card"><div class="soon">BLE phone link — W5</div></div></div>
-<div id="t-log" hidden><div class="card"><div class="soon">Logging control — W4</div></div></div>
-<div id="t-sys" hidden><div class="card"><div class="soon">System (passwords, hostname, reboot) — W5</div></div></div>
+<div id="t-ble" hidden>
+<div class="card">
+<h2>BLE phone link</h2>
+<div class="grid">
+<div class="kv"><b>State</b><span id="b-state">—</span></div>
+<div class="kv"><b>Sentences</b><span id="b-tx">—</span></div>
+<div class="kv"><b>Drops</b><span id="b-drops">—</span></div>
+</div>
+</div>
+<div class="card">
+<h2>Settings <span style="color:var(--dim);font-size:.75rem">(apply at restart)</span></h2>
+<div style="display:grid;gap:8px">
+<label style="display:flex;align-items:center;gap:8px">
+<input id="b-en" type="checkbox" style="width:auto">BLE enabled</label>
+<input id="b-name" placeholder="Device name" maxlength="24" autocapitalize="off">
+<button id="b-save" class="act">Save</button>
+<div id="b-msg" style="color:var(--dim);font-size:.85rem"></div>
+</div>
+</div>
+</div>
+<div id="t-log" hidden>
+<div class="card">
+<h2>RAWX logging</h2>
+<div class="grid">
+<div class="kv"><b>State</b><span id="l-state">—</span></div>
+<div class="kv"><b>File</b><span id="l-file">—</span></div>
+<div class="kv"><b>Size</b><span id="l-kb">—</span></div>
+<div class="kv"><b>SD free</b><span id="l-free">—</span></div>
+<div class="kv"><b>Buf HW</b><span id="l-bufhw">—</span></div>
+</div>
+<div style="display:grid;gap:8px;margin-top:10px">
+<button id="l-toggle" class="act">…</button>
+<div id="l-msg" style="color:var(--dim);font-size:.85rem"></div>
+</div>
+</div>
+</div>
+<div id="t-sys" hidden>
+<div class="card">
+<h2>System</h2>
+<div class="grid">
+<div class="kv"><b>Build</b><span id="s-build">—</span></div>
+<div class="kv"><b>Uptime</b><span id="s-up">—</span></div>
+<div class="kv"><b>Setup AP</b><span id="s-apssid">—</span></div>
+</div>
+</div>
+<div class="card">
+<h2>Identity &amp; access</h2>
+<div style="display:grid;gap:8px">
+<label>Hostname (also names the setup AP)
+<input id="s-host" maxlength="32" autocapitalize="off"></label>
+<input id="s-adminpass" type="password" placeholder="New admin password (blank = keep)" maxlength="16">
+<input id="s-appass" type="password" placeholder="New setup-AP password (blank = keep, min 8)" maxlength="16">
+<button id="s-save" class="act">Save</button>
+<button id="s-regen" class="act warn2">Regenerate both passwords (shown on TFT)</button>
+<div id="s-msg" style="color:var(--dim);font-size:.85rem"></div>
+<p style="color:var(--dim);font-size:.8rem">Changing the admin password
+logs you out immediately — the browser will re-prompt.</p>
+</div>
+</div>
+</div>
 <footer id="foot">connecting…</footer>
 
 <script>
@@ -299,6 +356,91 @@ $('n-save').onclick=async()=>{
   nmsg(d.ok?(d.saved?'saved — reconnecting to caster':'applied (no SD)'):'error: '+d.err);
   $('n-pass').value='';
   setTimeout(loadNtrip,3000);
+};
+
+// ---- Logging tab (W4) ----
+const lmsg=t=>{$('l-msg').textContent=t};
+let logOn=false;
+function renderLog(d){
+  logOn=!!d.enabled;
+  $('l-state').textContent=!d.sd?'NO SD':(d.open?'logging':(d.enabled?'starting…':'stopped'));
+  $('l-file').textContent=d.file||'—';
+  $('l-kb').textContent=d.kb+' KB';
+  $('l-free').textContent=d.freemb+' MB';
+  $('l-bufhw').textContent=d.bufhw+' B';
+  $('l-toggle').textContent=logOn?'Stop logging':'Start logging';
+}
+async function loadLog(){
+  try{renderLog(await (await fetch('/api/log')).json())}
+  catch(e){lmsg('load failed: '+e)}
+}
+document.querySelector('nav button[data-t="log"]').addEventListener('click',loadLog);
+$('l-toggle').onclick=async()=>{
+  lmsg(logOn?'stopping…':'starting…');
+  try{
+    const d=await (await fetch('/api/log',{method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({log:logOn?0:1})})).json();
+    renderLog(d);lmsg('ok — also the boot default now');
+  }catch(e){lmsg('failed: '+e)}
+};
+
+// ---- BLE tab (W5) ----
+const bmsg=t=>{$('b-msg').textContent=t};
+async function loadBle(){
+  try{
+    const d=await (await fetch('/api/ble')).json();
+    if(d.err){$('b-state').textContent=d.err;return}
+    $('b-state').textContent=!d.enabled?'disabled':(!d.up?'off (enabled at restart)':(d.stream?'streaming':(d.conn?'connected':'advertising')));
+    $('b-tx').textContent=d.tx;
+    $('b-drops').textContent=d.drops;
+    $('b-en').checked=!!d.enabled;
+    $('b-name').value=d.name||'';
+  }catch(e){bmsg('load failed: '+e)}
+}
+document.querySelector('nav button[data-t="ble"]').addEventListener('click',loadBle);
+$('b-save').onclick=async()=>{
+  bmsg('saving…');
+  try{
+    const d=await (await fetch('/api/ble',{method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({enable:$('b-en').checked?1:0,name:$('b-name').value.trim()})})).json();
+    bmsg(d.ok?'saved — applies at the next restart':'error: '+d.err);
+  }catch(e){bmsg('failed: '+e)}
+};
+
+// ---- System tab (W5) ----
+const smsg=t=>{$('s-msg').textContent=t};
+async function loadSys(){
+  try{
+    const d=await (await fetch('/api/system')).json();
+    $('s-build').textContent=d.build;
+    $('s-up').textContent=Math.floor(d.up/60)+' min';
+    $('s-apssid').textContent=d.apssid;
+    $('s-host').value=d.hostname;
+  }catch(e){smsg('load failed: '+e)}
+}
+document.querySelector('nav button[data-t="sys"]').addEventListener('click',loadSys);
+async function sysPost(fields,note){
+  smsg('saving…');
+  try{
+    const d=await (await fetch('/api/system',{method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams(fields)})).json();
+    smsg((d.ok?'saved':'error')+(d.reauth?' — log in again with the new password':note||''));
+    $('s-adminpass').value='';$('s-appass').value='';
+    loadSys();
+  }catch(e){smsg('failed: '+e)}
+}
+$('s-save').onclick=()=>{
+  const f={hostname:$('s-host').value.trim()};
+  if($('s-adminpass').value)f.adminpass=$('s-adminpass').value;
+  if($('s-appass').value)f.appass=$('s-appass').value;
+  sysPost(f,'');
+};
+$('s-regen').onclick=()=>{
+  if(!confirm('Regenerate both passwords? Read the new ones off the TFT WEB page.'))return;
+  sysPost({regen:1},'');
 };
 </script>
 </body>

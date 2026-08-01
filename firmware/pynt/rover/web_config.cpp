@@ -423,6 +423,115 @@ void handleNtripPost() {
   respondJson("200 OK", n);
 }
 
+// ---- W4: Logging card ------------------------------------------------
+void respondLogJson() {
+  const char* fn = g_log.fileName[0]
+                       ? (strrchr(g_log.fileName, '/')
+                              ? strrchr(g_log.fileName, '/') + 1
+                              : g_log.fileName)
+                       : "";
+  int n = snprintf(jsonBuf, sizeof(jsonBuf),
+                   "{\"enabled\":%d,\"open\":%d,\"file\":\"%s\",\"kb\":%lu,"
+                   "\"freemb\":%lu,\"bufhw\":%lu,\"sd\":%d}",
+                   g_log.loggingEnabled ? 1 : 0, g_log.fileOpen ? 1 : 0, fn,
+                   (unsigned long)(g_log.bytesWritten / 1024),
+                   (unsigned long)(g_log.sdFreeKB / 1024),
+                   (unsigned long)g_log.bufHighWater, g_log.sdOk ? 1 : 0);
+  respondJson("200 OK", n);
+}
+
+void handleLogPost() {
+  char v[8];
+  if (formField(body, "log", v, sizeof(v))) {
+    bool on = atoi(v) != 0;
+    sdLoggerSetEnabled(on);       // same path as the LOG touch button
+    g_settings.logUbx = on;       // and persist as the boot default
+    settingsSave();
+    Serial.println(on ? F("[web] logging on") : F("[web] logging off"));
+  }
+  respondLogJson();
+}
+
+// ---- W5: BLE + System cards ------------------------------------------
+void respondBleJson() {
+#if FEATURE_BLE
+  int n = snprintf(jsonBuf, sizeof(jsonBuf),
+                   "{\"enabled\":%d,\"name\":\"%s\",\"up\":%d,\"conn\":%d,"
+                   "\"stream\":%d,\"tx\":%lu,\"drops\":%lu}",
+                   g_settings.bleEnable ? 1 : 0, g_settings.bleName,
+                   g_link.bleUp ? 1 : 0, g_link.bleConnected ? 1 : 0,
+                   g_link.bleSubscribed ? 1 : 0,
+                   (unsigned long)g_link.bleLinesTx,
+                   (unsigned long)g_link.bleDrops);
+#else
+  int n = snprintf(jsonBuf, sizeof(jsonBuf), "{\"err\":\"no BLE in this build\"}");
+#endif
+  respondJson("200 OK", n);
+}
+
+void handleBlePost() {
+#if FEATURE_BLE
+  char v[26];
+  if (formField(body, "enable", v, sizeof(v)))
+    g_settings.bleEnable = atoi(v) != 0;
+  if (formField(body, "name", v, sizeof(v)) && v[0]) {
+    strncpy(g_settings.bleName, v, 24);
+    g_settings.bleName[24] = '\0';
+  }
+  bool saved = settingsSave();
+  // ArduinoBLE has no clean re-init on this transport; name/enable
+  // changes apply at the next boot (the card says so).
+  int n = snprintf(jsonBuf, sizeof(jsonBuf),
+                   "{\"ok\":1,\"saved\":%d,\"restart\":1}", saved ? 1 : 0);
+  respondJson("200 OK", n);
+#else
+  respond404();
+#endif
+}
+
+void respondSystemJson() {
+  int n = snprintf(
+      jsonBuf, sizeof(jsonBuf),
+      "{\"hostname\":\"%s\",\"port\":%u,\"up\":%lu,\"build\":\"%s %s\","
+      "\"apssid\":\"%s\"}",
+      g_settings.hostname, g_settings.webPort,
+      (unsigned long)(millis() / 1000), __DATE__, __TIME__, apSsid);
+  respondJson("200 OK", n);
+}
+
+void handleSystemPost() {
+  char v[33];
+  bool authChanged = false;
+  if (formField(body, "hostname", v, sizeof(v)) && v[0]) {
+    strncpy(g_settings.hostname, v, 32);
+    g_settings.hostname[32] = '\0';
+    snprintf(apSsid, sizeof(apSsid), "%s-setup", g_settings.hostname);
+    WiFi.setHostname(g_settings.hostname);  // takes effect on next join
+  }
+  if (formField(body, "adminpass", v, sizeof(v)) && v[0]) {
+    strncpy(g_settings.adminPass, v, 16);
+    g_settings.adminPass[16] = '\0';
+    authChanged = true;  // per-request recompute: instant
+  }
+  if (formField(body, "appass", v, sizeof(v)) && v[0]) {
+    if (strlen(v) >= 8) {  // WPA2 minimum
+      strncpy(g_settings.apPass, v, 16);
+      g_settings.apPass[16] = '\0';
+    }
+  }
+  if (formField(body, "regen", v, sizeof(v)) && atoi(v)) {
+    genPassword(g_settings.adminPass, 10);
+    genPassword(g_settings.apPass, 10);
+    authChanged = true;
+    Serial.println(F("[web] passwords regenerated (TFT WEB page shows them)"));
+  }
+  bool saved = settingsSave();
+  int n = snprintf(jsonBuf, sizeof(jsonBuf),
+                   "{\"ok\":1,\"saved\":%d,\"reauth\":%d}", saved ? 1 : 0,
+                   authChanged ? 1 : 0);
+  respondJson("200 OK", n);
+}
+
 // --- routing ----------------------------------------------------------
 void route() {
   char* path = strchr(reqLine, ' ');
@@ -467,10 +576,20 @@ void route() {
     if (isPost) { handleNtripPost(); return; }
   }
 
-  // W4-W5 scaffolding.
-  if (!strncmp(path, "/api/ble", 8))     { respond501("ble (W5)"); return; }
-  if (!strncmp(path, "/api/log", 8))     { respond501("logging (W4)"); return; }
-  if (!strncmp(path, "/api/system", 11)) { respond501("system (W5)"); return; }
+  // ---- W4: Logging ----
+  if (!strcmp(path, "/api/log")) {
+    if (isGet) { respondLogJson(); return; }
+    if (isPost) { handleLogPost(); return; }
+  }
+  // ---- W5: BLE + System ----
+  if (!strcmp(path, "/api/ble")) {
+    if (isGet) { respondBleJson(); return; }
+    if (isPost) { handleBlePost(); return; }
+  }
+  if (!strcmp(path, "/api/system")) {
+    if (isGet) { respondSystemJson(); return; }
+    if (isPost) { handleSystemPost(); return; }
+  }
 
   respond404();
 }
