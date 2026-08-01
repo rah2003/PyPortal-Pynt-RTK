@@ -17,7 +17,7 @@ for a future plug-in radio**.
 | GNSS | ArduSimple simpleRTK2B Lite (u-blox ZED-F9P), UART1 via Pixhawk JST-GH — **moved over from the RTK-Feather rig** |
 | Antenna | Calian/Tallysman HC977 helical (33-HC977-35, 35 dB LNA), triple-band + L-band, 3.3 V bias ~21 mA, no ground plane needed |
 | Storage | PNY Elite 32 GB microSDHC UHS-I U1 (in the Pynt's slot) |
-| Phone | iPhone + **QField** over **WiFi TCP** (NMEA server on the hotspot network; verified 2026-07-19 — iOS SW Maps is BLE-only, deferred to Phase 5) |
+| Phone | iPhone + **SW Maps over BLE NUS** (Phase 5, verified 2026-07-28) and/or **QField over WiFi TCP** (verified 2026-07-19) — both links run simultaneously |
 
 ## Hard constraints (inherited + new)
 
@@ -28,8 +28,14 @@ for a future plug-in radio**.
    the Pynt's D3/D4 hardware UART. ⚠ **The Pynt's D3/D4 sockets are
    reportedly silkscreen-swapped** vs. the classic PyPortal — verify with a
    scope/loopback before trusting labels (see `docs/QUESTIONS.md`).
-3. **The AirLift cannot run WiFi and BLE simultaneously.** WiFi/NTRIP wins;
-   there is no BLE in this build. SW Maps connects over TCP instead.
+3. ~~The AirLift cannot run WiFi and BLE simultaneously.~~ **Retired
+   2026-07-28 (Phase 5):** the AirLift now runs the vendored
+   `nina-fw 3.0.1-airlift` module firmware (BLE HCI multiplexed onto the
+   SPI link) with the upstream WiFiNINA 2.1.1 + ArduinoBLE 2.1.0 host
+   stack — WiFi + BLE simultaneous, proven in a 75-min soak on the
+   assembled unit (`docs/coex-bench.md`). The `pynt-rover` env still
+   builds the original WiFi-only Adafruit-fork stack, byte-identical,
+   as the rollback path; `pynt-rover-coex` is the live configuration.
 4. **The ESP32 AirLift and the microSD share the main SPI bus.** NTRIP/TCP
    traffic and RAWX log writes contend — the logging pipeline must tolerate
    SPI stalls (two-stage buffering, ported from the Feather build).
@@ -41,10 +47,11 @@ for a future plug-in radio**.
 ```
                           ┌──────────── PyPortal Pynt (SAMD51) ────────────┐
  iPhone hotspot ──WiFi──► │ ESP32 AirLift ◄─SPI─► NTRIP client ─┐          │
-                          │       ▲                             ▼          │
- SW Maps ◄──TCP/NMEA────► │  TCP server ◄── NMEA tee ◄── UART (D3/D4) ◄────┼──► F9P UART1
-                          │                     │            RTCM3 ▲───────┘   (UART2: radio,
-                          │  UBX extractor ◄────┘                              untouched)
+                          │  (WiFi+BLE coex)                    ▼          │
+ QField ◄───TCP/NMEA────► │  TCP server ◄──┬─ NMEA tee ◄─ UART (D3/D4) ◄───┼──► F9P UART1
+ SW Maps ◄──BLE NUS─────► │  NUS notify ◄──┘      │       RTCM3 ▲──────────┘   (UART2: radio,
+ browser ◄──HTTP :80────► │  web config GUI       │                            untouched)
+                          │  UBX extractor ◄──────┘                        │
                           │       ▼                                        │
                           │  microSD (.ubx RAWX, shared SPI)               │
                           │  TFT 320×240 (8-bit parallel) + resistive touch│
@@ -64,7 +71,8 @@ for NTRIP, TCP NMEA server, SD logger on shared SPI.
   reuse of the proven Metro/Feather modules.
 - **v1 scope:** Rover **and** Base mode, with RAWX `.ubx` logging to the
   Pynt's own microSD.
-- **Phone link:** SW Maps via WiFi TCP; no BLE ever on this hardware.
+- **Phone link:** ~~SW Maps via WiFi TCP; no BLE ever on this hardware~~
+  → since Phase 5: SW Maps over BLE NUS + QField over TCP, concurrently.
 - **Touch UI:** status pages (fix quality, correction age, NTRIP state,
   logging, sats/SNR) + touch controls (log start/stop, rover/base switch,
   safe shutdown). Credentials/config via USB serial menu — no on-screen
@@ -90,11 +98,21 @@ docs/
     platform.md             Bus map, SPI contention math, TFT/touch notes
     ucenter-config.md       F9P re-verification (unit moved from Feather rig)
     checklists.md           Per-board bring-up + integration gates
+  coex-bench.md             Phase 5 bench: spikes, soaks, findings, rollback
+  web-config-spike.md       Web GUI plan + W0-W5 bench results
 firmware/
   pynt/bringup/             Phase 1 serial-menu test suite
-  pynt/rover/               Phase 2 Rover firmware (superloop: gnss, ntrip,
-                            tcp_nmea, sd_logger, ui, serial_menu, settings)
-platformio.ini              envs: pynt-bringup, pynt-rover
+  pynt/rover/               Rover firmware (superloop: gnss, ntrip, tcp_nmea,
+                            ble_nus*, web_config*, sd_logger, ui, serial_menu,
+                            settings — * = coex env only)
+  nina-fw-airlift/          Vendored arduino/nina-fw 3.0.1 + MOSI-14 patch
+                            (the AirLift module firmware; AIRLIFT.md)
+  spike/                    Spare-board spikes + esptool passthrough bridges
+lib/                        Vendored ArduinoBLE 2.1.0 (patched) + Arduino_SpiNINA
+tools/webui/                Web GUI source -> gzipped PROGMEM asset pipeline
+platformio.ini              pynt-bringup, pynt-rover (WiFi-only fallback),
+                            pynt-rover-coex (live: WiFi+BLE+web), spikes,
+                            passthrough-* flash bridges
 ```
 
 ## Phases
@@ -139,24 +157,36 @@ platformio.ini              envs: pynt-bringup, pynt-rover
       at 300 s / 1.46 m on the defaults, UART2 untouched. (The `b_`
       prefix needed a same-day fix — the log now rotates on a live mode
       switch; rotation re-check pending next bench sit.)
-- [ ] **Phase 4 — Polish**: on-screen config keyboard, logging analytics,
-      light-sensor auto-dim, speaker fix/loss chime.
-- [ ] **Phase 5 — WiFi+BLE coexistence (nina-fw 3.x port)**: reflash the
-      AirLift with Arduino's nina-fw ≥3.0.1 (HCI-over-SPI, the coexistence
-      work Adafruit's fork hasn't adopted — QUESTIONS.md Q18) and swap the
-      host stack to Arduino WiFiNINA 2.0.0 + ArduinoBLE 2.0.0, then serve
-      SW Maps over BLE NUS ("Generic NMEA (Bluetooth LE)") alongside
-      WiFi/NTRIP. Feasibility verified 2026-07-19: the Pynt wires
-      ESP32_GPIO0/RESETN, so passthrough flashing works and the swap is
-      reversible (reflash Adafruit nina-fw to back out). Scope: (1)
-      passthrough flasher + nina-fw 3.x build/flash, (2) host WiFi lib
-      swap incl. PyPortal pin defines (Arduino's lib has no setPins),
-      (3) ArduinoBLE SPI-transport patch for the pyportal_m4 variant +
-      NUS peripheral (Metro's SW Maps-over-NUS pattern). Payoff beyond
-      SW Maps on iOS: with corrections on the future UART2 radio, BLE
-      phone link means **no hotspot in the field at all**. Est. 3-5 bench
-      days; own bring-up checklist when started. Until then the v1 phone
-      link is a TCP-client app (QField / Survey123 — QUESTIONS.md Q19).
+- [ ] **Phase 4 — Polish**: logging analytics, light-sensor auto-dim,
+      speaker fix/loss chime. (On-screen config keyboard **descoped** —
+      the Phase 6 web GUI covers all credential/config entry.)
+- [x] **Phase 5 — WiFi+BLE coexistence — DONE 2026-07-28**
+      (`docs/coex-bench.md`, branch `coex/nina-fw-airlift`): vendored
+      arduino/nina-fw 3.0.1 with a one-pin AirLift patch (SPI MOSI
+      12→14), host stack swapped to upstream WiFiNINA 2.1.1 +
+      ArduinoBLE 2.1.0 (vendored, 2-line SPI-HCI transport gate patch)
+      + Arduino_SpiNINA. De-risked on a Metro M4 AirLift and a
+      hand-wired HUZZAH32 rig before touching the Pynt (stock firmware
+      backed up first; §8 rollback keeps `pynt-rover` untouched).
+      75-min integration soak on the assembled unit: RAWX + NTRIP +
+      TCP + BLE NUS concurrent, zero NTRIP teardowns, 50k TCP
+      sentences no drops, ~58 min BLE streaming — **owner ran iOS
+      SW Maps live over BLE** (Q19 closed, both phone paths).
+      Notable firmware truths found and designed around: data-gated
+      `server.available()` (fixed via `accept()`), `WiFi.end()` wedges
+      STA rejoin, the NINA socket table leaks across `WiFi.end()`,
+      `scanNetworks()` kills any live network, and this Pynt's UF2
+      bootloader wedges when parked idle (flash via 1200-touch flow).
+- [x] **Phase 6 — Web config GUI — v1 (W0–W5) DONE 2026-07-31**
+      (`docs/web-config-spike.md`, branch `web-config`): on-board HTTP
+      server (port 80, Basic auth, TRNG-generated passwords shown on
+      the TFT WEB page) serving a gzipped-from-PROGMEM SPA — live
+      status dashboard, WiFi provisioning with a touch-button AP mode
+      (both AP transitions are reboots by design), GNSS tuning (rate /
+      dynamic model / mask / GSV via live VALSET), caster management
+      (live reconnect), logging control, BLE + System cards (instant
+      admin-password rotation). W6 (mDNS, sourcetable browser, SD file
+      manager, profiles) deferred.
 
 ## Reference builds
 
@@ -166,5 +196,6 @@ platformio.ini              envs: pynt-bringup, pynt-rover
 | WiFi | native | native (HUZZAH32) | ESP32 AirLift co-proc (SPI) |
 | Display | — | 128×32 OLED + 3 buttons | 320×240 TFT + touch |
 | Logging | on-board | second MCU + SD | on-board microSD (shared SPI) |
-| Phone | BLE NUS | deferred | WiFi TCP |
-| Status | Phases 1–3 built | Phase 2 compiled, not field-run | planning |
+| Phone | BLE NUS | deferred | BLE NUS + WiFi TCP, concurrent |
+| Config | serial | serial | web GUI + touch + serial |
+| Status | Phases 1–3 built | retired (boards are coex spares) | Phases 0–3, 5, 6 done; field-proven |
