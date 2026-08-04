@@ -224,7 +224,7 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
 const FIX=['NO FIX','DR','2D','3D','GNSS+DR','TIME'];
 const CARR=['','FLOAT','RTK FIX'];
 function fmtDur(s){const h=s/3600|0,m=(s%3600)/60|0;return h?`${h}h${m}m`:`${m}m${s%60|0}s`}
-let fails=0;
+let fails=0,tn=0;
 async function tick(){
   try{
     const r=await fetch('/api/status');
@@ -245,11 +245,14 @@ async function tick(){
     $('tcp').textContent=d.tcp;
     $('ble').textContent=['off','advertising','connected','streaming'][d.ble]||'—';
     $('up').textContent=fmtDur(d.up);
-    $('sd').textContent=d.sd?'ok':'FAIL';$('sd').className=d.sd?'ok':'bad';
+    $('sd').textContent=d.sd?(d.log?'ok · logging':'ok'):'FAIL';$('sd').className=d.sd?'ok':'bad';
     $('file').textContent=d.file||'—';
     $('size').textContent=(d.kb/1024).toFixed(1)+' MB';
     $('free').textContent=(d.freemb/1024).toFixed(1)+' GB';
     $('foot').textContent='live · '+new Date().toLocaleTimeString();
+    // Logging tab has no poller of its own — piggyback ~every 3 s while
+    // it's visible so a touchscreen/serial toggle shows without a re-tap.
+    if(!$('t-log').hidden&&!(tn++%3))loadLog();
   }catch(e){
     if(++fails>3)$('foot').textContent='connection lost — retrying…';
   }

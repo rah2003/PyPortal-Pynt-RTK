@@ -1,7 +1,7 @@
-// Web config GUI (ENABLE_WEB_CONFIG, pynt-rover-coex only). W1+W2 scope:
+// Web config GUI (ENABLE_WEB_CONFIG, pynt-rover-coex only). Scope:
 // GET / (gzipped SPA from PROGMEM), GET /api/status, W2 WiFi
-// provisioning (GET/POST /api/wifi, GET /api/scan, POST /api/reboot)
-// and the on-demand AP mode; W3-W5 routes remain 501 scaffolds.
+// provisioning (GET/POST /api/wifi, GET /api/scan, POST /api/reboot),
+// the on-demand AP mode, and the W3-W5 cards (gnss/ntrip/log/ble/sys).
 //
 // Concurrency model (docs/web-config-spike.md): the server is the
 // LOWEST-priority superloop resident. Hand-rolled HTTP/1.1 state
@@ -246,7 +246,7 @@ void respondStatusJson() {
       "\"corr\":%ld,\"rxage\":%ld,\"corused\":%lu,\"cormsgs\":%lu,"
       "\"base\":%.0f,\"cn0\":%.1f,\"jam\":%u,"
       "\"rssi\":%d,\"ip\":\"%s\",\"ssid\":\"%s\",\"tcp\":%u,"
-      "\"ble\":%u,\"sd\":%d,\"file\":\"%s\",\"kb\":%lu,\"freemb\":%lu,"
+      "\"ble\":%u,\"sd\":%d,\"log\":%d,\"file\":\"%s\",\"kb\":%lu,\"freemb\":%lu,"
       "\"up\":%lu,\"mode\":\"%s\",\"ap\":%d}",
       g_gnss.fixType, g_gnss.carrSoln, g_gnss.numSV, g_gnss.latDeg,
       g_gnss.lonDeg, g_gnss.hMslM, (unsigned long)g_gnss.hAccMm,
@@ -256,7 +256,8 @@ void respondStatusJson() {
       g_link.wifiRssi,
       apActive ? "192.168.4.1" : g_link.wifiIp,
       apActive ? apSsid : (g_link.wifiUp ? WiFi.SSID() : ""),
-      g_link.tcpClients, ble, g_log.sdOk ? 1 : 0, fn,
+      g_link.tcpClients, ble, g_log.sdOk ? 1 : 0,
+      g_log.loggingEnabled ? 1 : 0, fn,
       (unsigned long)(g_log.bytesWritten / 1024),
       (unsigned long)(g_log.sdFreeKB / 1024), (unsigned long)(millis() / 1000),
       g_settings.mode == DeviceMode::Base ? "base" : "rover", apActive ? 1 : 0);
