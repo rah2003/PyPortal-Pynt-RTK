@@ -8,6 +8,87 @@ everything onto one board: an Adafruit PyPortal Pynt drives the ArduSimple
 simpleRTK2B Lite (u-blox ZED-F9P) over **F9P UART1**, keeping **UART2 free
 for a future plug-in radio**.
 
+## Build one yourself
+
+The short path from parts to a working rover. Everything below is the
+condensed version — the linked docs carry the full detail and the bench
+history behind each step.
+
+### 1. Parts (BOM)
+
+| Part | Source | ≈ Cost |
+|---|---|---|
+| Adafruit PyPortal Pynt | [adafruit.com #4465](https://www.adafruit.com/product/4465) | $45 |
+| ArduSimple simpleRTK2B **Lite** (u-blox ZED-F9P) | [ardusimple.com](https://www.ardusimple.com/product/simplertk2b-lite/) | $180 |
+| Calian/Tallysman **HC977** helical antenna (33-HC977-35) + SMA pigtail | [calian.com GNSS](https://www.calian.com/advanced-technologies/gnss/) | $250 |
+| microSD card (32 GB, UHS-I U1 or better; PNY Elite used here) | anywhere | $10 |
+| JST-GH 4-pin pigtail (Pixhawk-style, for the Lite's UART1) + 3-pin JST-PH leads for D3/D4 | anywhere | $10 |
+| USB power bank (2.4 A port) + micro-B cable | anywhere | $20 |
+
+≈ **$500** total (prices drift — check the links). You'll also want an
+NTRIP caster subscription with VRS coverage in your area (this build
+uses acorn-gnss.net), or your own base station.
+
+### 2. Wire it
+
+Four conductors: Pynt **D3/D4 UART** ↔ Lite **UART1** (via the Pixhawk
+JST-GH), plus 5 V + GND from the Pynt's D3/D4 socket to the Lite.
+⚠ **Check the label swap first**: Pynt D3/D4 silkscreen is swapped vs.
+the classic PyPortal (confirmed real on this unit) — run the loopback
+test in [docs/hardware/wiring.md](docs/hardware/wiring.md) and
+tape-label the sockets before trusting anything. Antenna on the Lite's
+SMA; microSD in the Pynt's slot.
+
+### 3. Flash it
+
+Prereq: [PlatformIO CLI](https://platformio.org/), and the repo cloned.
+The Pynt flashes over its micro-B USB (1200-baud touch; if the port
+wedges in bootloader, press reset and retry).
+
+| Env | What it is | When you use it |
+|---|---|---|
+| `pynt-rover-coex` | **The firmware to run** — WiFi + BLE + web GUI | `pio run -e pynt-rover-coex -t upload` |
+| `pynt-rover` | WiFi-only fallback for a **stock** AirLift (no BLE/web) | rollback path only |
+| `pynt-bringup` | Phase 1 hardware test menu (TFT, touch, UART, SD, WiFi) | first assembly, or debugging hardware |
+| `passthrough-*` | esptool bridges for reflashing the AirLift | one-time AirLift step below |
+
+One-time prerequisite for `pynt-rover-coex`: the AirLift co-processor
+must run the vendored `NINA_W102-3.0.1-airlift.bin` (WiFi+BLE coex
+firmware, committed in `firmware/nina-fw-airlift/`) — back up the stock
+firmware first, then flash via the passthrough bridge
+([docs/coex-bench.md](docs/coex-bench.md) §3 + §7.2, rollback §8).
+
+### 4. First boot
+
+1. TFT shows the fix-state header (NO GNSS → NO FIX → 3D → FLOAT →
+   FIXED) over the POS page. **PAGE** cycles POS → SYS → WEB.
+2. Configure over USB serial (115200, type `help`) or by editing
+   `/config.txt` on the SD card: WiFi SSID/pass (2 slots), caster
+   host/mount/credentials. Settings persist on the SD.
+3. The **WEB page** on the TFT shows the web GUI's admin password
+   (user `admin`), generated on-device at first web boot. Browse to
+   the device IP (on the TFT/serial status) for the dashboard — or
+   tap **AP** on the WEB page to provision WiFi from a phone via the
+   device's own hotspot at `192.168.4.1`.
+4. Phone links: **SW Maps** (iOS) → Bluetooth rover `PyntRTK-rover`;
+   **QField/SW Maps (Android)** → TCP NMEA at `<device-ip>:10110`.
+   Both run concurrently.
+
+### 5. Field use
+
+- **LOG** button (or web Logging card, or serial `log on`): start/stop
+  RAWX `.ubx` logging to SD. Files pre-allocate 32 MiB; a file whose
+  size is exactly 32,768 KB is an unclosed session — parse to the last
+  valid frame ([tools/ubx_walk.py](tools/ubx_walk.py)).
+- **PWR** button, two taps: safe shutdown (closes the log file).
+- Rover ↔ base: serial `mode=base` / `mode=rover`, live.
+- Read the header: fix state + SIV; CORR line = the receiver's own
+  correction age ("lnk" suffix = link-derived fallback); SYS page has
+  buffers/clients; C/N0, baseline and jamming indicators are on the
+  web dashboard and serial `status` (`corr:`/`rf:` lines).
+- Measured on this unit: ≥8.36 h on the field battery bank with RAWX +
+  NTRIP + TCP + BLE running (battery-limited, zero data gaps).
+
 ## Hardware
 
 | Role | Part |
@@ -74,10 +155,12 @@ for NTRIP, TCP NMEA server, SD logger on shared SPI.
 - **Phone link:** ~~SW Maps via WiFi TCP; no BLE ever on this hardware~~
   → since Phase 5: SW Maps over BLE NUS + QField over TCP, concurrently.
 - **Touch UI:** status pages (fix quality, correction age, NTRIP state,
-  logging, sats/SNR) + touch controls (log start/stop, rover/base switch,
-  safe shutdown). Credentials/config via USB serial menu — no on-screen
-  keyboard in v1. **Portrait orientation (240×320)** — enclosure comes
-  after the electronics and will be built around portrait mounting.
+  logging, sat count; C/N0 + RF/jamming health live on the web dashboard
+  and serial `status` since 2026-08-04) + touch controls (log start/stop,
+  rover/base switch, safe shutdown). Credentials/config via USB serial
+  menu — no on-screen keyboard in v1. **Portrait orientation (240×320)**
+  — enclosure comes after the electronics and will be built around
+  portrait mounting.
 - **Repo:** public GitHub, `PyPortal-Pynt-RTK`. Secrets via gitignored
   `secrets.h` (`secrets.example.h` committed), same as Feather.
 - **Inherited defaults (from Metro via Feather):** caster
@@ -90,26 +173,32 @@ for NTRIP, TCP NMEA server, SD logger on shared SPI.
 ## Repository layout
 
 ```
+LICENSE                     MIT (vendored libs keep their own licenses)
 docs/
+  README.md                 Index: which docs to read to build vs. for history
   QUESTIONS.md              Open/answered clarifying questions
   hardware/
     wiring.md               4-wire interconnect, label-swap check, SERCOM recipe
-    power.md                Power tree decision (shape A/B) + checks P1-P4
+    power.md                Power tree decision (shape A adopted) + checks P1-P4
     platform.md             Bus map, SPI contention math, TFT/touch notes
     ucenter-config.md       F9P re-verification (unit moved from Feather rig)
     checklists.md           Per-board bring-up + integration gates
-  coex-bench.md             Phase 5 bench: spikes, soaks, findings, rollback
+  coex-bench.md             Phase 5 bench + 2026-08 freeze/boot-loop postmortems
   web-config-spike.md       Web GUI plan + W0-W5 bench results
+  reviews/                  2026-08-03 four-angle team review + response plan
 firmware/
   pynt/bringup/             Phase 1 serial-menu test suite
   pynt/rover/               Rover firmware (superloop: gnss, ntrip, tcp_nmea,
                             ble_nus*, web_config*, sd_logger, ui, serial_menu,
-                            settings — * = coex env only)
+                            settings; wdt = watchdog + fault breadcrumbs,
+                            uart_gnss = per-instance-sized GNSS UART —
+                            * = coex env only)
   nina-fw-airlift/          Vendored arduino/nina-fw 3.0.1 + MOSI-14 patch
                             (the AirLift module firmware; AIRLIFT.md)
   spike/                    Spare-board spikes + esptool passthrough bridges
 lib/                        Vendored ArduinoBLE 2.1.0 (patched) + Arduino_SpiNINA
 tools/webui/                Web GUI source -> gzipped PROGMEM asset pipeline
+tools/ubx_walk.py           .ubx frame walker: checksums, RAWX epochs, gap check
 platformio.ini              pynt-bringup, pynt-rover (WiFi-only fallback),
                             pynt-rover-coex (live: WiFi+BLE+web), spikes,
                             passthrough-* flash bridges
@@ -119,8 +208,10 @@ platformio.ini              pynt-bringup, pynt-rover (WiFi-only fallback),
 
 - [x] **Phase 0 — Hardware verification pack** (`docs/hardware/`): wiring
       diagram (Pixhawk JST pinout → D3/D4, incl. the label-swap check),
-      power tree (single-bank vs two-feed; decision pending measurements
-      P1–P4), u-center re-verification checklist, bring-up checklists,
+      power tree (**shape A adopted** — single bank, Lite fed from D3/D4
+      5 V; P1/P2 measured 2026-07-17, P3/P4 closed by soak evidence — no
+      brownout resets across every soak through the 8.36 h battery run),
+      u-center re-verification checklist, bring-up checklists,
       platform/SPI-contention analysis — **verify wiring against these
       documents and current vendor docs before powering anything**.
 - [x] **Phase 1 — Bring-up sketches**: serial test menu covering TFT +
@@ -144,8 +235,9 @@ platformio.ini              pynt-bringup, pynt-rover (WiFi-only fallback),
       gate 4): 66 min, zero resets, RTK FIX from minute 2 to the end,
       NTRIP uninterrupted, 10.8 MB RAWX written (~10 MB/h). Found live:
       caster DNS moved to `www.`, nina-fw TCP accept is data-gated, and
-      a client-dedup bug (fixed) — see Q19. Touch buttons + on-screen
-      BUFH still unverified (headless soak).
+      a client-dedup bug (fixed) — see Q19. Touch buttons + BUFH both
+      closed same day (bringup-log.md: all three buttons owner-verified;
+      BUFH typically 9–14 KB against the 32 KB file buffer).
 - [x] **Phase 3 — Base mode**: written and **compiling clean** (2026-07-11:
       RAM 9.7 % / flash 11.1 %). Survey-in (dur/acc from settings) or
       fixed-LLH TMODE; RTCM3 out **configured on UART2 only** (MSM4 set
@@ -156,7 +248,7 @@ platformio.ini              pynt-bringup, pynt-rover (WiFi-only fallback),
       PASSED 2026-07-19**: live switch both directions, survey-in valid
       at 300 s / 1.46 m on the defaults, UART2 untouched. (The `b_`
       prefix needed a same-day fix — the log now rotates on a live mode
-      switch; rotation re-check pending next bench sit.)
+      switch; rotation re-checked and confirmed 2026-07-19.)
 - [ ] **Phase 4 — Polish**: logging analytics, light-sensor auto-dim,
       speaker fix/loss chime. (On-screen config keyboard **descoped** —
       the Phase 6 web GUI covers all credential/config entry.)
@@ -187,6 +279,22 @@ platformio.ini              pynt-bringup, pynt-rover (WiFi-only fallback),
       (live reconnect), logging control, BLE + System cards (instant
       admin-password rotation). W6 (mDNS, sourcetable browser, SD file
       manager, profiles) deferred.
+- [x] **Team-review response, Phases A–C — DONE 2026-08-04**
+      (`docs/reviews/2026-08-03-team-review.md` + response plan; PRs #2,
+      #3): pre-field hardening (PVT-age fix badge, SAMD51 WDT with
+      per-module breadcrumb + HardFault PC/LR/CFSR crumbs in backup RAM,
+      socket lifecycle, TCP client drop logic, GGA age gate, atomic
+      settings save), correction/RF instrumentation (RXM-COR, RELPOSNED
+      baseline, NAV-SAT C/N0, MON-RF jamming/AGC, receiver-truth
+      correction age), and the fix for the **2026-08-02 freeze cluster
+      root cause**: a global `SERIAL_BUFFER_SIZE=32768` cost 131 KiB of
+      RAM (both rings × both Uart instances) and starved heap+stack into
+      collision — replaced with the per-instance `GnssUart` (96 KiB
+      reclaimed). Validated by a 180-min regression soak under the exact
+      harness that froze the old build 8/8 times: **zero resets**. Also:
+      **RTK FIXED reached and held outdoors 2026-08-02**; SD integrity
+      gate closed (86.76 MB / 30,099 epochs / 0 bad checksums, gap-free);
+      ≥8.36 h measured field-battery runtime.
 
 ## Reference builds
 
@@ -198,4 +306,4 @@ platformio.ini              pynt-bringup, pynt-rover (WiFi-only fallback),
 | Logging | on-board | second MCU + SD | on-board microSD (shared SPI) |
 | Phone | BLE NUS | deferred | BLE NUS + WiFi TCP, concurrent |
 | Config | serial | serial | web GUI + touch + serial |
-| Status | Phases 1–3 built | retired (boards are coex spares) | Phases 0–3, 5, 6 done; field-proven |
+| Status | Phases 1–3 built | retired (boards are coex spares) | Phases 0–3, 5, 6 + review response done; RTK FIXED outdoors 2026-08-02; ≥8.36 h field runtime; OPUS truth-check pending (plan Phase E) |

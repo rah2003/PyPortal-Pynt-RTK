@@ -26,14 +26,15 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
 
 ## Open
 
-8. 📄 **Power shape** — decision framework written
-   (`docs/hardware/power.md`): shape A (single bank port, Lite fed 5 V
-   from the Pynt's I2C STEMMA port) is preferred **pending bench
-   measurements P1–P4**; shape B (two-feed) is the fallback. Closes when
-   the measurements are recorded at bring-up.
-9. 📄 **Pynt D3/D4 label swap** — forum reports say the Pynt's D3/D4
-   sockets are silkscreened swapped vs. the classic PyPortal. Verify by
-   loopback/scope during Phase 1 bring-up before wiring the Lite.
+8. ✅ **Power shape** — **shape A adopted** (single bank, Lite fed 5 V
+   from the Pynt's D3/D4 socket). P1/P2 measured at bring-up (5 V on
+   both rails); P3/P4 closed by accumulated soak evidence — zero
+   brownout resets across every soak through the 8.36 h battery-limited
+   field run (closed 2026-08-04; framework in `docs/hardware/power.md`).
+9. ✅ **Pynt D3/D4 label swap** — **confirmed real** at Phase 1 bring-up
+   (2026-07-17, loopback + TX-socket identify): silkscreen is swapped vs.
+   the classic PyPortal; both sockets tape-labeled on this unit
+   (`docs/hardware/bringup-log.md`).
 10. ✅ **D3/D4 SERCOM mapping in Arduino** — Resolved from
     [variant.cpp](https://github.com/adafruit/ArduinoCore-samd/blob/master/variants/pyportal_m4/variant.cpp)
     (2026-07-11): D3=PA04/D4=PA05, `PIO_SERCOM_ALT` → **SERCOM0 pads
@@ -46,11 +47,14 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
     Arduino demos use it), `Adafruit_Arcada` as fallback. **Compiled clean
     2026-07-11** (Adafruit_ILI9341 1.6.3) — remaining tail is pixels on
     glass at bring-up.
-12. 📄 **SPI contention budget** — Analysis written
-    (`docs/hardware/platform.md`): 32 KB UART ring + 32 KB SD staging on
-    the SAMD51's 256 KB makes the Feather's tight-margin problem roomy;
-    closes when Phase 1 measures the real card's worst-case write latency
-    with WiFi active.
+12. ✅ **SPI contention budget** — Analysis written
+    (`docs/hardware/platform.md`); closed by measurement: file-buffer
+    high-water typically 9–14 KB against the 32 KB buffer with the full
+    stack live (2026-07-19), and the 8.36 h battery run logged 30,099
+    RAWX epochs at exactly 1 Hz with zero gaps (2026-08-03 forensics) —
+    the budget holds with margin. (Note the "roomy 256 KB" premise was
+    half-wrong in a different way: a global `SERIAL_BUFFER_SIZE` was
+    silently costing 131 KB — found and fixed 2026-08-03, coex-bench.md.)
 13. ✅ **Cable stock** — Answered 2026-07-11: cabling will be on hand
     (JST-GH pigtail for the Lite, D3/D4-side leads). Exact connector
     inventory gets confirmed against the Phase 0 wiring diagram.

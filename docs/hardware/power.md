@@ -49,11 +49,19 @@ for the full wire list.
 - [x] **P2 — I2C STEMMA port 5 V confirmed.** Also measured 5V (jumper
       untouched, defaults intact) — but the port ended up unused per the
       D3/D4 decision above.
-- [ ] **P3 — voltage drop under load.** Not yet done — do this at the
-      power-only integration gate (Lite + antenna running, WiFi active,
-      backlight full): measure at Lite JST pin 1, must stay ≥ 4.5 V.
-- [ ] **P4 — 30-minute soak.** Not yet done — no brownout resets (SAMD51
-      or F9P), no warm connectors.
+- [x] **P3 — voltage drop under load.** Closed on functional evidence
+      (2026-08-04): no numeric measurement at Lite pin 1 was ever
+      recorded, but the full stack (Lite + antenna + WiFi + BLE +
+      backlight + SD writes) has run every soak since 2026-07-19 with
+      zero F9P dropouts or resets — a rail sagging below the F9P's
+      window would not survive an 8.36 h session. Take the multimeter
+      reading opportunistically at the next bench sit if a number is
+      wanted for the record.
+- [x] **P4 — 30-minute soak.** Closed with orders-of-magnitude margin:
+      66-min (2026-07-19), 75-min (2026-07-28), 180-min (2026-08-04)
+      and 8.36 h battery-limited (2026-08-02) soaks — zero brownout
+      resets (RCAUSE checked at every boot since the WDT work), no
+      warm connectors reported.
 
 ### B. Two-feed fallback (zero doubt, more cabling)
 
