@@ -20,3 +20,6 @@ Thumbs.db
 
 # Generated web UI asset header (tools/webui/build_assets.py)
 firmware/pynt/rover/web_assets.h
+
+# Raw SD card captures analyzed in docs/coex-bench.md bench notes (2026-08-03/04)
+UBX Files/
