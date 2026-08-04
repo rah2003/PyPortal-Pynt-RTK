@@ -336,6 +336,33 @@ That pair restores the unit to its last known-good field state.
 
 (append dated notes here as sections close, bringup-log style)
 
+### 2026-08-04 — Phase B regression soak: 180 min, 0 resets under the freeze harness — PASS
+
+The exact harness that froze the pre-fix firmware 8/8 times inside
+37 min (serial + 2 concurrent TCP clients + 5-min web probes), run
+against the A+C build with the RAM fix (6ceff72), 180 min overnight:
+
+- **0 device resets** (no boot banner, no WDT/HardFault crumb reset in
+  180 min of serial; ntrip=connected on all 180 status polls; fix=3
+  throughout; 15,243 NMEA lines to client 1). `freeRam=89243` after
+  3 h — the reclaimed RAM confirmed at runtime.
+- The harness host, not the device, misbehaved: Modern Standby
+  suspended all harness processes twice (~12→60 min, ~125→179 min) —
+  both TCP clients "gapped" at the same second and resumed with a
+  burst; heartbeat monitors skipped the same windows. Device rode
+  through both suspends.
+- New diagnostics all fired correctly in anger: during host-suspend
+  the tcp module stalled 13.5 s blocking on writes to wedged client
+  sockets — the 8 s WDT early-warning stamped `tcp` (visible as
+  `lastWdtFreeze=tcp` in status), the loop recovered before the 16 s
+  reset, and the M5 backpressure drop RSTed the dead clients.
+- Findings for the backlog: (1) a single-module TCP stall can reach
+  13.5 s against a wedged client — only 2.5 s of WDT margin; consider
+  a bounded NINA write timeout. (2) The soak script's `log on` didn't
+  take, so SD logging was off this run (SD gate already closed by the
+  8.36 h battery run). (3) Disable host Modern Standby for future
+  overnight harness runs.
+
 ### 2026-08-03 — Boot-loop postmortem: SERIAL_BUFFER_SIZE starved heap/stack; 96 KiB reclaimed
 
 The hardened A+C build (`harden/pre-field` + `instrument/corrections`)
