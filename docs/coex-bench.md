@@ -280,11 +280,10 @@ accepts the stream, else nRF Connect logging NUS TX).
 Pass metrics — all of them, measured, recorded in the bench notes:
 
 - [x] **≥ 60 min**, uptime monotonic — zero watchdog/brownout resets
-- [ ] **SD integrity:** post-soak, the `.ubx` parses clean in u-center
-      / RTKLIB `convbin` (every UBX frame checksum-valid — this is the
-      CRC check on every payload) with **zero epoch gaps** outside
-      documented WiFi-rejoin windows; file size consistent with the
-      logged duration
+- [x] **SD integrity:** PASS 2026-08-03 — 8.36 h battery-powered run
+      (`r_060336.ubx`, 86.76 MB): 721,448 frames, **0 bad checksums,
+      0 resyncs, 30,099 RAWX epochs = exactly 1 Hz × duration (zero
+      gaps)**, size consistent with the ~2.9 kB/s RAWX+SFRBX rate
 - [x] **NTRIP:** zero correction-stale teardowns while the hotspot is
       up; any genuine hotspot handoff recovers unaided; correction age
       < 10 s steady-state; RTK fix (or float, per sky view) held
@@ -336,6 +335,93 @@ That pair restores the unit to its last known-good field state.
 ## Bench notes / results
 
 (append dated notes here as sections close, bringup-log style)
+
+### 2026-08-03 — SD forensics: battery run 8.36 h GAP-FREE; freeze times confirmed
+
+UBX frame-walk over the card (`tools/ubx_walk.py` — walks
+sync/len/checksum, extracts RAWX week+tow):
+
+- **`r_060336.ubx` (the zero-observation battery run): 86.76 MB, 100 %
+  valid — 721,448 frames, 0 bad checksums, 0 resyncs, 30,099 RAWX
+  epochs over 8.36 h = exactly 1 Hz, ZERO epoch gaps** (including
+  through the log-start BUFH spike). Ran 06:03:37Z → 14:25:16Z
+  (22:03 → 06:25 local); the end is battery depletion, not firmware.
+  §7.5 SD-integrity gate: PASS.
+- The four 32,768 KB files from the freeze session are NOT a size cap:
+  `kPreAllocBytes` = 32 MiB and `truncate()` only runs in `closeFile()`,
+  so any crash/power-yank leaves the directory entry at the full
+  pre-allocation with stale-cluster tail after the real data. Each
+  freeze file holds valid frames up to the freeze (one truncated frame
+  at the cut, then tail): r_011333 → last epoch 01:31:31Z (lockup 1,
+  serial died 01:31:29Z), r_014443 → 02:05:34Z (lockup 2), r_025155 →
+  02:57:37Z (lockup 3), r_031248 → 03:46:19Z (the 37-min freeze).
+  The .ubx record corroborates the freeze timeline to the second.
+- Operational note: a `.ubx` whose size is exactly 33,554,432 B is an
+  unclosed session — parsers must stop at the last checksum-valid
+  frame (convbin does; naive size-based tools will read garbage tail).
+
+### 2026-08-02 — §7.5 re-run w/ open sky: RTK FIXED reached; 8 freezes; INTERIM
+
+Goal was closing the 7-28 float-only item with a fix held under the full
+concurrent load. Two headline results, one good, one bad:
+
+**RTK FIXED confirmed on the target.** `carr=2` with 31–32 SV within
+minutes of every boot (open-sky antenna), GGA quality 4 on the TCP
+stream, held until each freeze. The 7-28 "re-attempt fixed with open
+sky" item is closed.
+
+**Eight hard freezes, 7–37 min uptime each** (build Jul 31 18:25,
+`pynt-rover-coex` + `ENABLE_WEB_CONFIG`). Signature every time:
+superloop dead (TFT frozen on last frame, serial menu dead, TCP stream
+stops mid-flow with NINA sockets left half-open, BLE drops), USB still
+enumerated — consistent with an unbounded SpiDrv-style wait, not a
+hard fault. No warning in any counter beforehand (worst-loop 93–180 ms,
+RAM n/a, bleDrops growing slowly ~0.6%-class as in the 7-28 soak).
+
+Elimination ladder (each variable exonerated by a freeze without it):
+serial capture attached → froze without it; SD logging on → froze with
+it off; BLE streaming → froze mid-connect AND with BLE idle; PC-USB
+power → froze on a wall brick; web GUI serving → froze with
+`webenable=0`. The one condition present at ALL eight freezes and
+absent from the known-good baseline (a 24 h clean run, same build,
+other host, one TCP consumer, no automated probes): **this bench's
+observation harness — a 2nd concurrent TCP client on :10110 plus a
+5-min `GET /api/status` probe** (note the SPA itself polls /api/status
+at 1 Hz while the page is open — a phone with the page up counts as
+web load). Zero-observation rerun (24h-config reproduction, battery
+power, SW Maps + QField + SD logging, started 20:35): **clean until
+the battery depleted — no freeze**; confirmed alive at 22:30 (≥2 h,
+&gt;3× the worst time-to-freeze; exact end time recoverable from the
+.ubx last epoch) vs 8/8 freezes ≤37 min with the harness attached. The firmware is stable in field configuration;
+remaining pinpoint = one-variable reintroduction (2nd TCP client only,
+no probes) to split multi-client tcp_nmea vs the probe path. Freeze
+evidence parked in session scratchpad (`soak_*.lockup1-4.log` +
+per-run sets).
+
+**Action items out of this session (owner-endorsed):**
+
+1. **Add the SAMD51 WDT** — arm at boot, kick once per superloop pass.
+   Every freeze tonight needed a finger on RESET; a field unit must
+   self-recover. Use the early-warning interrupt to stamp a breadcrumb
+   (which module the pass died in) to flash/SD before the reset fires —
+   that breadcrumb would have named tonight's culprit on freeze #1.
+   Treat as a Phase 5 prerequisite.
+2. **Log-start buffer spike:** BUFH hit 24,376 B of the 32,768 B GNSS
+   file buffer at `log on` (day-dir create + file alloc stall on the
+   32 GB card; boot free-space scan on this card is ~2:20 for the same
+   reason). ~8 KiB of headroom left — an SD latency spike landing on a
+   log-start drops RAWX frames silently. Pre-create the day directory
+   at boot (or open the file eagerly / enlarge the buffer).
+3. **Untested remote-reset path:** the 1200-baud touch runs from USB
+   interrupt context and the milder freezes kept interrupts alive —
+   try it on the next USB-attached freeze before finger-reset; if it
+   works it's a bench recovery tool (wall-powered units still need
+   the WDT).
+4. Host bench gotchas re-confirmed on this PC: USB CDC stall recurred
+   twice mid-session (both directions; close/reopen restores flow —
+   the capture script now self-heals on 75 s RX silence), and NINA
+   keeps frozen-MCU sockets alive with no FIN/RST — TCP clients must
+   treat "connected but silent >60 s" as dead.
 
 ### 2026-07-28 — Section 7 run: Pynt flashed, §7.3 green, §7.5 soak PASS
 
