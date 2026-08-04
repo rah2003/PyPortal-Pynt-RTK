@@ -50,6 +50,14 @@ uint32_t retryDelayMs = 1000;
 constexpr uint32_t kRetryMaxMs = 60000;
 constexpr uint32_t kSocketTimeoutMs = 5000;
 constexpr uint32_t kCorrectionStaleMs = 10000;
+// Team review M2: a GGA older than this is not sent upstream — a dead
+// F9P must not keep steering the VRS toward its last known position.
+constexpr uint32_t kGgaMaxAgeMs = 15000;
+// Team review P9: a VRS assigning a cell after the first GGA can take
+// longer than the steady-state stale window — give the FIRST correction
+// byte a longer leash than the 10 s mid-stream watchdog.
+constexpr uint32_t kFirstRtcmGraceMs = 30000;
+uint32_t firstRtcmDeadlineMs = 0;
 uint32_t stateEnteredMs = 0;
 uint32_t lastGgaSentMs = 0;
 uint8_t wifiIdx = 0;  // which configured SSID we try next
@@ -144,10 +152,16 @@ bool casterSendRequest() {
                    "Accept: */*\r\n"
                    "Connection: close\r\n",
                    mount, host, g_settings.casterPort);
-  if (authB64[0])
+  // Clamp between appends (team review L1): once n passes sizeof(req),
+  // `req + n` is out of bounds and `sizeof(req) - n` underflows huge.
+  if (n < 0 || n >= (int)sizeof(req)) n = sizeof(req) - 1;
+  if (authB64[0]) {
     n += snprintf(req + n, sizeof(req) - n, "Authorization: Basic %s\r\n",
                   authB64);
+    if (n >= (int)sizeof(req)) n = sizeof(req) - 1;
+  }
   n += snprintf(req + n, sizeof(req) - n, "\r\n");
+  if (n >= (int)sizeof(req)) n = sizeof(req) - 1;
   sock.write((const uint8_t*)req, n);
   hdrLen = 0;
   hdrOk = false;
@@ -190,6 +204,7 @@ void maybeSendGga() {
   if (millis() - lastGgaSentMs < (uint32_t)g_settings.ggaPeriodS * 1000)
     return;
   if (!g_gnss.lastGga[0]) return;
+  if (millis() - g_gnss.lastGgaMs > kGgaMaxAgeMs) return;  // stale (M2)
   sock.print(g_gnss.lastGga);  // sentence includes \r\n
   lastGgaSentMs = millis();
 }
@@ -255,9 +270,14 @@ void ntripPoll() {
       }
       if (headerPoll()) {
         if (hdrOk) {
-          Serial.println(F("[ntrip] caster connected, RTCM flowing"));
+          Serial.println(F("[ntrip] caster connected, awaiting RTCM"));
           g_link.ntripConnected = true;
-          g_link.lastRtcmMs = millis();  // grace before the stale watchdog
+          // Team review M6: lastRtcmMs used to be pre-seeded here, so the
+          // UI read a healthy "0 s" correction age before a single RTCM
+          // byte existed. It now stays 0 (age = unknown) until real bytes
+          // land; the grace period lives in its own deadline.
+          g_link.lastRtcmMs = 0;
+          firstRtcmDeadlineMs = millis() + kFirstRtcmGraceMs;
           retryDelayMs = 1000;
           lastGgaSentMs = 0;
           enter(NtripState::Connected);
@@ -281,7 +301,14 @@ void ntripPoll() {
         g_link.lastRtcmMs = millis();
         g_link.rtcmBytes += n;
       }
-      if (millis() - g_link.lastRtcmMs > kCorrectionStaleMs) {
+      if (g_link.lastRtcmMs == 0) {
+        // Nothing received yet this connection — first-byte grace (P9).
+        if ((int32_t)(millis() - firstRtcmDeadlineMs) > 0) {
+          Serial.println(F("[ntrip] no RTCM within grace, reconnecting"));
+          backoff();
+          break;
+        }
+      } else if (millis() - g_link.lastRtcmMs > kCorrectionStaleMs) {
         // Half-open TCP is common on hotspot handoffs.
         Serial.println(F("[ntrip] corrections stale >10 s, reconnecting"));
         backoff();

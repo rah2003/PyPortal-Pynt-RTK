@@ -9,8 +9,17 @@
 #include "sd_logger.h"
 #include "settings.h"
 #include "shared.h"
+#include "wdt.h"
 
 namespace {
+
+// Free RAM between heap top and current stack — the §7.5 memory-stability
+// gate was unmeasurable without this (soak 2026-08-02).
+extern "C" char* sbrk(int incr);
+int freeRamBytes() {
+  char top;
+  return &top - reinterpret_cast<char*>(sbrk(0));
+}
 
 char lineBuf[160];
 size_t lineLen = 0;
@@ -80,6 +89,13 @@ void printStatus() {
   Serial.print(F(" bleDrops="));
   Serial.println(g_link.bleDrops);
 #endif
+  Serial.print(F("freeRam="));
+  Serial.print(freeRamBytes());
+  if (wdtLastFreeze()[0]) {
+    Serial.print(F(" lastWdtFreeze="));
+    Serial.print(wdtLastFreeze());
+  }
+  Serial.println();
   Serial.print(F("sd="));
   Serial.print(g_log.sdOk ? "ok" : "FAIL");
   Serial.print(F(" logging="));

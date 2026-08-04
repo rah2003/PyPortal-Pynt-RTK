@@ -194,8 +194,13 @@ void startResponse(const char* status, const char* type, const char* extra,
 }
 
 void respondJson(const char* status, int n) {
+  // Team review L1: callers pass snprintf's return, which is what WOULD
+  // have been written — clamp so a grown status string can never leak
+  // adjacent BSS onto the wire.
+  if (n < 0) n = 0;
+  if (n >= (int)sizeof(jsonBuf)) n = sizeof(jsonBuf) - 1;
   startResponse(status, "application/json", nullptr, (const uint8_t*)jsonBuf,
-                (size_t)(n > 0 ? n : 0));
+                (size_t)n);
 }
 
 void respond401() {
@@ -258,6 +263,9 @@ void respondWifiListJson() {
                   "%s{\"slot\":%d,\"ssid\":\"%s\",\"set\":%d}", i ? "," : "",
                   i + 1, g_settings.wifiSsid[i],
                   g_settings.wifiSsid[i][0] ? 1 : 0);
+    // Clamp between appends (L1): past the end, `jsonBuf + n` is OOB and
+    // `sizeof - n` underflows to a huge size_t.
+    if (n >= (int)sizeof(jsonBuf)) n = sizeof(jsonBuf) - 1;
   }
   n += snprintf(jsonBuf + n, sizeof(jsonBuf) - n,
                 "],\"connected\":\"%s\",\"ip\":\"%s\",\"ap\":%d,"
@@ -749,7 +757,10 @@ void webConfigInit() {
 void webConfigPoll() {
   if (!g_settings.webEnable || !server) return;
 
-  if (rebootAtMs && millis() > rebootAtMs && state == HttpState::Idle) {
+  // (int32_t) idiom: `millis() > rebootAtMs` breaks across the 49.7-day
+  // wrap (team review L2 — the one non-idiomatic millis() in the tree).
+  if (rebootAtMs && (int32_t)(millis() - rebootAtMs) > 0 &&
+      state == HttpState::Idle) {
     Serial.println(F("[web] rebooting"));
     Serial.flush();
     sdLoggerShutdown();  // close/sync the .ubx before the reset
@@ -785,7 +796,13 @@ void webConfigPoll() {
     return;
   }
   if (!serverUp) {
-    server->begin();
+    // Team review H3: begin() leaks the previous NINA socket on every
+    // rejoin — end() first. (web_config builds only against upstream
+    // WiFiNINA, which has end(); see tcp_nmea.cpp for the fork story.)
+    server->end();
+    server->begin(g_settings.webPort);
+    if (server->status() == 0)
+      Serial.println(F("[web] WARN: server bind failed (socket table?)"));
     serverUp = true;
     if (apActive) {
       Serial.print(F("[web] serving on http://192.168.4.1/  srvStatus="));

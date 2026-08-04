@@ -83,6 +83,7 @@ void onSvin(UBX_NAV_SVIN_data_t* svin) {
 }
 
 void onPvt(UBX_NAV_PVT_data_t* pvt) {
+  g_gnss.lastPvtMs = millis();
   g_gnss.fixType = pvt->fixType;
   g_gnss.carrSoln = pvt->flags.bits.carrSoln;
   g_gnss.numSV = pvt->numSV;
@@ -109,15 +110,20 @@ void uartBegin(uint32_t baud) {
   pinPeripheral(GNSS_RX_PIN, PIO_SERCOM_ALT);
 }
 
-bool connectGnss() {
+// quick=true is the in-loop retry path: the library's default maxWait is
+// 1100 ms and begin() probes up to 3x per baud — a missing F9P used to
+// stall the superloop ~6.6 s per attempt (team review H2). 250 ms still
+// answers a live module comfortably at 115200.
+bool connectGnss(bool quick = false) {
+  const uint16_t maxWait = quick ? 250 : 1100;
   // Fast path: project baud already persisted in the F9P's flash (this
   // Lite moved over from the Feather rig with 115200 saved — checklists.md).
   uartBegin(kUart1Baud);
-  if (gnss.begin(SerialGNSS)) return true;
+  if (gnss.begin(SerialGNSS, maxWait)) return true;
 
   // Factory-fresh module: raise the baud from the 38400 default.
   uartBegin(kUart1DefaultBaud);
-  if (!gnss.begin(SerialGNSS)) return false;
+  if (!gnss.begin(SerialGNSS, maxWait)) return false;
   Serial.println(F("[gnss] F9P at default 38400, switching to 115200"));
   gnss.newCfgValset(VAL_LAYER_ALL);
   gnss.addCfgValset(UBLOX_CFG_UART1_BAUDRATE, kUart1Baud);
@@ -148,6 +154,7 @@ bool gnssInit() {
     return false;
   }
   g_gnss.f9pDetected = true;
+  g_gnss.lastPvtMs = millis();  // PVT-age watchdog grace until the first fix
   Serial.println(F("[gnss] ZED-F9P connected (UART1 @115200 on SERCOM0/D3-D4)"));
   // MON-VER over UART1 — u-center can't coexist with this link (its USB
   // adapter bridges the same UART1), so the firmware reports the version.
@@ -176,10 +183,16 @@ void gnssPoll() {
   // behavior — a late-powered or reseated Lite must not require a reboot.
   if (!g_gnss.f9pDetected) {
     static uint32_t lastRetryMs = 0;
-    if (millis() - lastRetryMs < 5000) return;
+    static uint32_t retryIntervalMs = 5000;
+    if (millis() - lastRetryMs < retryIntervalMs) return;
     lastRetryMs = millis();
-    if (!connectGnss()) return;
+    if (!connectGnss(true)) {  // quick probe — keep the loop responsive
+      retryIntervalMs = min(retryIntervalMs * 2, (uint32_t)30000);
+      return;
+    }
+    retryIntervalMs = 5000;
     g_gnss.f9pDetected = true;
+    g_gnss.lastPvtMs = millis();  // watchdog grace until the first PVT
     Serial.println(F("[gnss] ZED-F9P connected (late)"));
     if (!gnssApplyProjectConfig(gnss))
       Serial.println(F("[gnss] WARNING: some VALSET writes not ACKed"));
@@ -219,6 +232,16 @@ void gnssPoll() {
   // processNMEA, and appends RAWX/SFRBX to the file buffer.
   gnss.checkUblox();
   gnss.checkCallbacks();
+
+  // PVT-age watchdog (team review H1): NAV-PVT arrives at nav rate; if it
+  // stops (cable loose, brownout, module death) the last position must
+  // not keep wearing a green RTK FIX badge. Clearing f9pDetected flips
+  // the UI to NO GNSS and re-enters the reconnect path above.
+  constexpr uint32_t kPvtStaleMs = 5000;
+  if (g_gnss.f9pDetected && millis() - g_gnss.lastPvtMs > kPvtStaleMs) {
+    g_gnss.f9pDetected = false;
+    Serial.println(F("[gnss] no PVT for 5 s — F9P lost, reconnecting"));
+  }
 
   if (millis() - lastStatusPushMs >= 200) {  // ~5 Hz
     lastStatusPushMs = millis();
