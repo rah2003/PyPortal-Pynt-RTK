@@ -62,10 +62,46 @@ struct BaseStatus {  // NAV-SVIN, only meaningful in Base mode
   uint32_t svinMeanAcc01mm = 0;  // 0.1 mm units, as reported
 };
 
+// Phase C (team review P2/P10/P12): receiver-truth correction and RF
+// telemetry. Everything the old "correction age" hid — whether the F9P
+// actually USED the corrections, how far the (virtual) base is, and
+// what the RF front end sees while WiFi+BLE transmit inches away.
+struct CorrHealth {
+  // UBX-RXM-COR: per correction message as the receiver ingests it
+  uint32_t corMsgs = 0;      // correction messages seen
+  uint32_t corUsed = 0;      // statusInfo.msgUsed == 2
+  uint32_t corErrors = 0;    // statusInfo.errStatus == 2 (erroneous)
+  uint16_t lastMsgType = 0;  // last RTCM type ingested (e.g. 1074)
+  uint32_t lastUsedMs = 0;   // millis() of last USED correction — the
+                             // honest correction age (vs link age)
+  // UBX-NAV-RELPOSNED: rover<->base vector
+  bool relValid = false;
+  float baselineM = 0;       // distance to the (virtual) reference station
+  uint16_t refStationId = 0;
+  // UBX-NAV-SAT aggregate (1 Hz)
+  uint8_t satsUsed = 0;      // sats actually used in the solution
+  float meanCn0 = 0;         // mean C/N0 over used sats, dBHz
+  uint8_t maxCn0 = 0;
+  // UBX-MON-RF (polled ~0.1 Hz): per-band front-end health
+  uint8_t rfBlocks = 0;
+  uint8_t jammingState[2] = {0, 0};  // 0 unk, 1 ok, 2 warning, 3 critical
+  uint8_t jamInd[2] = {0, 0};        // CW interference indicator 0-255
+  uint16_t noisePerMS[2] = {0, 0};
+  uint8_t agcPct[2] = {0, 0};        // AGC count scaled to 0-100
+  uint32_t lastRfMs = 0;
+  // GGA field 13 (age of differential, as the F9P itself reports it) —
+  // parsed from the sentence already captured for the NTRIP upstream
+  float ggaDiffAgeS = -1;    // -1 = field empty / no fix yet
+};
+
+// Receiver-confirmed correction age in ms (UINT32_MAX if none used yet).
+uint32_t corrRxAgeMs();
+
 extern GnssStatus g_gnss;  // written by gnss.cpp only
 extern LinkStatus g_link;  // written by ntrip.cpp / tcp_nmea.cpp only
 extern LogStatus g_log;    // written by sd_logger.cpp only
 extern BaseStatus g_base;  // written by gnss.cpp only
+extern CorrHealth g_corr;  // written by gnss.cpp only (Phase C)
 
 // Correction age in ms (UINT32_MAX if never received).
 uint32_t correctionAgeMs();

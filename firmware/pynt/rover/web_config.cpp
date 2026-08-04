@@ -1,7 +1,7 @@
-// Web config GUI (ENABLE_WEB_CONFIG, pynt-rover-coex only). W1+W2 scope:
+// Web config GUI (ENABLE_WEB_CONFIG, pynt-rover-coex only). Scope:
 // GET / (gzipped SPA from PROGMEM), GET /api/status, W2 WiFi
-// provisioning (GET/POST /api/wifi, GET /api/scan, POST /api/reboot)
-// and the on-demand AP mode; W3-W5 routes remain 501 scaffolds.
+// provisioning (GET/POST /api/wifi, GET /api/scan, POST /api/reboot),
+// the on-demand AP mode, and the W3-W5 cards (gnss/ntrip/log/ble/sys).
 //
 // Concurrency model (docs/web-config-spike.md): the server is the
 // LOWEST-priority superloop resident. Hand-rolled HTTP/1.1 state
@@ -225,6 +225,8 @@ void respond501(const char* what) {
 void respondStatusJson() {
   uint32_t age = correctionAgeMs();
   long corrS = (age == UINT32_MAX) ? -1 : (long)(age / 1000);
+  uint32_t rxAge = corrRxAgeMs();
+  long rxAgeS = (rxAge == UINT32_MAX) ? -1 : (long)(rxAge / 1000);
   uint8_t ble = 0;
 #if FEATURE_BLE
   ble = !g_link.bleUp        ? 0
@@ -241,15 +243,21 @@ void respondStatusJson() {
       jsonBuf, sizeof(jsonBuf),
       "{\"fix\":%u,\"carr\":%u,\"sv\":%u,\"lat\":%.7f,\"lon\":%.7f,"
       "\"alt\":%.1f,\"hacc\":%lu,\"pdop\":%.1f,\"ntrip\":\"%s\","
-      "\"corr\":%ld,\"rssi\":%d,\"ip\":\"%s\",\"ssid\":\"%s\",\"tcp\":%u,"
-      "\"ble\":%u,\"sd\":%d,\"file\":\"%s\",\"kb\":%lu,\"freemb\":%lu,"
+      "\"corr\":%ld,\"rxage\":%ld,\"corused\":%lu,\"cormsgs\":%lu,"
+      "\"base\":%.0f,\"cn0\":%.1f,\"jam\":%u,"
+      "\"rssi\":%d,\"ip\":\"%s\",\"ssid\":\"%s\",\"tcp\":%u,"
+      "\"ble\":%u,\"sd\":%d,\"log\":%d,\"file\":\"%s\",\"kb\":%lu,\"freemb\":%lu,"
       "\"up\":%lu,\"mode\":\"%s\",\"ap\":%d}",
       g_gnss.fixType, g_gnss.carrSoln, g_gnss.numSV, g_gnss.latDeg,
       g_gnss.lonDeg, g_gnss.hMslM, (unsigned long)g_gnss.hAccMm,
-      g_gnss.pdop, ntripStateName(), corrS, g_link.wifiRssi,
+      g_gnss.pdop, ntripStateName(), corrS, rxAgeS,
+      (unsigned long)g_corr.corUsed, (unsigned long)g_corr.corMsgs,
+      g_corr.baselineM, g_corr.meanCn0, g_corr.jammingState[0],
+      g_link.wifiRssi,
       apActive ? "192.168.4.1" : g_link.wifiIp,
       apActive ? apSsid : (g_link.wifiUp ? WiFi.SSID() : ""),
-      g_link.tcpClients, ble, g_log.sdOk ? 1 : 0, fn,
+      g_link.tcpClients, ble, g_log.sdOk ? 1 : 0,
+      g_log.loggingEnabled ? 1 : 0, fn,
       (unsigned long)(g_log.bytesWritten / 1024),
       (unsigned long)(g_log.sdFreeKB / 1024), (unsigned long)(millis() / 1000),
       g_settings.mode == DeviceMode::Base ? "base" : "rover", apActive ? 1 : 0);
@@ -819,6 +827,14 @@ void webConfigPoll() {
 }
 
 void webConfigRequestApMode() {
+  if (!g_settings.webEnable) {
+    // Bench 2026-08-03: with the web module disabled, bootap=1 used to be
+    // persisted here and then never consumed (webConfigInit early-returns
+    // on !webEnable) — a landmine that fired on the first boot after
+    // webenable came back. Refuse instead.
+    Serial.println(F("[web] AP request ignored (webenable=0)"));
+    return;
+  }
   if (!apActive) {
     // BOTH AP transitions are reboots (bench 2026-07-31): switching
     // modes on a live module fails two ways — WiFi.end() wedges STA

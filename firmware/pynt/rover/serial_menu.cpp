@@ -66,6 +66,47 @@ void printStatus() {
     Serial.print(F("m"));
   }
   Serial.println();
+  // Phase C receiver-truth telemetry: corrections as the F9P sees them
+  // (not link liveness), baseline to the (virtual) base, C/N0, RF health.
+  {
+    uint32_t rxAge = corrRxAgeMs();
+    Serial.print(F("corr: used="));
+    Serial.print(g_corr.corUsed);
+    Serial.print('/');
+    Serial.print(g_corr.corMsgs);
+    Serial.print(F(" err="));
+    Serial.print(g_corr.corErrors);
+    Serial.print(F(" rxAge="));
+    if (rxAge == UINT32_MAX) Serial.print('-');
+    else Serial.print(rxAge / 1000);
+    Serial.print(F("s ggaAge="));
+    Serial.print(g_corr.ggaDiffAgeS, 0);
+    Serial.print(F(" type="));
+    Serial.print(g_corr.lastMsgType);
+    Serial.print(F(" base="));
+    Serial.print(g_corr.baselineM, 0);
+    Serial.print(F("m ref="));
+    Serial.println(g_corr.refStationId);
+    Serial.print(F("rf: sats="));
+    Serial.print(g_corr.satsUsed);
+    Serial.print(F(" cn0="));
+    Serial.print(g_corr.meanCn0, 1);
+    Serial.print('/');
+    Serial.print(g_corr.maxCn0);
+    for (uint8_t b = 0; b < g_corr.rfBlocks; b++) {
+      Serial.print(b == 0 ? F(" L1[") : F(" L2["));
+      Serial.print(F("jam="));
+      Serial.print(g_corr.jammingState[b]);
+      Serial.print('/');
+      Serial.print(g_corr.jamInd[b]);
+      Serial.print(F(" agc="));
+      Serial.print(g_corr.agcPct[b]);
+      Serial.print(F("% noise="));
+      Serial.print(g_corr.noisePerMS[b]);
+      Serial.print(']');
+    }
+    Serial.println();
+  }
   Serial.print(F("ntrip="));
   Serial.print(ntripStateName());
   Serial.print(F(" wifi="));

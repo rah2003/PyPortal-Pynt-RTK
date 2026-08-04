@@ -336,6 +336,69 @@ That pair restores the unit to its last known-good field state.
 
 (append dated notes here as sections close, bringup-log style)
 
+### 2026-08-04 — Phase B regression soak: 180 min, 0 resets under the freeze harness — PASS
+
+The exact harness that froze the pre-fix firmware 8/8 times inside
+37 min (serial + 2 concurrent TCP clients + 5-min web probes), run
+against the A+C build with the RAM fix (6ceff72), 180 min overnight:
+
+- **0 device resets** (no boot banner, no WDT/HardFault crumb reset in
+  180 min of serial; ntrip=connected on all 180 status polls; fix=3
+  throughout; 15,243 NMEA lines to client 1). `freeRam=89243` after
+  3 h — the reclaimed RAM confirmed at runtime.
+- The harness host, not the device, misbehaved: Modern Standby
+  suspended all harness processes twice (~12→60 min, ~125→179 min) —
+  both TCP clients "gapped" at the same second and resumed with a
+  burst; heartbeat monitors skipped the same windows. Device rode
+  through both suspends.
+- New diagnostics all fired correctly in anger: during host-suspend
+  the tcp module stalled 13.5 s blocking on writes to wedged client
+  sockets — the 8 s WDT early-warning stamped `tcp` (visible as
+  `lastWdtFreeze=tcp` in status), the loop recovered before the 16 s
+  reset, and the M5 backpressure drop RSTed the dead clients.
+- Findings for the backlog: (1) a single-module TCP stall can reach
+  13.5 s against a wedged client — only 2.5 s of WDT margin; consider
+  a bounded NINA write timeout. (2) The soak script's `log on` didn't
+  take, so SD logging was off this run (SD gate already closed by the
+  8.36 h battery run). (3) Disable host Modern Standby for future
+  overnight harness runs.
+
+### 2026-08-03 — Boot-loop postmortem: SERIAL_BUFFER_SIZE starved heap/stack; 96 KiB reclaimed
+
+The hardened A+C build (`harden/pre-field` + `instrument/corrections`)
+boot-looped: WDT reset ~15.7 s after `[main] running`, every cycle, no
+EW breadcrumb. Chased with a BKUPRAM-crumb HardFault handler (stamps
+stacked PC/LR/CFSR, resets immediately):
+
+- **Mechanism**: HardFault before the loop's first pass completed — the
+  core's default fault handler is `while(1)`, which outranks every IRQ
+  including the WDT early-warning (priority 0), so the device sat dead
+  until the 16 s hardware reset. That's why no breadcrumb ever printed.
+- **Captured faults wandered**: wild PC `0xD150E10` in `gnss` (smashed
+  return address), PC/LR in newlib malloc/memcpy in `ntrip`, then a
+  clean NULL call (`pc=0x0 cfsr=0x20000` INVSTATE) in `web`. Wandering
+  crash sites = memory corruption, not a code bug at any one site.
+- **Root cause**: `-DSERIAL_BUFFER_SIZE=32768` sizes BOTH ring buffers
+  of EVERY core `Uart` instance. Two instances (unused `Serial1` +
+  `SerialGNSS`) × two rings = **131 KiB of the 192 KiB linker RAM**;
+  `.bss` totaled 143.8 KiB, leaving ~50 KiB for heap + stack combined.
+  Phase C's allocations (NAV-SAT auto-callback pair alone is ~6.2 KiB,
+  plus a 3 KiB `payloadAuto`) pushed the heap top under the stack.
+  `_sbrk` only checks against the CURRENT stack pointer, so setup()-time
+  allocations (shallow stack) were granted space the runtime stack later
+  grew into — mutual heap/stack scribbling, fault sites everywhere.
+- **Fix**: vendored `uart_gnss.h/.cpp` (`GnssUart`, adapted from the
+  LGPL core Uart) with per-instance rings — 32 KiB RX (bench-justified:
+  ~13 s of F9P output vs the measured 10.9 s WiFi.begin() windows) and
+  2 KiB TX; global flag removed from both envs so `Serial1` reverts to
+  the 350 B default. `.bss` 143.8 → ~47 KiB. Applies to the shipping
+  `pynt-rover` env too — it carried the same latent starvation, which
+  may be the real story behind the 2026-08-02 harness-correlated
+  freezes (every observation client allocates).
+- MON-RF poll and NAV-SAT callback were bisect suspects and are
+  cleared/re-enabled; the WDT module-crumb + HardFault PC/LR/CFSR
+  breadcrumbs stay in as permanent field diagnostics.
+
 ### 2026-08-03 — SD forensics: battery run 8.36 h GAP-FREE; freeze times confirmed
 
 UBX frame-walk over the card (`tools/ubx_walk.py` — walks
