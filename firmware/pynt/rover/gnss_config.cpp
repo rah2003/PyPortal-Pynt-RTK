@@ -47,6 +47,12 @@ bool applyMessages(SFE_UBLOX_GNSS_SERIAL& g) {
   ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_NMEA_ID_GSV_UART1, 5);  // every 5th epoch
 #endif
   ok &= g.addCfgValset(UBLOX_CFG_NMEA_HIGHPREC, 1);
+  // Phase C (team review P2): RXM-COR reports each correction message as
+  // the receiver ingests it — used/not-used, error status, RTCM type.
+  // The SparkFun setRXMCORcallbackPtr only registers the callback; the
+  // MSGOUT enable lives here with the rest. (RELPOSNED / NAV-SAT MSGOUT
+  // are set by their setAuto* calls in gnss.cpp.)
+  ok &= g.addCfgValset(UBLOX_CFG_MSGOUT_UBX_RXM_COR_UART1, 1);
   ok &= g.sendCfgValset();
   return ok;
 }

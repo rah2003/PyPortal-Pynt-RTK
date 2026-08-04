@@ -166,10 +166,17 @@ void drawPagePos() {
       snprintf(v, sizeof(v), "waiting");
     line(y, "SVIN", v); y += 22;
   } else {
-    uint32_t age = correctionAgeMs();
+    // Phase C: prefer the RECEIVER-confirmed age (last RXM-COR the F9P
+    // actually used) over link age — a wrong mount or CRC-failing
+    // stream shows '--' here instead of a healthy-looking link age.
+    uint32_t rxAge = corrRxAgeMs();
+    uint32_t linkAge = correctionAgeMs();
+    uint32_t age = rxAge != UINT32_MAX ? rxAge : linkAge;
     bool stale = age != UINT32_MAX && age > 10000;
     if (age == UINT32_MAX) snprintf(v, sizeof(v), "--");
-    else snprintf(v, sizeof(v), "%lu s", (unsigned long)(age / 1000));
+    else
+      snprintf(v, sizeof(v), "%lu s%s", (unsigned long)(age / 1000),
+               rxAge != UINT32_MAX ? "" : " lnk");
     line(y, "CORR", v, stale && staleFlash); y += 22;
   }
 
