@@ -24,6 +24,7 @@ namespace {
 WiFiServer* server = nullptr;
 constexpr uint8_t kMaxClients = 3;
 WiFiClient clients[kMaxClients];
+uint8_t writeFails[kMaxClients] = {0};  // consecutive short/zero writes
 bool serverUp = false;
 
 void ensureServer() {
@@ -34,7 +35,20 @@ void ensureServer() {
   if (!serverUp) {
     static WiFiServer srv(g_settings.tcpPort);
     server = &srv;
+#ifdef COEX_UPSTREAM_NINA
+    // Team review H3: upstream WiFiServer::begin() grabs a fresh NINA
+    // socket unconditionally and never frees the old one — the 10-slot
+    // table dies in ~4 hotspot roams. end() first releases ours; the
+    // begin(port) overload also picks up a live tcpport= change (the
+    // Adafruit fork below has neither API — rebind behavior there is
+    // unchanged from what passed the Phase 2/3 soaks).
+    server->end();
+    server->begin(g_settings.tcpPort);
+    if (server->status() == 0)
+      Serial.println(F("[tcp] WARN: server bind failed (socket table?)"));
+#else
     server->begin();
+#endif
     serverUp = true;
     Serial.print(F("[tcp] NMEA server on :"));
     Serial.println(g_settings.tcpPort);
@@ -104,9 +118,13 @@ void tcpNmeaPoll() {
     if (!clients[i].connected()) {
       clients[i].stop();
       clients[i] = WiFiClient();
+      writeFails[i] = 0;
       continue;
     }
-    while (clients[i].available()) clients[i].read();  // drain + discard
+    // Bounded drain (team review M5): each read() is an SPI round-trip,
+    // so an unbounded while() hands a chatty client the whole loop.
+    int drainBudget = 64;
+    while (drainBudget-- > 0 && clients[i].available()) clients[i].read();
     live++;
   }
   g_link.tcpClients = live;
@@ -119,8 +137,22 @@ void tcpNmeaPoll() {
 #endif
     if (live == 0) continue;  // still drain the queue so it can't sit stale
     for (uint8_t i = 0; i < kMaxClients; i++) {
-      if (clients[i] && clients[i].connected())
-        clients[i].write((const uint8_t*)line, n);
+      if (!clients[i] || !clients[i].connected()) continue;
+      // Team review M5: the header always promised drop-on-stall; now it
+      // is real. A wedged client (full NINA socket buffer) short-writes;
+      // three consecutive short writes = drop it rather than let it
+      // back-pressure the loop. (Bench 2026-08-02: a stalled second TCP
+      // client is the leading suspect for the 8 superloop freezes.)
+      if (clients[i].write((const uint8_t*)line, n) < n) {
+        if (++writeFails[i] >= 3) {
+          Serial.println(F("[tcp] dropping stalled client"));
+          clients[i].stop();
+          clients[i] = WiFiClient();
+          writeFails[i] = 0;
+        }
+      } else {
+        writeFails[i] = 0;
+      }
     }
   }
 }

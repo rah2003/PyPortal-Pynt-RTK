@@ -18,6 +18,7 @@
 #include "tcp_nmea.h"
 #include "ui.h"
 #include "web_config.h"
+#include "wdt.h"
 
 namespace {
 uint32_t loopWorstUs = 0;  // loop-time high-water; 'status' shows health
@@ -59,24 +60,38 @@ void setup() {
   webConfigInit();  // after settingsLoad (port/passwords) + ntripInit
 #endif
 
+  // Arm LAST: everything above (SD free-space scan, WiFi module reset,
+  // F9P probe) is legitimately slower than the 16 s watchdog period.
+  wdtInit();
+
   Serial.println(F("[main] running — 'help' for the serial menu"));
 }
 
 void loop() {
   uint32_t t0 = micros();
 
+  wdtNoteModule(WDT_MOD_GNSS);
   gnssPoll();      // parse UBX/NMEA, fire PVT callback, fill file buffer
+  wdtNoteModule(WDT_MOD_NTRIP);
   ntripPoll();     // WiFi + caster; injects RTCM into the F9P
+  wdtNoteModule(WDT_MOD_TCP);
   tcpNmeaPoll();   // NMEA broadcast (+ FEATURE_BLE tee into ble_nus)
 #if FEATURE_BLE
+  wdtNoteModule(WDT_MOD_BLE);
   bleNusPoll();    // NUS notify drain — bounded sends per pass
 #endif
+  wdtNoteModule(WDT_MOD_SD);
   sdLoggerPoll();  // drain file buffer -> .ubx (one bounded chunk/pass)
+  wdtNoteModule(WDT_MOD_UI);
   uiPoll();        // touch + 2 Hz redraw
+  wdtNoteModule(WDT_MOD_MENU);
   serialMenuPoll();
 #if ENABLE_WEB_CONFIG
+  wdtNoteModule(WDT_MOD_WEB);
   webConfigPoll();  // lowest-priority residual: one bounded read/write
 #endif
+  wdtNoteModule(WDT_MOD_IDLE);
+  wdtKick();
 
   uint32_t dt = micros() - t0;
   if (dt > loopWorstUs) loopWorstUs = dt;

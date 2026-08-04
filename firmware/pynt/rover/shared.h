@@ -23,6 +23,8 @@ struct GnssStatus {
   uint8_t month = 0, day = 0, hour = 0, minute = 0, second = 0;
   char lastGga[120] = {0};  // most recent GGA sentence (NTRIP upstream)
   uint32_t lastGgaMs = 0;
+  uint32_t lastPvtMs = 0;  // PVT-age watchdog: a silent F9P must not keep
+                           // a green fix badge (team review H1)
 };
 
 struct LinkStatus {

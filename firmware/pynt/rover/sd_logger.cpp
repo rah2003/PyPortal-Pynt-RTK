@@ -134,6 +134,25 @@ bool sdLoggerInit() {
 void sdLoggerPoll() {
   if (!g_log.sdOk) return;
 
+  // Pre-create the day directory as soon as GNSS time is valid — even
+  // with logging off. Bench 2026-08-02: dir-create + file-alloc at `log
+  // on` stalled long enough to eat 24.4 KB of the 32 KB GNSS file buffer
+  // (BUFH high-water); paying the mkdir here, outside any logging
+  // window, trims the log-start spike.
+  static uint16_t dayDirYear = 0;
+  static uint8_t dayDirMonth = 0, dayDirDay = 0;
+  if (g_gnss.timeValid && (g_gnss.year != dayDirYear ||
+                           g_gnss.month != dayDirMonth ||
+                           g_gnss.day != dayDirDay)) {
+    char dir[16];
+    snprintf(dir, sizeof(dir), "/%04u%02u%02u", g_gnss.year, g_gnss.month,
+             g_gnss.day);
+    if (!sd.exists(dir)) sd.mkdir(dir);
+    dayDirYear = g_gnss.year;
+    dayDirMonth = g_gnss.month;
+    dayDirDay = g_gnss.day;
+  }
+
   if (g_log.loggingEnabled && !shutdownLatched && g_gnss.timeValid &&
       !g_log.fileOpen) {
     openFile();

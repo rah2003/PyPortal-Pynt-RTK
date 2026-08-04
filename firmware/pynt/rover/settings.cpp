@@ -79,7 +79,12 @@ bool settingsSave() {
     Serial.println(F("[cfg] no SD — cannot persist (settings live until reboot)"));
     return false;
   }
-  FsFile f = sdCard().open(kConfigPath, O_WRONLY | O_CREAT | O_TRUNC);
+  // Team review H5: this used to O_TRUNC /config.txt in place — a power
+  // yank mid-write left the device with no credentials at all. Write the
+  // new file completely, then swap it in; the old config survives any
+  // interruption before the rename.
+  static const char kConfigTmpPath[] = "/config.new";
+  FsFile f = sdCard().open(kConfigTmpPath, O_WRONLY | O_CREAT | O_TRUNC);
   if (!f) return false;
   f.println(F("# PyPortal-Pynt-RTK config — key=value, same keys as the serial menu"));
   for (int i = 0; i < kMaxWifiNetworks; i++) {
@@ -125,7 +130,13 @@ bool settingsSave() {
   f.print(F("dynmodel="));  f.println(g_settings.dynModel);
   f.print(F("nmeagsv="));   f.println(g_settings.nmeaGsv ? 1 : 0);
 #endif
+  f.sync();
   f.close();
+  sdCard().remove(kConfigPath);  // may not exist yet — result ignored
+  if (!sdCard().rename(kConfigTmpPath, kConfigPath)) {
+    Serial.println(F("[cfg] rename to /config.txt FAILED"));
+    return false;
+  }
   return true;
 }
 
