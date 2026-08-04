@@ -336,6 +336,42 @@ That pair restores the unit to its last known-good field state.
 
 (append dated notes here as sections close, bringup-log style)
 
+### 2026-08-03 — Boot-loop postmortem: SERIAL_BUFFER_SIZE starved heap/stack; 96 KiB reclaimed
+
+The hardened A+C build (`harden/pre-field` + `instrument/corrections`)
+boot-looped: WDT reset ~15.7 s after `[main] running`, every cycle, no
+EW breadcrumb. Chased with a BKUPRAM-crumb HardFault handler (stamps
+stacked PC/LR/CFSR, resets immediately):
+
+- **Mechanism**: HardFault before the loop's first pass completed — the
+  core's default fault handler is `while(1)`, which outranks every IRQ
+  including the WDT early-warning (priority 0), so the device sat dead
+  until the 16 s hardware reset. That's why no breadcrumb ever printed.
+- **Captured faults wandered**: wild PC `0xD150E10` in `gnss` (smashed
+  return address), PC/LR in newlib malloc/memcpy in `ntrip`, then a
+  clean NULL call (`pc=0x0 cfsr=0x20000` INVSTATE) in `web`. Wandering
+  crash sites = memory corruption, not a code bug at any one site.
+- **Root cause**: `-DSERIAL_BUFFER_SIZE=32768` sizes BOTH ring buffers
+  of EVERY core `Uart` instance. Two instances (unused `Serial1` +
+  `SerialGNSS`) × two rings = **131 KiB of the 192 KiB linker RAM**;
+  `.bss` totaled 143.8 KiB, leaving ~50 KiB for heap + stack combined.
+  Phase C's allocations (NAV-SAT auto-callback pair alone is ~6.2 KiB,
+  plus a 3 KiB `payloadAuto`) pushed the heap top under the stack.
+  `_sbrk` only checks against the CURRENT stack pointer, so setup()-time
+  allocations (shallow stack) were granted space the runtime stack later
+  grew into — mutual heap/stack scribbling, fault sites everywhere.
+- **Fix**: vendored `uart_gnss.h/.cpp` (`GnssUart`, adapted from the
+  LGPL core Uart) with per-instance rings — 32 KiB RX (bench-justified:
+  ~13 s of F9P output vs the measured 10.9 s WiFi.begin() windows) and
+  2 KiB TX; global flag removed from both envs so `Serial1` reverts to
+  the 350 B default. `.bss` 143.8 → ~47 KiB. Applies to the shipping
+  `pynt-rover` env too — it carried the same latent starvation, which
+  may be the real story behind the 2026-08-02 harness-correlated
+  freezes (every observation client allocates).
+- MON-RF poll and NAV-SAT callback were bisect suspects and are
+  cleared/re-enabled; the WDT module-crumb + HardFault PC/LR/CFSR
+  breadcrumbs stay in as permanent field diagnostics.
+
 ### 2026-08-03 — SD forensics: battery run 8.36 h GAP-FREE; freeze times confirmed
 
 UBX frame-walk over the card (`tools/ubx_walk.py` — walks

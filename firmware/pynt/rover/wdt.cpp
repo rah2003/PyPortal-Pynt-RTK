@@ -4,13 +4,24 @@
 
 namespace {
 
-// Survives a WDT reset: .noinit is an orphan NOBITS section the linker
-// places between __bss_end__ (where startup zeroing stops) and __end__
-// (where the heap starts) — verified against the pyportal_m4 linker
-// script. Magic guards against garbage on a cold power-on.
+// Survives a WDT reset: the SAMD51's 8 KB backup RAM at 0x47000000 —
+// outside the linker's world entirely, so neither .data init nor .bss
+// zeroing can touch it. (First attempt used a .noinit section; the
+// linker folded it into .data and startup re-initialized the crumb on
+// every boot — verified via nm, symbol type 'd'.) Magic guards against
+// garbage on a cold power-on.
 constexpr uint32_t kBreadcrumbMagic = 0x57444742;  // "WDGB"
-__attribute__((section(".noinit"))) volatile uint32_t crumbMagic;
-__attribute__((section(".noinit"))) volatile uint8_t crumbModule;
+#define crumbMagic (*(volatile uint32_t*)0x47000000)
+#define crumbModule (*(volatile uint32_t*)0x47000004)
+// Separate crumb set for hard faults: the fault handler resets via
+// NVIC_SystemReset, so RCAUSE reads SYST (0x40), not WDT — the boot
+// check for these must not gate on reset cause.
+constexpr uint32_t kFaultMagic = 0x48464C54;  // "HFLT"
+#define faultMagic (*(volatile uint32_t*)0x47000010)
+#define faultPc (*(volatile uint32_t*)0x47000014)
+#define faultLr (*(volatile uint32_t*)0x47000018)
+#define faultCfsr (*(volatile uint32_t*)0x4700001C)
+#define faultHfsr (*(volatile uint32_t*)0x47000020)
 
 volatile uint8_t currentModule = WDT_MOD_IDLE;
 
@@ -32,15 +43,72 @@ extern "C" void WDT_Handler(void) {
   crumbModule = currentModule;
 }
 
+// A HardFault outranks every configurable IRQ, so the core's default
+// while(1) fault handler starves even the priority-0 EW interrupt and
+// the device sits dead until the 16 s hardware reset — no breadcrumb,
+// nothing. Override it: pull the stacked PC/LR off whichever stack was
+// active (EXC_RETURN bit 2 picks MSP vs PSP), stamp them to backup RAM,
+// reset immediately. Naked so the compiler prologue can't disturb LR
+// before we test it.
+extern "C" void HardFault_Stamp(uint32_t* sp) {
+  faultMagic = kFaultMagic;
+  faultPc = sp[6];
+  faultLr = sp[5];
+  faultCfsr = SCB->CFSR;  // UFSR[31:16] BFSR[15:8] MMFSR[7:0]
+  faultHfsr = SCB->HFSR;  // FORCED bit30 = escalated configurable fault
+  crumbMagic = kBreadcrumbMagic;
+  crumbModule = currentModule;
+  NVIC_SystemReset();
+}
+
+extern "C" __attribute__((naked)) void HardFault_Handler(void) {
+  __asm volatile(
+      "tst lr, #4        \n"
+      "ite eq            \n"
+      "mrseq r0, msp     \n"
+      "mrsne r0, psp     \n"
+      "b HardFault_Stamp \n");
+}
+
 void wdtInit() {
+  MCLK->AHBMASK.bit.BKUPRAM_ = 1;  // backup RAM clock (default-on; be sure)
+  // Self-test: if BKUPRAM writes fault or don't stick, the EW handler
+  // would hard-fault mid-freeze and the breadcrumb story is dead — find
+  // out HERE, in thread mode, with a printout.
+  {
+    volatile uint32_t* probe = (volatile uint32_t*)0x47000008;
+    *probe = 0x12345678;
+    Serial.print(F("[wdt] bkupram self-test: "));
+    Serial.println(*probe == 0x12345678 ? F("ok") : F("FAILED"));
+  }
   // .reg + mask, not .bit.WDT — the bitfield name collides with the WDT
   // peripheral macro and macro-expands into gibberish.
+  Serial.print(F("[wdt] reset cause 0x"));
+  Serial.println(RSTC->RCAUSE.reg, HEX);
   if ((RSTC->RCAUSE.reg & RSTC_RCAUSE_WDT) && crumbMagic == kBreadcrumbMagic &&
       crumbModule < sizeof(kWdtModuleNames) / sizeof(kWdtModuleNames[0])) {
     strncpy(lastFreeze, kWdtModuleNames[crumbModule], sizeof(lastFreeze) - 1);
     Serial.print(F("[wdt] WATCHDOG RESET — loop froze in: "));
     Serial.println(lastFreeze);
   }
+  // Not gated on RCAUSE: the fault handler exits via SystemReset (0x40).
+  if (faultMagic == kFaultMagic) {
+    Serial.print(F("[wdt] HARDFAULT pc=0x"));
+    Serial.print(faultPc, HEX);
+    Serial.print(F(" lr=0x"));
+    Serial.print(faultLr, HEX);
+    Serial.print(F(" cfsr=0x"));
+    Serial.print(faultCfsr, HEX);
+    Serial.print(F(" hfsr=0x"));
+    Serial.print(faultHfsr, HEX);
+    Serial.print(F(" in: "));
+    Serial.println(crumbMagic == kBreadcrumbMagic &&
+                           crumbModule < sizeof(kWdtModuleNames) /
+                                             sizeof(kWdtModuleNames[0])
+                       ? kWdtModuleNames[crumbModule]
+                       : "?");
+  }
+  faultMagic = 0;
   crumbMagic = 0;
 
   // SAMD51 WDT runs from its dedicated OSCULP32K-derived 1.024 kHz —
@@ -66,6 +134,14 @@ void wdtKick() {
     WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
 }
 
-void wdtNoteModule(uint8_t m) { currentModule = m; }
+// Marking a module boundary also kicks: the watchdog then measures ONE
+// MODULE's stall, not the whole pass. Bench 2026-08-03: the first loop
+// pass after boot legitimately runs >16 s (32 KB SERCOM backlog parse +
+// ~11 s WiFi join + caster connect + server binds) and a single
+// end-of-pass kick boot-looped the device on the first WDT period.
+void wdtNoteModule(uint8_t m) {
+  currentModule = m;
+  wdtKick();
+}
 
 const char* wdtLastFreeze() { return lastFreeze; }

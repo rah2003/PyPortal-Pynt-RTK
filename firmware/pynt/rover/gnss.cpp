@@ -13,10 +13,13 @@
 #include "pins.h"
 #include "settings.h"
 #include "shared.h"
+#include "uart_gnss.h"
 
 // SERCOM0 UART: TX=D3(PA04,pad0) RX=D4(PA05,pad1) — docs/hardware/wiring.md.
-static Uart SerialGNSS(&sercom0, GNSS_RX_PIN, GNSS_TX_PIN,
-                       SERCOM_RX_PAD_1, UART_TX_PAD_0);
+// GnssUart, not core Uart: per-instance ring sizing (32 KiB RX / 2 KiB TX)
+// instead of the global SERIAL_BUFFER_SIZE that cost 131 KiB — uart_gnss.h.
+static GnssUart SerialGNSS(&sercom0, GNSS_RX_PIN, GNSS_TX_PIN,
+                           SERCOM_RX_PAD_1, UART_TX_PAD_0);
 void SERCOM0_0_Handler() { SerialGNSS.IrqHandler(); }
 void SERCOM0_1_Handler() { SerialGNSS.IrqHandler(); }
 void SERCOM0_2_Handler() { SerialGNSS.IrqHandler(); }
@@ -313,7 +316,8 @@ void gnssPoll() {
   // MON-RF poll (Phase C, Bumble P10): no auto/callback support in the
   // library, so a bounded poll — every 10 s, 200 ms maxWait. AGC, noise
   // floor and the jamming indicator are the data the coex desense
-  // question has been missing.
+  // question has been missing. (Bisected 2026-08-03 and cleared — the
+  // boot-loop was heap/stack collision, uart_gnss.h.)
   static uint32_t lastRfPollMs = 0;
   if (g_gnss.f9pDetected && millis() - lastRfPollMs >= 10000) {
     lastRfPollMs = millis();
