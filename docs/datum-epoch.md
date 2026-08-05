@@ -51,5 +51,29 @@ is applied. Change them only if the caster/mountpoint changes frames.
 Record both in `docs/field-log.md` entries and in RINEX headers when
 converting `.ubx` for OPUS.
 
-Still open for Phase E: antenna height / ARP handling for the HC977
-(team-review P6).
+## Antenna calibration status (P6 lookup, 2026-08-05)
+
+**The HC977 has no NGS calibration and no registered IGS antenna
+name.** Verified against the NGS IGS20 composite ANTEX (`ngs20.atx`,
+1,556 antennas — no HC-series; Calian/Tallysman's entries are all
+patch/VeroStar: TWI3870+GP, TWI3970+GP, TWI3972XF_CONE, TWI7972+GP,
+TWIVC6050/6150, TWIVP6000/6050_CONE/6200/6300, TWIVSP6037L) and the
+IGS `rcvr_ant.tab` registry (4,550 names — absent). Calian publishes
+no phase-center offset in the public datasheet pages either.
+
+Consequences for the Phase E field day:
+
+- **OPUS**: submit with antenna type **NONE**, antenna height **0.0**.
+  No PCO/PCV model is applied, so the OPUS position is the antenna's
+  **L1 phase center**, not the mark. Tie to the mark separately:
+  measured mark→antenna-base height + an estimated base→phase-center
+  offset (unpublished; somewhere inside the helix — assume ~±2 cm
+  vertical uncertainty unless Calian support provides a number).
+- **Score the comparison horizontally.** A helical's horizontal PCO is
+  ~mm and averages further over a 4 h occupation — the VRS-RTK vs OPUS
+  horizontal comparison is essentially unaffected by the missing
+  calibration. Quote vertical with the phase-center caveat.
+- The VRS-RTK side has the same unmodeled PCO baked in; for
+  centimeter-honest **heights** on future work, the fix is a
+  calibrated antenna (e.g. the TWIVP6000-class entries above), not
+  better bookkeeping.
