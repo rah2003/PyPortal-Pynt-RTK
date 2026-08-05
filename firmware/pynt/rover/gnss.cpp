@@ -119,6 +119,22 @@ void onNavSat(UBX_NAV_SAT_data_t* sat) {
   g_corr.maxCn0 = cn0Max;
 }
 
+// MON-HW at nav rate, via the same proven auto-callback path as
+// NAV-SAT. Replaces the Phase C MON-RF poll: getRFinformation timed
+// out silently on every attempt (no CRC/overrun in limited debug,
+// 200 and 800 ms maxWait alike, bench 2026-08-04) — root cause not
+// chased since MON-HW carries the same desense observables (noise
+// floor, AGC, CW jamming indicator, jamming state) minus the per-band
+// split. One block; the L2 slot stays empty.
+void onMonHw(UBX_MON_HW_data_t* hw) {
+  g_corr.rfBlocks = 1;
+  g_corr.jammingState[0] = hw->flags.bits.jammingState;
+  g_corr.jamInd[0] = hw->jamInd;
+  g_corr.noisePerMS[0] = hw->noisePerMS;
+  g_corr.agcPct[0] = (uint8_t)((hw->agcCnt * 100UL) / 8191);
+  g_corr.lastRfMs = millis();
+}
+
 void onPvt(UBX_NAV_PVT_data_t* pvt) {
   g_gnss.lastPvtMs = millis();
   g_gnss.fixType = pvt->fixType;
@@ -186,6 +202,7 @@ void setupLogging() {
   gnss.setRXMCORcallbackPtr(&onRxmCor);
   gnss.setAutoRELPOSNEDcallbackPtr(&onRelPosNed);
   gnss.setAutoNAVSATcallbackPtr(&onNavSat);
+  gnss.setAutoMONHWcallbackPtr(&onMonHw);  // RF health — see onMonHw
 }
 
 bool modeApplyRequested = false;
@@ -313,27 +330,9 @@ void gnssPoll() {
     }
   }
 
-  // MON-RF poll (Phase C, Bumble P10): no auto/callback support in the
-  // library, so a bounded poll — every 10 s, 200 ms maxWait. AGC, noise
-  // floor and the jamming indicator are the data the coex desense
-  // question has been missing. (Bisected 2026-08-03 and cleared — the
-  // boot-loop was heap/stack collision, uart_gnss.h.)
-  static uint32_t lastRfPollMs = 0;
-  if (g_gnss.f9pDetected && millis() - lastRfPollMs >= 10000) {
-    lastRfPollMs = millis();
-    UBX_MON_RF_data_t rf;
-    if (gnss.getRFinformation(&rf, 200)) {
-      g_corr.rfBlocks =
-          rf.header.nBlocks > 2 ? (uint8_t)2 : rf.header.nBlocks;
-      for (uint8_t b = 0; b < g_corr.rfBlocks; b++) {
-        g_corr.jammingState[b] = rf.blocks[b].flags.bits.jammingState;
-        g_corr.jamInd[b] = rf.blocks[b].jamInd;
-        g_corr.noisePerMS[b] = rf.blocks[b].noisePerMS;
-        g_corr.agcPct[b] = (uint8_t)((rf.blocks[b].agcCnt * 100UL) / 8191);
-      }
-      g_corr.lastRfMs = millis();
-    }
-  }
+  // RF health arrives via the MON-HW auto callback (onMonHw) — the
+  // blocking MON-RF poll that lived here never returned data and was
+  // replaced 2026-08-04.
 }
 
 void gnssInjectRtcm(const uint8_t* data, size_t len) {
