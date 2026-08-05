@@ -92,14 +92,14 @@ Prerequisite decisions, forced explicitly before the outing:
   CRS guidance for SW Maps/QField in `docs/datum-epoch.md` (EPSG:6318).
   Bonus: OPUS reports the same frame/epoch — the field-day comparison
   is direct, no HTDP transform.
-- **P6 antenna height** — lookup DONE 2026-08-05: no NGS/IGS absolute
-  calibration (verified in ngs20.atx + rcvr_ant.tab), **but the Calian
-  datasheet publishes PCO z-axis 32 mm (L1) / 37 mm (L2), PCV
-  ±3.0 mm** — iono-free effective ≈24 mm above the base. Protocol in
-  `docs/datum-epoch.md`: OPUS as antenna NONE / height 0, tie to mark
-  as measured mark→base + 24 mm, vertical honest to ~±5 mm + tape.
-  Remaining owner decision: the physical mount + how mark→base height
-  gets measured (`antHeightM` field lands with that).
+- **P6 antenna height** — **DONE 2026-08-05**: no NGS/IGS absolute
+  calibration (ngs20.atx + rcvr_ant.tab verified), but the Calian
+  datasheet publishes PCO z 32/37 mm (L1/L2), PCV ±3 mm. Owner fixed
+  the mount geometry: ARP = enclosure bottom face; ARP→L1 138.3 mm,
+  ARP→L2/L5 143.3 mm, LC effective 130.6 mm, coaxial/0° tilt. The
+  only per-setup measurement is the survey pole height —
+  `antheight=` setting added (metadata). Full table + OPUS reduction
+  in `docs/datum-epoch.md`. **Phase E is unblocked.**
 
 Then the one-afternoon protocol: occupy a published NGS mark (measured
 antenna height), ~4 h RAWX + concurrent VRS-RTK fixes, `.ubx`→RINEX

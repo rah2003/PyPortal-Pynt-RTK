@@ -103,6 +103,7 @@ bool settingsSave() {
   f.print(F("elevmask="));  f.println(g_settings.elevMaskDeg);
   f.print(F("datum="));     f.println(g_settings.datum);
   f.print(F("epoch="));     f.println(g_settings.epoch);
+  f.print(F("antheight=")); f.println(g_settings.antHeightM, 4);
   f.print(F("logubx="));    f.println(g_settings.logUbx ? 1 : 0);
   f.print(F("tcpport="));   f.println(g_settings.tcpPort);
   f.print(F("mode="));      f.println(g_settings.mode == DeviceMode::Base ? "base" : "rover");
@@ -156,7 +157,8 @@ void settingsPrint(Stream& out) {
   out.print(F("ggaperiod=")); out.println(g_settings.ggaPeriodS);
   out.print(F("elevmask=")); out.println(g_settings.elevMaskDeg);
   out.print(F("datum=")); out.print(g_settings.datum);
-  out.print(F(" epoch=")); out.println(g_settings.epoch);
+  out.print(F(" epoch=")); out.print(g_settings.epoch);
+  out.print(F(" antheight=")); out.println(g_settings.antHeightM, 4);
   out.print(F("logubx=")); out.println(g_settings.logUbx ? 1 : 0);
   out.print(F("tcpport=")); out.println(g_settings.tcpPort);
 }
@@ -182,6 +184,7 @@ bool settingsApplyKeyValue(const char* key, const char* value) {
   if (!strcmp(key, "elevmask"))  { g_settings.elevMaskDeg = (uint8_t)atoi(value); return true; }
   if (!strcmp(key, "datum"))     { setStr(g_settings.datum, 20, value); return true; }
   if (!strcmp(key, "epoch"))     { setStr(g_settings.epoch, 12, value); return true; }
+  if (!strcmp(key, "antheight")) { g_settings.antHeightM = (float)atof(value); return true; }
   if (!strcmp(key, "logubx"))    { g_settings.logUbx = atoi(value) != 0; return true; }
   if (!strcmp(key, "tcpport"))   { g_settings.tcpPort = (uint16_t)atoi(value); return true; }
   if (!strcmp(key, "mode")) {

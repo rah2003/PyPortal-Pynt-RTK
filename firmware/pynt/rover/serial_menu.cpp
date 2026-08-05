@@ -28,7 +28,8 @@ void printHelp() {
   Serial.println(F("--- PyPortal-Pynt-RTK serial menu ---"));
   Serial.println(F("key=value      set + save: wifi1/pass1..wifi4/pass4, caster,"));
   Serial.println(F("               port, mount, user, password, ggaperiod,"));
-  Serial.println(F("               elevmask, logubx, tcpport, datum, epoch"));
+  Serial.println(F("               elevmask, logubx, tcpport, datum, epoch,"));
+  Serial.println(F("               antheight (m, mark->enclosure bottom)"));
   Serial.println(F("               mode=rover|base, svindur (s), svinacc (0.1mm),"));
   Serial.println(F("               fixedlat/fixedlon (deg), fixedalt (m)"));
   Serial.println(F("status         settings + live status"));

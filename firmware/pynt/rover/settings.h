@@ -52,6 +52,15 @@ struct Settings {
   char datum[20] = "NAD83(2011)";
   char epoch[12] = "2010.00";
 
+  // Survey pole height in meters: ground mark -> ARP, where the ARP is
+  // the ENCLOSURE BOTTOM FACE (owner spec 2026-08-05). Fixed offsets
+  // above the ARP (antenna coaxial with pole, 0 deg tilt, ~0 lateral):
+  // enclosure->antenna seat 106.3 mm; ARP->L1 PC 138.3 mm; ARP->L2/L5
+  // PC 143.3 mm (each +/-3 mm, HC977 datasheet PCO + seat height);
+  // iono-free effective ARP->PC 130.6 mm. Metadata only — recorded to
+  // the field log / RINEX, never applied to positions. 0 = unset.
+  float antHeightM = 0;
+
   // --- Logging / phone link ---
   bool logUbx = true;       // log from boot; the LOG touch button toggles
   uint16_t tcpPort = 10110; // SW Maps NMEA server port

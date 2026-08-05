@@ -74,19 +74,39 @@ base). For iono-free (LC) processing as OPUS uses, the effective
 combined offset is 2.546·PCO(L1) − 1.546·PCO(L2) ≈ **24 mm** above
 the base.
 
+## Mount geometry (owner spec, 2026-08-05 — closes P6)
+
+The antenna is mounted to the device enclosure, which rides a survey
+pole. **ARP = the enclosure bottom face.** Antenna coaxial with the
+pole, 0° tilt, ~0 lateral offset. Fixed offsets above the ARP
+(each ±3 mm; seat height + HC977 datasheet PCOs):
+
+| From ARP (enclosure bottom) to | mm |
+|---|---|
+| Antenna seat (A) | 106.3 |
+| L1 phase center | 138.3 |
+| L2/L5 phase center | 143.3 |
+| Iono-free (LC) effective phase center | 130.6 |
+
+**The only per-setup measurement is the survey pole height** (ground
+mark → enclosure bottom face) — recorded in the `antheight=` setting
+(meters) and the field log. Then:
+
+- mark → L1 phase center = pole + 0.1383 m
+- mark → LC phase center = pole + 0.1306 m
+
 Field-day handling:
 
 - **OPUS**: submit with antenna type **NONE**, antenna height **0.0**
-  → the solution lands at the antenna phase center (LC combination).
-  Tie to the mark: measured mark→base height + ~24 mm (LC PCO), with
-  ±3 mm PCV + tape error as the vertical uncertainty budget.
+  → the solution lands at the LC-combination phase center. Reduce to
+  the mark by subtracting (pole + 0.1306 m). Vertical uncertainty:
+  ±3 mm phase-center spec + pole-height measurement error.
 - **Horizontal is clean regardless** — helical horizontal PCO is
-  ~mm-scale and averages down over a 4 h occupation. The VRS-RTK vs
-  OPUS horizontal comparison is unaffected by the missing ANTEX
-  calibration; vertical now carries a ~±5 mm phase-center term, not
-  the ±2 cm first assumed.
-- The VRS-RTK side applies no PCO either (u-blox fix is at the phase
-  center; the same base+24 mm bookkeeping applies when reducing to
-  the mark). For fully rigorous heights the long-term fix is still an
-  ANTEX-calibrated antenna, but the datasheet numbers make the HC977
-  honest to better than a centimeter.
+  ~mm-scale (~0 lateral by the mount spec) and averages down over a
+  4 h occupation. The VRS-RTK vs OPUS horizontal comparison is
+  unaffected by the missing ANTEX calibration.
+- The VRS-RTK side applies no PCO either (the u-blox fix is at the
+  phase center) — the same pole + offset bookkeeping reduces RTK
+  positions to the mark. For fully rigorous heights the long-term fix
+  is still an ANTEX-calibrated antenna, but this geometry makes the
+  HC977 honest to better than a centimeter.
