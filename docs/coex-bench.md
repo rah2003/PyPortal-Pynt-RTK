@@ -336,6 +336,42 @@ That pair restores the unit to its last known-good field state.
 
 (append dated notes here as sections close, bringup-log style)
 
+### 2026-08-04 — Coex desense A/B: no measurable WiFi-TX effect on GNSS RF — hypothesis RETIRED
+
+The Phase C question (plan §C, from the 7-28 FLOAT-ceiling suspicion):
+does AirLift WiFi/BLE traffic desense the F9P front end? A/B on the
+bench, 12 min per phase, 34 samples each (serial `status` every 20 s —
+USB, no RF). Constant in both phases: NTRIP streaming, BLE NUS to the
+phone, 1 Hz nav. Variable: bulk WiFi — phase A association-idle,
+phase B two TCP NMEA pulls + 1 Hz HTTP requests.
+
+| metric | A quiet | B saturated |
+|---|---|---|
+| NAV-SAT mean C/N0 (dB-Hz) | 28.4 | 28.5 |
+| NAV-SAT max C/N0 | 39.2 | 38.5 |
+| sats used | 29.7 | 31.1 |
+| MON-HW AGC | 21.2 % | 21.8 % |
+| MON-HW noise/ms | 66.9 | 65.5 |
+| MON-HW CW jamInd (0–255) | 3.6 | 3.7 |
+
+Every observable flat; the two that moved (sats used ↑, noise ↓ under
+load) moved opposite to what desense predicts. **The 7-28 FLOAT
+ceiling was sky view, not coex RF** — consistent with RTK FIXED
+reached outdoors 2026-08-02 with all radios active. Caveats: BLE
+streaming was constant, not isolated; helical antenna ~1 m from the
+device at a window bench; MON-HW is single-block (no per-band L2
+view); jammingState always 0 because the F9P's ITFM interference
+monitor is disabled by default (CFG-ITFM enable is a follow-up if the
+flag is wanted).
+
+Instrumentation finding along the way: the Phase C **MON-RF blocking
+poll never returned data** — silent timeout every 10 s attempt (no CRC
+or overrun in limited debug, 200 and 800 ms maxWait alike), so
+`rfBlocks` was 0 through all of the Phase B soak. Replaced with the
+library's MON-HW auto callback (commit 1714671), which delivers noise/
+AGC/jamInd at nav rate through the same machinery as NAV-SAT. Root
+cause of the poll failure not chased.
+
 ### 2026-08-04 — Phase B regression soak: 180 min, 0 resets under the freeze harness — PASS
 
 The exact harness that froze the pre-fix firmware 8/8 times inside
