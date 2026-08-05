@@ -63,7 +63,10 @@ Status legend: ❓ needs owner answer · 📄 resolve from vendor docs in Phase 
     **HC977 triple-band + L-band helical**, part 33-HC977-35 (35 dB LNA
     variant), s/n 20200624. Bias 2.2–16 VDC → fine on the F9P's 3.3 V
     antenna feed; ~21 mA typ; IP67; SMA. Helical → **no ground plane
-    needed**.
+    needed**. **Metrology recorded 2026-08-04** (closes review P6):
+    ARP/phase-center offsets + enclosure stack in
+    `docs/hardware/antenna-metrology.md` (ARP→L1 PC 138.3 mm,
+    →L2/L5 143.3 mm, coaxial with the 5/8"-11 pole mount).
 16. ✅ **Enclosure / assembly** — Answered 2026-07-11: enclosure gets
     built **after** the electronics work, and **portrait** is the optimal
     orientation → all touch-UI layout is designed for 240×320 portrait
