@@ -92,14 +92,14 @@ Prerequisite decisions, forced explicitly before the outing:
   CRS guidance for SW Maps/QField in `docs/datum-epoch.md` (EPSG:6318).
   Bonus: OPUS reports the same frame/epoch — the field-day comparison
   is direct, no HTDP transform.
-- **P6 antenna height** — lookup DONE 2026-08-05: **the HC977 has no
-  NGS calibration and no IGS-registered name** (verified in ngs20.atx
-  + rcvr_ant.tab; no public PCO from Calian). Protocol set in
-  `docs/datum-epoch.md`: OPUS as antenna NONE / height 0 → L1
-  phase-center solution, tie to mark mechanically, score the
-  comparison horizontally, quote vertical ±~2 cm. Remaining owner
-  decision: the physical mount + how mark→base height gets measured
-  (`antHeightM` field lands with that).
+- **P6 antenna height** — lookup DONE 2026-08-05: no NGS/IGS absolute
+  calibration (verified in ngs20.atx + rcvr_ant.tab), **but the Calian
+  datasheet publishes PCO z-axis 32 mm (L1) / 37 mm (L2), PCV
+  ±3.0 mm** — iono-free effective ≈24 mm above the base. Protocol in
+  `docs/datum-epoch.md`: OPUS as antenna NONE / height 0, tie to mark
+  as measured mark→base + 24 mm, vertical honest to ~±5 mm + tape.
+  Remaining owner decision: the physical mount + how mark→base height
+  gets measured (`antHeightM` field lands with that).
 
 Then the one-afternoon protocol: occupy a published NGS mark (measured
 antenna height), ~4 h RAWX + concurrent VRS-RTK fixes, `.ubx`→RINEX
