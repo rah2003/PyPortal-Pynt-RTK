@@ -85,9 +85,13 @@ Enables the field day to answer questions current telemetry can't:
 
 Prerequisite decisions, forced explicitly before the outing:
 
-- **P1 datum/epoch**: add `datum=`/`epoch=` settings fields; confirm the
-  acorn-gnss broadcast frame from the sourcetable/operator; document the
-  matching CRS for SW Maps/QField.
+- **P1 datum/epoch** — **DONE 2026-08-05**: operator confirmed
+  `VRS_SouthCentral_RTCM3` broadcasts **NAD83(2011) epoch 2010.00**
+  (ACORN pins CORS to NSRS 2010.00 against SC-AK tectonics);
+  `datum=`/`epoch=` settings fields added (metadata, defaults match);
+  CRS guidance for SW Maps/QField in `docs/datum-epoch.md` (EPSG:6318).
+  Bonus: OPUS reports the same frame/epoch — the field-day comparison
+  is direct, no HTDP transform.
 - **P6 antenna height**: add `antHeightM`; resolve the HC977 NGS
   calibration question; record ARP handling.
 

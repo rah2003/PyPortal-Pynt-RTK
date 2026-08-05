@@ -42,6 +42,16 @@ struct Settings {
   // --- GNSS ---
   uint8_t elevMaskDeg = 12;  // inherited Metro answer
 
+  // --- Datum/epoch METADATA (team review P1, Phase E prep) ---
+  // The frame the VRS corrections put the rover in — a label carried to
+  // status surfaces and the field log, NOT a transform. Operator answer
+  // 2026-08-05: VRS_SouthCentral_RTCM3 broadcasts NAD83(2011) epoch
+  // 2010.00 (ACORN holds CORS positions fixed to NSRS 2010.00 against
+  // SC-Alaska tectonic motion). Mislabeling this as WGS84/ITRF is a
+  // silent ~1-2 m systematic error — docs/datum-epoch.md.
+  char datum[20] = "NAD83(2011)";
+  char epoch[12] = "2010.00";
+
   // --- Logging / phone link ---
   bool logUbx = true;       // log from boot; the LOG touch button toggles
   uint16_t tcpPort = 10110; // SW Maps NMEA server port

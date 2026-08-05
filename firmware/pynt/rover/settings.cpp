@@ -101,6 +101,8 @@ bool settingsSave() {
   f.print(F("password="));  f.println(g_settings.casterPass);
   f.print(F("ggaperiod=")); f.println(g_settings.ggaPeriodS);
   f.print(F("elevmask="));  f.println(g_settings.elevMaskDeg);
+  f.print(F("datum="));     f.println(g_settings.datum);
+  f.print(F("epoch="));     f.println(g_settings.epoch);
   f.print(F("logubx="));    f.println(g_settings.logUbx ? 1 : 0);
   f.print(F("tcpport="));   f.println(g_settings.tcpPort);
   f.print(F("mode="));      f.println(g_settings.mode == DeviceMode::Base ? "base" : "rover");
@@ -153,6 +155,8 @@ void settingsPrint(Stream& out) {
   out.print(F(" password=")); out.println(g_settings.casterPass[0] ? "set" : "unset");
   out.print(F("ggaperiod=")); out.println(g_settings.ggaPeriodS);
   out.print(F("elevmask=")); out.println(g_settings.elevMaskDeg);
+  out.print(F("datum=")); out.print(g_settings.datum);
+  out.print(F(" epoch=")); out.println(g_settings.epoch);
   out.print(F("logubx=")); out.println(g_settings.logUbx ? 1 : 0);
   out.print(F("tcpport=")); out.println(g_settings.tcpPort);
 }
@@ -176,6 +180,8 @@ bool settingsApplyKeyValue(const char* key, const char* value) {
   if (!strcmp(key, "password"))  { setStr(g_settings.casterPass, 49, value); return true; }
   if (!strcmp(key, "ggaperiod")) { g_settings.ggaPeriodS = (uint16_t)atoi(value); return true; }
   if (!strcmp(key, "elevmask"))  { g_settings.elevMaskDeg = (uint8_t)atoi(value); return true; }
+  if (!strcmp(key, "datum"))     { setStr(g_settings.datum, 20, value); return true; }
+  if (!strcmp(key, "epoch"))     { setStr(g_settings.epoch, 12, value); return true; }
   if (!strcmp(key, "logubx"))    { g_settings.logUbx = atoi(value) != 0; return true; }
   if (!strcmp(key, "tcpport"))   { g_settings.tcpPort = (uint16_t)atoi(value); return true; }
   if (!strcmp(key, "mode")) {

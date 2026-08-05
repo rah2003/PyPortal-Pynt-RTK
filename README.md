@@ -88,6 +88,10 @@ firmware first, then flash via the passthrough bridge
   web dashboard and serial `status` (`corr:`/`rf:` lines).
 - Measured on this unit: ≥8.36 h on the field battery bank with RAWX +
   NTRIP + TCP + BLE running (battery-limited, zero data gaps).
+- **Positions are NAD83(2011) epoch 2010.00, not WGS84** — that's the
+  frame the ACORN VRS corrections are in. Set SW Maps/QField to
+  EPSG:6318 (or the matching AK State Plane zone) before overlaying on
+  control data: [docs/datum-epoch.md](docs/datum-epoch.md).
 
 ## Hardware
 

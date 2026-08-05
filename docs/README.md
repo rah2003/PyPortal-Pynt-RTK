@@ -16,6 +16,7 @@ stale one.
 | [hardware/ucenter-config.md](hardware/ucenter-config.md) | F9P settings verification (what must be true in the receiver) |
 | [hardware/checklists.md](hardware/checklists.md) | Per-board bring-up and integration gates, in order |
 | [coex-bench.md](coex-bench.md) §3, §7.2, §8 | AirLift firmware backup + flash procedure (one-time prereq for `pynt-rover-coex`), and the rollback path |
+| [datum-epoch.md](datum-epoch.md) | What frame the positions are in (NAD83(2011) epoch 2010.00) and the CRS to set in phone apps |
 
 ## Read these for history and rationale
 
