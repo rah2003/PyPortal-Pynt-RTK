@@ -29,11 +29,12 @@ matches historical local control points.
   the order of 1–2 m horizontally. RTK precision is cm; mislabeled
   datum silently throws that away.
 - **SW Maps / QField**: set the project/layer CRS to
-  **EPSG:6318 (NAD83(2011) geographic 2D)** — or the matching Alaska
-  State Plane NAD83(2011) zone for projected work — so RTK positions
-  overlay correctly on NAD83-based control and parcel data. Do NOT let
-  the app treat incoming coordinates as EPSG:4326 when it will be
-  combined with local control.
+  **EPSG:6318 (NAD83(2011) geographic 2D)** — or **EPSG:6397
+  (NAD83(2011) / Alaska zone 4)** for projected work — so RTK
+  positions overlay correctly on NAD83-based control and parcel data.
+  Do NOT let the app treat incoming coordinates as EPSG:4326 when it
+  will be combined with local control. Mechanics in "Configuring the
+  phone apps" below.
 - **OPUS comparability**: OPUS also reports NAD83(2011) epoch 2010.00
   for Alaska. The Phase E field-day comparison (VRS-RTK fix vs OPUS
   static solution on the same mark) is therefore a direct same-frame
@@ -42,6 +43,44 @@ matches historical local control points.
   everything to 2010.00 is what makes today's fix line up with
   2010-era NSRS control. Positions compared against ITRF-current-epoch
   products (e.g. PPP) need an HTDP epoch/frame transform first.
+
+## Configuring the phone apps (the null-transform trick)
+
+Neither app lets you declare the GNSS input datum — both hard-assume
+the NMEA feed is WGS84 (QField: confirmed open limitation,
+opengisch/QField#2855). What makes the setup work anyway: PROJ-based
+software defaults the WGS84→NAD83(2011) leg to a **null ("ballpark")
+transformation** — a relabel with no coordinate shift. The rover's
+numbers already ARE NAD83(2011), so relabel-without-shift is exactly
+right. The entire configuration reduces to: project CRS = NAD83(2011),
+and **no real datum transformation anywhere in the path**. The failure
+mode is software "helpfully" applying an actual ITRF↔NAD83 shift
+(~1–2 m here) to coordinates that don't need it.
+
+**QField (Android, TCP :10110):**
+
+1. Author the QGIS project with project CRS **and every editable
+   layer** in EPSG:6318 (or EPSG:6397 for grid work).
+2. QField ingests positions as if WGS84 → transforms to project CRS.
+   Unconfigured, that leg is the ballpark/null one → numbers pass
+   through unchanged, now correctly labeled. Done.
+3. Audit: QGIS Settings → Options → Transformations, and Project
+   Properties → CRS — ensure no WGS 84 → NAD83(2011) operation
+   (time-dependent Helmert / NADCON grid) is pinned. One pinned
+   transform = silent 1–2 m shift.
+
+**SW Maps (iOS, BLE NUS):**
+
+1. SW Maps applies no datum shift either; its projection setting only
+   drives the on-screen grid readout (pick Alaska zone 4 if wanted).
+2. The load-bearing step is at export: SW Maps labels its lat/lon
+   output WGS84. On import to GIS, **assign/override the CRS to
+   EPSG:6318** — "assign", never "reproject from WGS84".
+
+Pipeline rule of thumb: wherever software offers a WGS84↔NAD83
+transformation choice, the right pick for this data is
+null/ballpark/none; wherever it offers "assign CRS" vs "reproject",
+pick assign.
 
 ## Where the device records it
 
